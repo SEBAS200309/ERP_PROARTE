@@ -1,0 +1,485 @@
+@startuml ERP_ProArte_ClassDiagram
+skinparam backgroundColor white
+skinparam classAttributeIconSize 0
+skinparam nodesep 60
+skinparam ranksep 50
+
+title Diagrama de Clases UML - Backend Spring Boot - ERP Pro Arte
+
+package "common" #F0F0F0 {
+  class ApiResponse<T> {
+    - success : boolean
+    - data : T
+    - message : String
+    + {static} ok(data, msg) : ApiResponse
+    + {static} error(code, msg) : ApiResponse
+  }
+
+  class ProcedureExecutor {
+    - jdbcTemplate : JdbcTemplate
+    + executeFunction(name, params) : Map
+    + executeProcedure(name, params) : void
+  }
+
+  class GlobalExceptionHandler <<@RestControllerAdvice>> {
+    + handleNotFound(ex) : ApiResponse
+    + handleBusiness(ex) : ApiResponse
+    + handleValidation(ex) : ApiResponse
+  }
+}
+
+package "auth" #E6D6FF {
+  class AuthController <<@RestController>> {
+    + login(request) : ApiResponse
+    + logout() : ApiResponse
+    + refreshToken(request) : ApiResponse
+  }
+
+  class AuthService <<@Service>> {
+    - usuarioRepository : UsuarioRepository
+    - passwordEncoder : PasswordEncoder
+    - jwtUtil : JwtUtil
+    + authenticate(username, password) : TokenResponse
+    + refresh(refreshToken) : TokenResponse
+  }
+}
+
+package "usuario" #E6E6FF {
+  class Usuario <<@Entity>> {
+    - id : UUID
+    - username : String
+    - passwordHash : String
+    - nombreCompleto : String
+    - email : String
+    - rol : Rol
+    - activo : boolean
+    - createdAt : LocalDateTime
+  }
+
+  class Rol <<@Entity>> {
+    - id : UUID
+    - nombre : String
+    - descripcion : String
+    - permisos : List<Permiso>
+    - activo : boolean
+  }
+
+  class Permiso <<@Entity>> {
+    - id : UUID
+    - configuracion : Map<String, Object>
+    - activo : boolean
+  }
+
+  class UsuarioController <<@RestController>> {
+    + listar(filtros) : ApiResponse
+    + crear(request) : ApiResponse
+    + actualizar(id, request) : ApiResponse
+    + eliminar(id) : ApiResponse
+    + consultarPermisos(rolId) : ApiResponse
+    + actualizarPermisos(rolId, configJson) : ApiResponse
+  }
+
+  class UsuarioService <<@Service>> {
+    - repository : UsuarioRepository
+    - permisoRepository : PermisoRepository
+    + listar(filtros) : Page<Usuario>
+    + crear(dto) : Usuario
+    + actualizar(id, dto) : Usuario
+    + eliminar(id) : void
+    + consultarPermisos(rolId) : Permiso
+    + actualizarPermisos(rolId, configJson) : void
+  }
+
+  interface UsuarioRepository <<@Repository>> {
+    + findByUsername(username) : Optional<Usuario>
+    + findAllByActivoTrue(pageable) : Page<Usuario>
+  }
+
+  Rol "1" *-- "*" Permiso
+  Rol "1" -- "*" Usuario
+  UsuarioController --> UsuarioService
+  UsuarioService --> UsuarioRepository
+}
+
+package "persona" #FFF5E6 {
+  class Persona <<@Entity>> {
+    - id : UUID
+    - nombres : String
+    - apellidos : String
+    - tipoDocumento : String
+    - documento : String
+    - telefono : String
+    - email : String
+    - rolPersona : String
+    - activo : boolean
+    - createdBy : UUID
+  }
+
+  class PersonaController <<@RestController>> {
+    + listar(filtros) : ApiResponse
+    + crear(request) : ApiResponse
+    + actualizar(id, request) : ApiResponse
+    + eliminar(id) : ApiResponse
+    + asociarEmpresa(id, empresaId) : ApiResponse
+    + asignarRol(id, rol) : ApiResponse
+  }
+
+  class PersonaService <<@Service>> {
+    - repository : PersonaRepository
+    + listar(filtros) : Page<Persona>
+    + crear(dto) : Persona
+    + actualizar(id, dto) : Persona
+    + eliminar(id) : void
+    + asociarEmpresa(personaId, empresaId, cargo) : void
+    + asignarRol(id, rol) : void
+  }
+
+  interface PersonaRepository <<@Repository>> {
+    + findAllByActivoTrue(pageable) : Page<Persona>
+  }
+
+  PersonaController --> PersonaService
+  PersonaService --> PersonaRepository
+}
+
+package "empresa" #E6FFE6 {
+  class Empresa <<@Entity>> {
+    - id : UUID
+    - razonSocial : String
+    - nit : String
+    - direccion : String
+    - telefono : String
+    - rolEmpresa : String
+    - activo : boolean
+    - createdBy : UUID
+  }
+
+  class EmpresaController <<@RestController>> {
+    + listar(filtros) : ApiResponse
+    + crear(request) : ApiResponse
+    + actualizar(id, request) : ApiResponse
+    + eliminar(id) : ApiResponse
+    + asignarRol(id, rol) : ApiResponse
+  }
+
+  class EmpresaService <<@Service>> {
+    - repository : EmpresaRepository
+    + listar(filtros) : Page<Empresa>
+    + crear(dto) : Empresa
+    + actualizar(id, dto) : Empresa
+    + eliminar(id) : void
+    + asignarRol(id, rol) : void
+  }
+
+  interface EmpresaRepository <<@Repository>> {
+    + findAllByActivoTrue(pageable) : Page<Empresa>
+  }
+
+  EmpresaController --> EmpresaService
+  EmpresaService --> EmpresaRepository
+}
+
+package "lead" #FFFFE6 {
+  class Lead <<@Entity>> {
+    - id : UUID
+    - descripcion : String
+    - estado : String
+    - persona : Persona
+    - empresa : Empresa
+    - activo : boolean
+    - createdBy : UUID
+  }
+
+  class LeadController <<@RestController>> {
+    + listar(filtros) : ApiResponse
+    + crear(request) : ApiResponse
+    + actualizar(id, request) : ApiResponse
+    + eliminar(id) : ApiResponse
+    + estadisticas() : ApiResponse
+  }
+
+  class LeadService <<@Service>> {
+    - repository : LeadRepository
+    - procedureExecutor : ProcedureExecutor
+    + listar(filtros) : Page<Lead>
+    + crear(dto) : Lead
+    + estadisticas() : Map
+  }
+
+  LeadController --> LeadService
+  LeadService --> ProcedureExecutor
+}
+
+package "proveedor" #E6F0FF {
+  class Proveedor <<@Entity>> {
+    - id : UUID
+    - persona : Persona
+    - empresa : Empresa
+    - especialidad : String
+    - activo : boolean
+  }
+
+  class Portafolio <<@Entity>> {
+    - id : UUID
+    - proveedor : Proveedor
+    - servicio : Servicio
+    - precioUnitario : BigDecimal
+    - activo : boolean
+  }
+
+  class SolicitudServicio <<@Entity>> {
+    - id : UUID
+    - proveedor : Proveedor
+    - servicio : Servicio
+    - evento : Evento
+    - estado : String
+    - activo : boolean
+  }
+
+  class ProveedorController <<@RestController>> {
+    + listar(filtros) : ApiResponse
+    + crear(request) : ApiResponse
+    + actualizar(id, request) : ApiResponse
+    + eliminar(id) : ApiResponse
+    + gestionarPortafolio(id) : ApiResponse
+    + gestionarSolicitudes(id) : ApiResponse
+  }
+
+  class ProveedorService <<@Service>> {
+    - proveedorRepo : ProveedorRepository
+    - portafolioRepo : PortafolioRepository
+    - solicitudRepo : SolicitudRepository
+    + listar(filtros) : Page<Proveedor>
+    + crear(dto) : Proveedor
+    + crearPortafolio(provId, dto) : Portafolio
+    + crearSolicitud(provId, dto) : SolicitudServicio
+  }
+
+  Proveedor "1" *-- "*" Portafolio
+  Proveedor "1" *-- "*" SolicitudServicio
+  ProveedorController --> ProveedorService
+}
+
+package "servicio" #E6FFE6 {
+  class Servicio <<@Entity>> {
+    - id : UUID
+    - nombre : String
+    - descripcion : String
+    - categoria : String
+    - esPropio : boolean
+    - requiereOc : boolean
+    - servicioPadre : Servicio
+    - activo : boolean
+  }
+
+  class TipoDescuentoRecargo <<@Entity>> {
+    - id : UUID
+    - nombre : String
+  }
+
+  class DescuentoRecargo <<@Entity>> {
+    - id : UUID
+    - nombre : String
+    - valor : BigDecimal
+    - tipo : TipoDescuentoRecargo
+    - activo : boolean
+  }
+
+  class ServicioController <<@RestController>> {
+    + listar(filtros) : ApiResponse
+    + crear(request) : ApiResponse
+    + actualizar(id, request) : ApiResponse
+    + eliminar(id) : ApiResponse
+    + gestionarSubservicios(id) : ApiResponse
+  }
+
+  class ServicioService <<@Service>> {
+    - servicioRepo : ServicioRepository
+    - drRepo : DescuentoRecargoRepository
+    + listar(filtros) : Page<Servicio>
+    + crear(dto) : Servicio
+    + asignarSubservicio(padreId, hijoId) : void
+    + crearDescuentoRecargo(dto) : DescuentoRecargo
+  }
+
+  class DescuentoRecargoController <<@RestController>> {
+    + listar() : ApiResponse
+    + crear(request) : ApiResponse
+    + actualizar(id, request) : ApiResponse
+    + eliminar(id) : ApiResponse
+    + aplicar(targetType, targetId, drId) : ApiResponse
+  }
+
+  class DescuentoRecargoService <<@Service>> {
+    - repository : DescuentoRecargoRepository
+    + listar() : List<DescuentoRecargo>
+    + crear(dto) : DescuentoRecargo
+    + aplicarAServicio(servicioId, drId) : void
+    + aplicarAPersona(personaId, drId) : void
+    + aplicarAEmpresa(empresaId, drId) : void
+  }
+
+  TipoDescuentoRecargo "1" -- "*" DescuentoRecargo
+  Servicio "0..1" -- "*" Servicio : padre
+  ServicioController --> ServicioService
+  DescuentoRecargoController --> DescuentoRecargoService
+}
+
+package "cotizacion" #FFF0E6 {
+  class Cotizacion <<@Entity>> {
+    - id : UUID
+    - codigo : String
+    - estado : String
+    - fechaCreacion : LocalDateTime
+    - fechaVencimiento : LocalDate
+    - total : BigDecimal
+    - persona : Persona
+    - empresa : Empresa
+    - items : List<CotizacionItem>
+    - activo : boolean
+    - createdBy : UUID
+  }
+
+  class CotizacionItem <<@Entity>> {
+    - id : UUID
+    - cotizacion : Cotizacion
+    - servicio : Servicio
+    - cantidad : Integer
+    - precioUnitario : BigDecimal
+    - descuentoRecargo : DescuentoRecargo
+    - subtotal : BigDecimal
+  }
+
+  class CotizacionController <<@RestController>> {
+    + listar(filtros) : ApiResponse
+    + crear(request) : ApiResponse
+    + actualizar(id, request) : ApiResponse
+    + eliminar(id) : ApiResponse
+    + cambiarEstado(id, estado) : ApiResponse
+    + proximasAVencer(dias) : ApiResponse
+    + generarPdf(id) : byte[]
+    + recalcularTotal(id) : ApiResponse
+  }
+
+  class CotizacionService <<@Service>> {
+    - repository : CotizacionRepository
+    - procedureExecutor : ProcedureExecutor
+    + listar(filtros) : Page<Cotizacion>
+    + crear(dto) : Cotizacion
+    + cambiarEstado(id, estado) : void
+    + proximasAVencer(dias) : List<Cotizacion>
+    + recalcularTotal(id) : BigDecimal
+    + generarPdf(id) : byte[]
+  }
+
+  Cotizacion "1" *-- "*" CotizacionItem
+  CotizacionController --> CotizacionService
+  CotizacionService --> ProcedureExecutor
+}
+
+package "evento" #FFE6E6 {
+  class Evento <<@Entity>> {
+    - id : UUID
+    - cotizacion : Cotizacion
+    - nombre : String
+    - fechaInicio : LocalDateTime
+    - fechaFin : LocalDateTime
+    - lugar : String
+    - estado : String
+    - activo : boolean
+    - createdBy : UUID
+  }
+
+  class EventoContacto <<@Entity>> {
+    - id : UUID
+    - evento : Evento
+    - persona : Persona
+    - rolEvento : String
+    - observaciones : String
+  }
+
+  class EventoPersonal <<@Entity>> {
+    - id : UUID
+    - evento : Evento
+    - persona : Persona
+    - proveedor : Proveedor
+    - servicio : Servicio
+    - valorTurno : BigDecimal
+    - tieneArl : boolean
+    - tieneOp : boolean
+    - observaciones : String
+  }
+
+  class EventoController <<@RestController>> {
+    + listar(filtros) : ApiResponse
+    + crearDesdeCotizacion(cotizacionId) : ApiResponse
+    + asociarProveedor(id, request) : ApiResponse
+    + asociarContacto(id, request) : ApiResponse
+    + gestionarPersonal(id, request) : ApiResponse
+    + calcularTurno(id, personalId) : ApiResponse
+    + gestionarObservaciones(id) : ApiResponse
+  }
+
+  class EventoService <<@Service>> {
+    - eventoRepo : EventoRepository
+    - procedureExecutor : ProcedureExecutor
+    + listar(filtros) : Page<Evento>
+    + crearDesdeCotizacion(cotizacionId) : Evento
+    + asociarContacto(eventoId, dto) : EventoContacto
+    + gestionarPersonal(eventoId, dto) : EventoPersonal
+    + calcularTurno(eventoId, personalId) : BigDecimal
+  }
+
+  Evento "1" *-- "*" EventoContacto
+  Evento "1" *-- "*" EventoPersonal
+  EventoController --> EventoService
+  EventoService --> ProcedureExecutor
+}
+
+package "inventario" #E6FFF0 {
+  class Insumo <<@Entity>> {
+    - id : UUID
+    - nombre : String
+    - descripcion : String
+    - unidadMedida : String
+    - stockActual : BigDecimal
+    - activo : boolean
+  }
+
+  class InsumoMovimiento <<@Entity>> {
+    - id : UUID
+    - insumo : Insumo
+    - tipoMovimiento : String
+    - cantidad : BigDecimal
+    - fecha : LocalDateTime
+    - motivo : String
+    - createdBy : UUID
+  }
+
+  class InventarioController <<@RestController>> {
+    + consultarStock() : ApiResponse
+    + registrarIngreso(request) : ApiResponse
+    + registrarRetiro(request) : ApiResponse
+    + historialIngresos(insumoId) : ApiResponse
+    + historialRetiros(insumoId) : ApiResponse
+  }
+
+  class InventarioService <<@Service>> {
+    - insumoRepo : InsumoRepository
+    - movimientoRepo : InsumoMovimientoRepository
+    + consultarStock() : List<Insumo>
+    + registrarIngreso(dto) : InsumoMovimiento
+    + registrarRetiro(dto) : InsumoMovimiento
+  }
+
+  Insumo "1" *-- "*" InsumoMovimiento
+  InventarioController --> InventarioService
+}
+
+' === RELACIONES ENTRE PACKAGES (con colores) ===
+AuthService -[#6B3FA0]-> UsuarioRepository
+Persona "0..1" -[#28B463]- "*" Proveedor
+Empresa "0..1" -[#28B463]- "*" Proveedor
+Cotizacion "1" -[#C0392B]- "0..1" Evento
+
+@enduml

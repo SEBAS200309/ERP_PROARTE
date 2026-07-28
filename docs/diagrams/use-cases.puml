@@ -1,0 +1,179 @@
+@startuml ERP_ProArte_UseCases
+skinparam actorStyle awesome
+skinparam backgroundColor white
+skinparam packageStyle rectangle
+skinparam nodesep 20
+skinparam ranksep 30
+
+title Diagrama de Casos de Uso - ERP Pro Arte\n(Lineas por color segun actor)
+
+legend right
+  |= Color |= Actor |
+  | <#6B3FA0> | Administrador |
+  | <#DAA520> | Comercial |
+  | <#CC5500> | Operativo |
+  | <#CC0000> | Coordinador |
+endlegend
+
+actor "Administrador" as admin #663399
+actor "Comercial" as comercial #DAA520
+actor "Operativo" as operativo #CC5500
+actor "Coordinador" as coordinador #CC0000
+
+rectangle "Sistema ERP Pro Arte" {
+
+  rectangle "Autenticacion" #F0E6FF {
+    usecase "Iniciar sesion" as UC_LOGIN
+    usecase "Cerrar sesion" as UC_LOGOUT
+    usecase "Cambiar tema dark/light" as UC_THEME
+  }
+
+  rectangle "Gestion de Usuarios" #E8DAEF {
+    usecase "CRUD Usuarios" as UC_USERS
+    usecase "Gestionar permisos (JSON)" as UC_PERMISOS
+    usecase "Consultar permisos por rol" as UC_MATRIX
+  }
+
+  rectangle "Gestion Comercial (CRM)" #FFF5E6 {
+    usecase "CRUD Leads" as UC_LEADS
+    usecase "Ver graficos de leads" as UC_GRAF_LEADS
+    usecase "CRUD Personas" as UC_PERSONAS
+    usecase "CRUD Empresas" as UC_EMPRESAS
+    usecase "Asociar persona-empresa" as UC_ASOC_PE
+    usecase "Asignar roles" as UC_ROLES
+  }
+
+  rectangle "Catalogo de Servicios" #FDEBD0 {
+    usecase "CRUD Servicios" as UC_SERVICIOS
+    usecase "Gestionar subservicios" as UC_SUBSERV
+    usecase "CRUD Descuentos/Recargos" as UC_DR
+    usecase "Aplicar descuento/recargo" as UC_APLICAR_DR
+  }
+
+  rectangle "Cotizaciones" #FADBD8 {
+    usecase "CRUD Cotizaciones" as UC_COTIZ
+    usecase "Gestionar estados" as UC_ESTADOS_COT
+    usecase "Proximas a vencer" as UC_VENCER
+    usecase "Descargar PDF cotizacion" as UC_PDF_COT
+    usecase "Asociar cliente/contacto" as UC_ASOC_CLI
+  }
+
+  rectangle "Proveedores" #D5F5E3 {
+    usecase "CRUD Proveedores" as UC_PROVEEDORES
+    usecase "CRUD Portafolios" as UC_PORTAFOLIOS
+    usecase "CRUD Solicitudes servicio" as UC_SOLICITUDES
+  }
+
+  rectangle "Eventos" #E8DAEF {
+    usecase "Crear evento desde cotizacion" as UC_CREAR_EVT
+    usecase "Asociar proveedores" as UC_ASOC_PROV
+    usecase "Asociar servicios" as UC_ASOC_SERV
+    usecase "Asociar contactos (roles)" as UC_ASOC_CONT
+    usecase "CRUD Observaciones" as UC_OBS
+  }
+
+  rectangle "Personal de Evento" #F5EEF8 {
+    usecase "CRUD Personal evento" as UC_PERSONAL
+    usecase "Calcular valor turno" as UC_TURNO
+    usecase "Verificar ARL/OP" as UC_ARL
+  }
+
+  rectangle "Ordenes de Compra" #D5F5E3 {
+    usecase "CRUD Ordenes compra" as UC_ORDENES
+    usecase "Descarga masiva Excel" as UC_EXCEL_OC
+  }
+
+  rectangle "Comunicaciones" #FCF3CF {
+    usecase "CRUD Mensajes/plantillas" as UC_MENSAJES
+    usecase "Generar PDF presentacion" as UC_PDF_PRES
+    usecase "Descargar Excel proveedores" as UC_EXCEL_PROV
+  }
+
+  rectangle "Presentaciones" #FCF3CF {
+    usecase "CRUD Presentaciones" as UC_PRESENT
+  }
+
+  rectangle "Inventario" #D1F2EB {
+    usecase "Registrar ingresos" as UC_ING_INV
+    usecase "Registrar retiros" as UC_RET_INV
+    usecase "Consultar stock" as UC_STOCK
+  }
+
+  rectangle "Alimentacion Evento" #D1F2EB {
+    usecase "Ingresos alimentacion" as UC_ING_ALIM
+    usecase "Retiros alimentacion" as UC_RET_ALIM
+    usecase "Consultar disponibilidad" as UC_DISP_ALIM
+  }
+
+  rectangle "Consulta (Solo lectura)" #F0F0F0 {
+    usecase "Consultar eventos asignados" as UC_CONS_EVT
+    usecase "Consultar personal" as UC_CONS_PERS
+    usecase "Ver observaciones" as UC_CONS_OBS
+  }
+}
+
+' === ADMINISTRADOR (Morado #6B3FA0) ===
+admin -[#6B3FA0]-> UC_LOGIN
+admin -[#6B3FA0]-> UC_LOGOUT
+admin -[#6B3FA0]-> UC_THEME
+admin -[#6B3FA0]-> UC_USERS
+admin -[#6B3FA0]-> UC_PERMISOS
+admin -[#6B3FA0]-> UC_MATRIX
+
+' === COMERCIAL (Dorado #DAA520) ===
+comercial -[#DAA520]-> UC_LOGIN
+comercial -[#DAA520]-> UC_LOGOUT
+comercial -[#DAA520]-> UC_THEME
+comercial -[#DAA520]-> UC_LEADS
+comercial -[#DAA520]-> UC_GRAF_LEADS
+comercial -[#DAA520]-> UC_PERSONAS
+comercial -[#DAA520]-> UC_EMPRESAS
+comercial -[#DAA520]-> UC_ASOC_PE
+comercial -[#DAA520]-> UC_ROLES
+comercial -[#DAA520]-> UC_SERVICIOS
+comercial -[#DAA520]-> UC_SUBSERV
+comercial -[#DAA520]-> UC_DR
+comercial -[#DAA520]-> UC_APLICAR_DR
+comercial -[#DAA520]-> UC_COTIZ
+comercial -[#DAA520]-> UC_ESTADOS_COT
+comercial -[#DAA520]-> UC_VENCER
+comercial -[#DAA520]-> UC_PDF_COT
+comercial -[#DAA520]-> UC_ASOC_CLI
+comercial -[#DAA520]-> UC_MENSAJES
+comercial -[#DAA520]-> UC_PDF_PRES
+comercial -[#DAA520]-> UC_EXCEL_PROV
+comercial -[#DAA520]-> UC_PRESENT
+
+' === OPERATIVO (Naranja #CC5500) ===
+operativo -[#CC5500]-> UC_LOGIN
+operativo -[#CC5500]-> UC_LOGOUT
+operativo -[#CC5500]-> UC_THEME
+operativo -[#CC5500]-> UC_PROVEEDORES
+operativo -[#CC5500]-> UC_PORTAFOLIOS
+operativo -[#CC5500]-> UC_SOLICITUDES
+operativo -[#CC5500]-> UC_CREAR_EVT
+operativo -[#CC5500]-> UC_ASOC_PROV
+operativo -[#CC5500]-> UC_ASOC_SERV
+operativo -[#CC5500]-> UC_ASOC_CONT
+operativo -[#CC5500]-> UC_OBS
+operativo -[#CC5500]-> UC_PERSONAL
+operativo -[#CC5500]-> UC_TURNO
+operativo -[#CC5500]-> UC_ARL
+operativo -[#CC5500]-> UC_ORDENES
+operativo -[#CC5500]-> UC_EXCEL_OC
+operativo -[#CC5500]-> UC_ING_INV
+operativo -[#CC5500]-> UC_RET_INV
+operativo -[#CC5500]-> UC_STOCK
+operativo -[#CC5500]-> UC_ING_ALIM
+operativo -[#CC5500]-> UC_RET_ALIM
+operativo -[#CC5500]-> UC_DISP_ALIM
+
+' === COORDINADOR (Rojo #CC0000) ===
+coordinador -[#CC0000]-> UC_LOGIN
+coordinador -[#CC0000]-> UC_LOGOUT
+coordinador -[#CC0000]-> UC_THEME
+coordinador -[#CC0000]-> UC_CONS_EVT
+coordinador -[#CC0000]-> UC_CONS_PERS
+coordinador -[#CC0000]-> UC_CONS_OBS
+
+@enduml

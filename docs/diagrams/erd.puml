@@ -1,0 +1,441 @@
+@startuml ERP_ProArte_ERD
+left to right direction
+skinparam backgroundColor white
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 80
+skinparam defaultFontSize 11
+skinparam ArrowThickness 2
+skinparam entity {
+  BackgroundColor #FEFEFE
+  BorderColor #333333
+  BorderThickness 2
+}
+
+title Diagrama Entidad-Relacion - ERP Pro Arte\n(Cascada: de menor a mayor relaciones)
+
+legend bottom
+  |= Color |= Modulo |
+  | <#6B3FA0> | Seguridad (rol, permiso, usuario) |
+  | <#2E86C1> | Personas y Empresas |
+  | <#28B463> | Proveedores y Portafolio |
+  | <#E67E22> | Servicios y Descuentos |
+  | <#C0392B> | Cotizaciones |
+  | <#8E44AD> | Eventos |
+  | <#1ABC9C> | Inventario y Alimentacion |
+  | <#7F8C8D> | Trazabilidad (created_by) |
+endlegend
+
+' ======================================================
+' GRUPO 1: Tablas base (menos relaciones)
+' ======================================================
+
+entity "tipo_descuento_recargo" as tipo_dr #FDEBD0 {
+  * id : UUID <<PK>>
+  --
+  nombre : VARCHAR(50)
+}
+
+entity "mensaje" as mensaje #FCF3CF {
+  * id : UUID <<PK>>
+  --
+  nombre : VARCHAR(100)
+  contenido : TEXT
+  activo : BOOLEAN
+  * created_by : UUID <<FK>>
+  created_at : TIMESTAMP
+}
+
+entity "insumo" as insumo #D1F2EB {
+  * id : UUID <<PK>>
+  --
+  nombre : VARCHAR(150)
+  descripcion : TEXT
+  unidad_medida : VARCHAR(20)
+  stock_actual : DECIMAL(10,2)
+  activo : BOOLEAN
+}
+
+entity "rol" as rol #E8DAEF {
+  * id : UUID <<PK>>
+  --
+  nombre : VARCHAR(50)
+  descripcion : TEXT
+  activo : BOOLEAN
+}
+
+entity "permiso" as permiso #E8DAEF {
+  * id : UUID <<PK>>
+  --
+  * rol_id : UUID <<FK>>
+  configuracion : JSONB
+  activo : BOOLEAN
+}
+
+' ======================================================
+' GRUPO 2: Tablas con pocas relaciones
+' ======================================================
+
+entity "usuario" as usuario #E8DAEF {
+  * id : UUID <<PK>>
+  --
+  username : VARCHAR(50)
+  password_hash : VARCHAR(255)
+  nombre_completo : VARCHAR(150)
+  email : VARCHAR(100)
+  * rol_id : UUID <<FK>>
+  activo : BOOLEAN
+  created_at : TIMESTAMP
+}
+
+entity "descuento_recargo" as descuento_recargo #FDEBD0 {
+  * id : UUID <<PK>>
+  --
+  nombre : VARCHAR(100)
+  valor : DECIMAL(5,2)
+  * tipo_id : UUID <<FK>>
+  activo : BOOLEAN
+}
+
+entity "insumo_movimiento" as insumo_mov #D1F2EB {
+  * id : UUID <<PK>>
+  --
+  * insumo_id : UUID <<FK>>
+  tipo_movimiento : VARCHAR(10)
+  cantidad : DECIMAL(10,2)
+  fecha : TIMESTAMP
+  motivo : TEXT
+  * created_by : UUID <<FK>>
+}
+
+' ======================================================
+' GRUPO 3: Tablas con relaciones medias
+' ======================================================
+
+entity "persona" as persona #D6EAF8 {
+  * id : UUID <<PK>>
+  --
+  nombres : VARCHAR(100)
+  apellidos : VARCHAR(100)
+  tipo_documento : VARCHAR(10)
+  documento : VARCHAR(20)
+  telefono : VARCHAR(20)
+  email : VARCHAR(100)
+  direccion : TEXT
+  rol_persona : VARCHAR(20)
+  activo : BOOLEAN
+  * created_by : UUID <<FK>>
+  created_at : TIMESTAMP
+}
+
+entity "empresa" as empresa #D6EAF8 {
+  * id : UUID <<PK>>
+  --
+  razon_social : VARCHAR(200)
+  nit : VARCHAR(20)
+  direccion : TEXT
+  telefono : VARCHAR(20)
+  email : VARCHAR(100)
+  rol_empresa : VARCHAR(20)
+  activo : BOOLEAN
+  * created_by : UUID <<FK>>
+  created_at : TIMESTAMP
+}
+
+entity "servicio" as servicio #FDEBD0 {
+  * id : UUID <<PK>>
+  --
+  nombre : VARCHAR(150)
+  descripcion : TEXT
+  categoria : VARCHAR(50)
+  es_propio : BOOLEAN
+  requiere_oc : BOOLEAN
+  servicio_padre_id : UUID <<FK>>
+  activo : BOOLEAN
+  created_at : TIMESTAMP
+}
+
+entity "persona_empresa" as persona_empresa #D6EAF8 {
+  * id : UUID <<PK>>
+  --
+  * persona_id : UUID <<FK>>
+  * empresa_id : UUID <<FK>>
+  cargo : VARCHAR(100)
+}
+
+entity "lead" as lead #D6EAF8 {
+  * id : UUID <<PK>>
+  --
+  descripcion : TEXT
+  estado : VARCHAR(20)
+  * persona_id : UUID <<FK>>
+  empresa_id : UUID <<FK>>
+  activo : BOOLEAN
+  * created_by : UUID <<FK>>
+  created_at : TIMESTAMP
+}
+
+entity "presentacion" as presentacion #FCF3CF {
+  * id : UUID <<PK>>
+  --
+  nombre : VARCHAR(150)
+  descripcion : TEXT
+  servicio_id : UUID <<FK>>
+  activo : BOOLEAN
+  * created_by : UUID <<FK>>
+  created_at : TIMESTAMP
+}
+
+' ======================================================
+' GRUPO 4: Tablas pivot descuentos/recargos
+' ======================================================
+
+entity "servicio_descuento_recargo" as servicio_dr #FDEBD0 {
+  * id : UUID <<PK>>
+  --
+  * servicio_id : UUID <<FK>>
+  * descuento_recargo_id : UUID <<FK>>
+}
+
+entity "persona_descuento_recargo" as persona_dr #FDEBD0 {
+  * id : UUID <<PK>>
+  --
+  * persona_id : UUID <<FK>>
+  * descuento_recargo_id : UUID <<FK>>
+}
+
+entity "empresa_descuento_recargo" as empresa_dr #FDEBD0 {
+  * id : UUID <<PK>>
+  --
+  * empresa_id : UUID <<FK>>
+  * descuento_recargo_id : UUID <<FK>>
+}
+
+' ======================================================
+' GRUPO 5: Tablas con muchas relaciones
+' ======================================================
+
+entity "proveedor" as proveedor #D5F5E3 {
+  * id : UUID <<PK>>
+  --
+  persona_id : UUID <<FK>>
+  empresa_id : UUID <<FK>>
+  especialidad : VARCHAR(100)
+  activo : BOOLEAN
+  * created_by : UUID <<FK>>
+  created_at : TIMESTAMP
+}
+
+entity "portafolio" as portafolio #D5F5E3 {
+  * id : UUID <<PK>>
+  --
+  * proveedor_id : UUID <<FK>>
+  * servicio_id : UUID <<FK>>
+  precio_unitario : DECIMAL(12,2)
+  activo : BOOLEAN
+}
+
+entity "cotizacion" as cotizacion #FADBD8 {
+  * id : UUID <<PK>>
+  --
+  codigo : VARCHAR(20)
+  estado : VARCHAR(20)
+  fecha_creacion : TIMESTAMP
+  fecha_vencimiento : DATE
+  total : DECIMAL(14,2)
+  persona_id : UUID <<FK>>
+  empresa_id : UUID <<FK>>
+  activo : BOOLEAN
+  * created_by : UUID <<FK>>
+}
+
+entity "cotizacion_item" as cotizacion_item #FADBD8 {
+  * id : UUID <<PK>>
+  --
+  * cotizacion_id : UUID <<FK>>
+  * servicio_id : UUID <<FK>>
+  cantidad : INTEGER
+  precio_unitario : DECIMAL(12,2)
+  descuento_recargo_id : UUID <<FK>>
+  subtotal : DECIMAL(14,2)
+}
+
+entity "solicitud_servicio" as solicitud #D5F5E3 {
+  * id : UUID <<PK>>
+  --
+  * proveedor_id : UUID <<FK>>
+  * servicio_id : UUID <<FK>>
+  evento_id : UUID <<FK>>
+  estado : VARCHAR(20)
+  activo : BOOLEAN
+  * created_by : UUID <<FK>>
+  created_at : TIMESTAMP
+}
+
+entity "orden_compra" as orden #D5F5E3 {
+  * id : UUID <<PK>>
+  --
+  * solicitud_id : UUID <<FK>>
+  numero : VARCHAR(20)
+  fecha : DATE
+  estado : VARCHAR(20)
+  total : DECIMAL(14,2)
+  activo : BOOLEAN
+  * created_by : UUID <<FK>>
+  created_at : TIMESTAMP
+}
+
+' ======================================================
+' GRUPO 6: Evento y sus sub-tablas (mas relaciones)
+' ======================================================
+
+entity "evento" as evento #E8DAEF {
+  * id : UUID <<PK>>
+  --
+  * cotizacion_id : UUID <<FK>>
+  nombre : VARCHAR(200)
+  fecha_inicio : TIMESTAMP
+  fecha_fin : TIMESTAMP
+  lugar : TEXT
+  estado : VARCHAR(20)
+  activo : BOOLEAN
+  * created_by : UUID <<FK>>
+  created_at : TIMESTAMP
+}
+
+entity "evento_contacto" as evento_contacto #F5EEF8 {
+  * id : UUID <<PK>>
+  --
+  * evento_id : UUID <<FK>>
+  * persona_id : UUID <<FK>>
+  rol_evento : VARCHAR(20)
+  observaciones : TEXT
+}
+
+entity "evento_proveedor" as evento_proveedor #F5EEF8 {
+  * id : UUID <<PK>>
+  --
+  * evento_id : UUID <<FK>>
+  * proveedor_id : UUID <<FK>>
+  servicio_id : UUID <<FK>>
+}
+
+entity "evento_personal" as evento_personal #F5EEF8 {
+  * id : UUID <<PK>>
+  --
+  * evento_id : UUID <<FK>>
+  * persona_id : UUID <<FK>>
+  * proveedor_id : UUID <<FK>>
+  servicio_id : UUID <<FK>>
+  valor_turno : DECIMAL(12,2)
+  tiene_arl : BOOLEAN
+  tiene_op : BOOLEAN
+  observaciones : TEXT
+}
+
+entity "evento_observacion" as evento_obs #F5EEF8 {
+  * id : UUID <<PK>>
+  --
+  * evento_id : UUID <<FK>>
+  texto : TEXT
+  fecha : TIMESTAMP
+  * created_by : UUID <<FK>>
+}
+
+entity "evento_insumo" as evento_insumo #F5EEF8 {
+  * id : UUID <<PK>>
+  --
+  * evento_id : UUID <<FK>>
+  * insumo_id : UUID <<FK>>
+  cantidad : DECIMAL(10,2)
+}
+
+entity "evento_alimentacion" as evento_alim #F5EEF8 {
+  * id : UUID <<PK>>
+  --
+  * evento_id : UUID <<FK>>
+  descripcion : VARCHAR(200)
+  cantidad : DECIMAL(10,2)
+  tipo_movimiento : VARCHAR(10)
+  fecha : TIMESTAMP
+  * created_by : UUID <<FK>>
+}
+
+' ============================================================
+' RELACIONES (lineas horizontales, cascada izq a der)
+' ============================================================
+
+' --- SEGURIDAD (Morado #6B3FA0) ---
+rol ||--o{ permiso #6B3FA0
+rol ||--o{ usuario #6B3FA0
+
+' --- PERSONAS Y EMPRESAS (Azul #2E86C1) ---
+persona ||--o{ persona_empresa #2E86C1
+empresa ||--o{ persona_empresa #2E86C1
+persona ||--o{ lead #2E86C1
+empresa |o--o{ lead #2E86C1
+
+' --- DESCUENTOS/RECARGOS (Naranja #E67E22) ---
+tipo_dr ||--o{ descuento_recargo #E67E22
+descuento_recargo ||--o{ servicio_dr #E67E22
+servicio ||--o{ servicio_dr #E67E22
+descuento_recargo ||--o{ persona_dr #E67E22
+persona ||--o{ persona_dr #E67E22
+descuento_recargo ||--o{ empresa_dr #E67E22
+empresa ||--o{ empresa_dr #E67E22
+descuento_recargo |o--o{ cotizacion_item #E67E22
+
+' --- SERVICIOS (Naranja #E67E22) ---
+servicio |o--o{ servicio #E67E22
+servicio |o--o{ presentacion #E67E22
+
+' --- PROVEEDORES (Verde #28B463) ---
+persona |o--o{ proveedor #28B463
+empresa |o--o{ proveedor #28B463
+proveedor ||--o{ portafolio #28B463
+servicio ||--o{ portafolio #28B463
+proveedor ||--o{ solicitud #28B463
+servicio ||--o{ solicitud #28B463
+solicitud ||--o| orden #28B463
+
+' --- COTIZACIONES (Rojo #C0392B) ---
+persona |o--o{ cotizacion #C0392B
+empresa |o--o{ cotizacion #C0392B
+cotizacion ||--o{ cotizacion_item #C0392B
+servicio ||--o{ cotizacion_item #C0392B
+
+' --- EVENTOS (Morado oscuro #8E44AD) ---
+cotizacion ||--o| evento #8E44AD
+evento ||--o{ evento_contacto #8E44AD
+evento ||--o{ evento_proveedor #8E44AD
+evento ||--o{ evento_personal #8E44AD
+evento ||--o{ evento_obs #8E44AD
+evento ||--o{ evento_insumo #8E44AD
+evento ||--o{ evento_alim #8E44AD
+persona ||--o{ evento_contacto #8E44AD
+persona ||--o{ evento_personal #8E44AD
+proveedor ||--o{ evento_proveedor #8E44AD
+proveedor ||--o{ evento_personal #8E44AD
+servicio |o--o{ evento_proveedor #8E44AD
+servicio |o--o{ evento_personal #8E44AD
+
+' --- INVENTARIO (Turquesa #1ABC9C) ---
+insumo ||--o{ insumo_mov #1ABC9C
+insumo ||--o{ evento_insumo #1ABC9C
+
+' --- TRAZABILIDAD created_by (Gris #7F8C8D) ---
+usuario ||--o{ persona #7F8C8D
+usuario ||--o{ empresa #7F8C8D
+usuario ||--o{ lead #7F8C8D
+usuario ||--o{ proveedor #7F8C8D
+usuario ||--o{ solicitud #7F8C8D
+usuario ||--o{ cotizacion #7F8C8D
+usuario ||--o{ evento #7F8C8D
+usuario ||--o{ evento_obs #7F8C8D
+usuario ||--o{ evento_alim #7F8C8D
+usuario ||--o{ orden #7F8C8D
+usuario ||--o{ insumo_mov #7F8C8D
+usuario ||--o{ presentacion #7F8C8D
+usuario ||--o{ mensaje #7F8C8D
+
+@enduml

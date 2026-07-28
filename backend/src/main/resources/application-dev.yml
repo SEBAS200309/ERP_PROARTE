@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:erp_proarte}
+    username: ${DB_USERNAME:proarte_app}
+    password: ${DB_PASSWORD:proarte_dev_2024}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+
+  jpa:
+    show-sql: true
+
+logging:
+  level:
+    com.proarte.erp: DEBUG
+    org.springframework.security: DEBUG

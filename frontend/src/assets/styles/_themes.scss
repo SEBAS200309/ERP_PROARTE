@@ -1,0 +1,60 @@
+@use 'variables' as *;
+
+// === Light Theme (default) ===
+:root,
+[data-theme="light"] {
+  --color-bg-primary: #{$neutral-50};
+  --color-bg-secondary: #{$neutral-100};
+  --color-bg-surface: #FFFFFF;
+  --color-bg-elevated: #FFFFFF;
+  --color-text-primary: #{$neutral-900};
+  --color-text-secondary: #{$neutral-700};
+  --color-text-muted: #{$neutral-500};
+  --color-border: #{$neutral-200};
+  --color-border-hover: #{$neutral-300};
+  --color-primary: #{$primary-600};
+  --color-primary-hover: #{$primary-500};
+  --color-primary-active: #{$primary-700};
+  --color-primary-text: #FFFFFF;
+  --color-primary-light: #{$primary-50};
+  --color-accent: #{$accent-gold};
+  --color-accent-hover: darken($accent-gold, 10%);
+  --color-success: #{$success};
+  --color-warning: #{$warning};
+  --color-error: #{$error};
+  --color-info: #{$info};
+  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --sidebar-bg: #{$primary-800};
+  --sidebar-text: #{$neutral-100};
+  --sidebar-active: #{$primary-600};
+}
+
+// === Dark Theme ===
+[data-theme="dark"] {
+  --color-bg-primary: #{$neutral-900};
+  --color-bg-secondary: #{$neutral-800};
+  --color-bg-surface: #{$neutral-800};
+  --color-bg-elevated: #{$neutral-700};
+  --color-text-primary: #{$neutral-50};
+  --color-text-secondary: #{$neutral-300};
+  --color-text-muted: #{$neutral-400};
+  --color-border: #{$neutral-700};
+  --color-border-hover: #{$neutral-600};
+  --color-primary: #{$primary-400};
+  --color-primary-hover: #{$primary-300};
+  --color-primary-active: #{$primary-500};
+  --color-primary-text: #{$neutral-900};
+  --color-primary-light: #{$primary-900};
+  --color-accent: #{$accent-gold};
+  --color-accent-hover: lighten($accent-gold, 10%);
+  --color-success: #{$success};
+  --color-warning: #{$warning};
+  --color-error: #{$error};
+  --color-info: #{$info};
+  --color-shadow: rgba(0, 0, 0, 0.4);
+  --color-overlay: rgba(0, 0, 0, 0.7);
+  --sidebar-bg: #{$neutral-900};
+  --sidebar-text: #{$neutral-200};
+  --sidebar-active: #{$primary-400};
+}
