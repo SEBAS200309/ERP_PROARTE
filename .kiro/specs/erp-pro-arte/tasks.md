@@ -67,49 +67,49 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
 
 ### Phase 2: Database Schema and Migrations (Flyway)
 
-- [ ] 2.1 Create base schema migration (V1__base_schema.sql)
+- [x] 2.1 Create base schema migration (V1__base_schema.sql)
   - Extensions: uuid-ossp or pgcrypto (gen_random_uuid)
   - Table `rol` (id UUID PK, nombre, descripcion, activo, timestamps)
   - Table `permiso` (id UUID PK, rol_id FK, configuracion JSONB, activo, timestamps)
   - Table `usuario` (id UUID PK, username, password_hash, nombre, email, rol_id FK, activo, timestamps)
   - All tables with `activo BOOLEAN DEFAULT TRUE`, `created_at`, `updated_at`
 
-- [ ] 2.2 Create personas and empresas migration (V2__personas_empresas.sql)
+- [x] 2.2 Create personas and empresas migration (V2__personas_empresas.sql)
   - Table `persona` (id UUID PK, nombres, apellidos, documento, tipo_documento, email, telefono, rol_persona, created_by FK, activo, timestamps)
   - Table `empresa` (id UUID PK, razon_social, nit, direccion, telefono, email, rol_empresa, created_by FK, activo, timestamps)
   - Table `persona_empresa` (id UUID PK, persona_id FK, empresa_id FK, cargo, activo, timestamps)
   - Table `lead` (id UUID PK, titulo, descripcion, estado, persona_id FK, empresa_id FK, created_by FK, activo, timestamps)
 
-- [ ] 2.3 Create proveedores and servicios migration (V3__proveedores_servicios.sql)
+- [x] 2.3 Create proveedores and servicios migration (V3__proveedores_servicios.sql)
   - Table `proveedor` (id UUID PK, persona_id FK nullable, empresa_id FK nullable, tipo, activo, timestamps)
   - Table `servicio` (id UUID PK, nombre, descripcion, precio_base, categoria ENUM(propio,tercero), servicio_padre FK self-ref nullable, requiere_orden_compra BOOLEAN, activo, timestamps)
   - Table `portafolio` (id UUID PK, proveedor_id FK, servicio_id FK, precio, activo, timestamps)
   - Table `porcentaje` (id UUID PK, nombre, valor NUMERIC, tipo ENUM(descuento,recargo), activo, timestamps)
   - Table `solicitud_servicio` (id UUID PK, proveedor_id FK, servicio_id FK, evento_id FK nullable, estado, descripcion, activo, timestamps)
 
-- [ ] 2.4 Create cotizaciones migration (V4__cotizaciones.sql)
+- [x] 2.4 Create cotizaciones migration (V4__cotizaciones.sql)
   - Table `cotizacion` (id UUID PK, codigo, persona_id FK, empresa_id FK, estado, fecha_emision, fecha_vencimiento, total NUMERIC, observaciones, created_by FK, activo, timestamps)
   - Table `cotizacion_item` (id UUID PK, cotizacion_id FK, servicio_id FK, descripcion, cantidad, precio_unitario, porcentaje_id FK nullable, subtotal NUMERIC, activo, timestamps)
 
-- [ ] 2.5 Create eventos migration (V5__eventos.sql)
+- [x] 2.5 Create eventos migration (V5__eventos.sql)
   - Table `evento` (id UUID PK, codigo, cotizacion_id FK, nombre, fecha_inicio, fecha_fin, lugar, estado, activo, timestamps)
   - Table `evento_persona` (id UUID PK, evento_id FK, persona_id FK, rol_evento ENUM(promotor,contacto,coordinador,personal), activo, timestamps)
   - Table `evento_proveedor` (id UUID PK, evento_id FK, proveedor_id FK, activo, timestamps)
   - Table `evento_observacion` (id UUID PK, evento_id FK, contenido TEXT, created_by FK, activo, timestamps)
   - Table `evento_personal` (id UUID PK, evento_id FK, persona_id FK, proveedor_id FK nullable, servicio_id FK, turno, valor_turno NUMERIC, observaciones, tiene_arl BOOLEAN, tiene_op BOOLEAN, activo, timestamps)
 
-- [ ] 2.6 Create ordenes, mensajes, presentaciones migration (V6__ordenes_mensajes_presentaciones.sql)
+- [x] 2.6 Create ordenes, mensajes, presentaciones migration (V6__ordenes_mensajes_presentaciones.sql)
   - Table `orden_compra` (id UUID PK, codigo, solicitud_id FK, descripcion, monto NUMERIC, estado, activo, timestamps)
   - Table `mensaje` (id UUID PK, titulo, contenido TEXT, tipo, activo, timestamps)
   - Table `presentacion` (id UUID PK, titulo, descripcion, servicio_id FK nullable, contenido TEXT, activo, timestamps)
 
-- [ ] 2.7 Create inventario and alimentacion migration (V7__inventario_alimentacion.sql)
+- [x] 2.7 Create inventario and alimentacion migration (V7__inventario_alimentacion.sql)
   - Table `insumo` (id UUID PK, nombre, descripcion, unidad_medida, stock_actual NUMERIC DEFAULT 0, activo, timestamps)
   - Table `insumo_movimiento` (id UUID PK, insumo_id FK, tipo ENUM(ingreso,retiro), cantidad NUMERIC, motivo, fecha, created_by FK, activo, timestamps)
   - Table `evento_insumo` (id UUID PK, evento_id FK, insumo_id FK, cantidad_asignada NUMERIC, activo, timestamps)
   - Table `evento_alimentacion` (id UUID PK, evento_id FK, descripcion, tipo ENUM(ingreso,retiro), cantidad NUMERIC, fecha, created_by FK, activo, timestamps)
 
-- [ ] 2.8 Create business logic functions and triggers (V8__functions_triggers.sql)
+- [x] 2.8 Create business logic functions and triggers (V8__functions_triggers.sql)
   - Function `fn_recalcular_total_cotizacion(cotizacion_uuid)` — recalculates cotizacion total from items
   - Function `fn_crear_evento_desde_cotizacion(cotizacion_uuid)` — creates evento only if estado=APROBADA
   - Function `fn_calcular_valor_turno(evento_personal_uuid)` — calculates shift value
@@ -118,7 +118,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Trigger `trg_recalcular_subtotal_item` on `cotizacion_item` INSERT/UPDATE — calculates subtotal
   - Validation: stock check before retiro (RAISE EXCEPTION if insufficient)
 
-- [ ] 2.9 Create seed data migration (V9__seed_data.sql)
+- [x] 2.9 Create seed data migration (V9__seed_data.sql)
   - Default roles: Admin, Comercial, Operativo, Coordinador
   - Default permissions JSON for each role
   - Admin user with bcrypt-hashed password
