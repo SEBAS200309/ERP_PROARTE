@@ -142,28 +142,28 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Map PostgreSQL RAISE EXCEPTION codes to HTTP status codes
   - All error messages in Spanish
 
-- [ ] 3.3 Implement common response wrapper and base DTOs
+- [x] 3.3 Implement common response wrapper and base DTOs
   - `ApiResponse<T>` record — wraps all responses with success, data, message
   - `ErrorResponse` record — code, message fields
   - `PageResponse<T>` record — content, totalElements, totalPages, page, size
   - `ProcedureRequest` record — generic params Map<String, Object>
   - Static factory methods for success/error responses
 
-- [ ] 3.4 Implement ProcedureExecutor service
+- [x] 3.4 Implement ProcedureExecutor service
   - `ProcedureExecutorService` — executes PostgreSQL functions/procedures via JDBC
   - Accepts function name + JSON params, returns JSON result
   - Generic endpoint pattern: POST /api/v1/{modulo}/execute/{function_name}
   - Input validation and SQL injection prevention
   - Logging of procedure calls
 
-- [ ] 3.5 Implement base repository and soft-delete support
+- [x] 3.5 Implement base repository and soft-delete support
   - Custom `SoftDeleteRepository<T>` extending JpaRepository
   - Override `findAll`, `findById` to filter by `activo = true`
   - `@SQLRestriction("activo = true")` on all entities
   - `softDelete(UUID id)` method sets activo = false
   - `BaseEntity` with id (UUID), activo, createdAt, updatedAt, createdBy fields
 
-- [ ] 3.6 Implement audit and created_by tracking
+- [x] 3.6 Implement audit and created_by tracking
   - `AuditingConfig` with `@EnableJpaAuditing`
   - `AuditorAwareImpl` — extracts current user UUID from SecurityContext
   - `@CreatedBy`, `@CreatedDate`, `@LastModifiedDate` annotations on BaseEntity

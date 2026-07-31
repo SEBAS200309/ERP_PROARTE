@@ -2,10 +2,12 @@ services:
   postgres:
     image: postgres:15-alpine
     container_name: proarte-postgres
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: erp_proarte
-      POSTGRES_USER: proarte_app
-      POSTGRES_PASSWORD: proarte_dev_2024
+      POSTGRES_DB: ${POSTGRES_DB:-erp_proarte}
+      POSTGRES_USER: ${POSTGRES_USER:-proarte_app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:

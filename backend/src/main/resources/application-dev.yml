@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:erp_proarte}
     username: ${DB_USERNAME:proarte_app}
-    password: ${DB_PASSWORD:proarte_dev_2024}
+    password: ${DB_PASSWORD}
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
@@ -10,6 +10,10 @@ spring:
 
   jpa:
     show-sql: true
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:devOnlySecretKeyThatMustBeAtLeast256BitsLongForHmacSha}
 
 logging:
   level:

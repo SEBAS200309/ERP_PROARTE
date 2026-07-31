@@ -29,12 +29,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findByUsernameAndActivoTrue(username)
+        Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         "Usuario no encontrado o inactivo: " + username));
 
         Rol rol = usuario.getRol();
-        List<Permiso> permisos = permisoRepository.findByRolIdAndActivoTrue(usuario.getRolId());
+        List<Permiso> permisos = permisoRepository.findByRolId(usuario.getRolId());
 
         Map<String, Map<String, Boolean>> permisosMap = new HashMap<>();
         for (Permiso permiso : permisos) {

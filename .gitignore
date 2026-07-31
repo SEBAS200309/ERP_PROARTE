@@ -23,6 +23,8 @@ Thumbs.db
 # === Environment ===
 .env
 *.env.local
+.env.*
+!.env.example
 
 # === Python venv (temporal) ===
 .venv/
