@@ -171,7 +171,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
 
 ### Phase 4: Backend Feature Modules
 
-- [ ] 4.1 Implement Usuarios module (Requirement 1)
+- [x] 4.1 Implement Usuarios module (Requirement 1)
   - Entity: `Usuario`, `Rol`, `Permiso`
   - DTOs: `CreateUsuarioRequest`, `UpdateUsuarioRequest`, `UsuarioResponse`, `RolResponse`, `PermisoConfigRequest`
   - Repository: `UsuarioRepository`, `RolRepository`, `PermisoRepository`
