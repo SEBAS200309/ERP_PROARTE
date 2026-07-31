@@ -126,7 +126,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
 
 ### Phase 3: Backend Common Layer
 
-- [ ] 3.1 Implement security configuration (JWT + Spring Security)
+- [x] 3.1 Implement security configuration (JWT + Spring Security)
   - `SecurityConfig` with stateless session, CORS, CSRF disabled
   - `JwtTokenProvider` — generate, validate, extract claims (8h access, 7d refresh)
   - `JwtAuthenticationFilter` — extract token from Authorization header
@@ -135,7 +135,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `UserDetailsServiceImpl` — load user from DB with permissions
   - `PermissionEvaluator` — validate action against user's JSONB permissions per request
 
-- [ ] 3.2 Implement global error handling
+- [x] 3.2 Implement global error handling
   - `GlobalExceptionHandler` with @RestControllerAdvice
   - Custom exceptions: `ResourceNotFoundException`, `BusinessException`, `UnauthorizedException`, `InsufficientStockException`
   - Standard JSON response format: `{ success, data/error, message }`
