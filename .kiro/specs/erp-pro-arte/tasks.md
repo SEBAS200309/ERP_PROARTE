@@ -261,7 +261,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Service: `EventoService` — CRUD + execute fn_crear_evento_desde_cotizacion + associate providers/personas/observations
   - Controller: `EventoController` — /api/v1/eventos + /proveedores + /servicios + /personas + /observaciones
 
-- [ ] 4.9 Implement Personal de Evento module (Requirement 10)
+- [x] 4.9 Implement Personal de Evento module (Requirement 10)
   - Entity: `EventoPersonal`
   - DTOs: `CreateEventoPersonalRequest`, `EventoPersonalResponse`
   - Repository: `EventoPersonalRepository`
