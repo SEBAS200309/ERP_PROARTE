@@ -326,7 +326,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `ErrorInterceptor` — catch HTTP errors, map to Spanish messages, handle 401 redirect
   - `PermissionService` — load and cache current user's permission JSON
 
-- [ ] 5.2 Implement error message service and Spanish message dictionaries
+- [x] 5.2 Implement error message service and Spanish message dictionaries
   - `ErrorMessageService` — centralized error message resolution
   - `errorMessages` dictionary for form validations (required, email, minlength, etc.)
   - `httpErrorMessages` dictionary for HTTP status codes

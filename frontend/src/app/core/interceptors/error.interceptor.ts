@@ -4,22 +4,12 @@ import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 
 import { AuthService } from '../services/auth.service';
-
-const HTTP_ERROR_MESSAGES: Record<number, string> = {
-  400: 'La solicitud contiene datos inválidos',
-  401: 'No tiene autorización. Inicie sesión nuevamente',
-  403: 'No tiene permisos para realizar esta acción',
-  404: 'El recurso solicitado no fue encontrado',
-  409: 'Existe un conflicto con los datos actuales',
-  422: 'Los datos enviados no pudieron ser procesados',
-  500: 'Ocurrió un error en el servidor. Intente más tarde',
-  503: 'El servicio no está disponible temporalmente',
-  0: 'No se pudo conectar con el servidor. Verifique su conexión a internet',
-};
+import { ErrorMessageService } from '../services/error-message.service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
+  const errorMessageService = inject(ErrorMessageService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -30,7 +20,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       const serverMessage = error.error?.error?.message;
       const message =
-        serverMessage || HTTP_ERROR_MESSAGES[error.status] || HTTP_ERROR_MESSAGES[0];
+        serverMessage || errorMessageService.getHttpErrorMessage(error.status);
 
       const mappedError = {
         status: error.status,
