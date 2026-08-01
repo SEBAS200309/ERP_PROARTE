@@ -397,13 +397,13 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
 
 ### Phase 6: Frontend Feature Modules
 
-- [ ] 6.1 Implement Dashboard feature
+- [x] 6.1 Implement Dashboard feature
   - `DashboardComponent` — standalone, lazy loaded
   - Summary cards (total leads, cotizaciones pendientes, eventos proximos)
   - Quick access links to main modules
   - Responsive grid layout, dark/light theme
 
-- [ ] 6.2 Implement Usuarios feature (Requirement 1)
+- [x] 6.2 Implement Usuarios feature (Requirement 1)
   - `UsuarioListComponent` — DataTable with users, roles, status
   - `UsuarioFormComponent` — create/edit form with role selection
   - `PermisoEditorComponent` — JSON permission editor per role (tablas + contexto config)

@@ -1,0 +1,108 @@
+<div class="permiso-editor-container">
+  <header class="editor-header">
+    <h1>Configuración de Permisos</h1>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando configuración de permisos...</p>
+    </div>
+  } @else {
+    <section class="permisos-section">
+      <h2>Permisos por Tabla</h2>
+      <p class="section-description">
+        Seleccione los permisos que desea asignar a cada tabla para este rol.
+      </p>
+
+      @if (tablas().length === 0) {
+        <p class="empty-message">No hay tablas configuradas para este rol.</p>
+      } @else {
+        <div class="permisos-table-wrapper">
+          <table class="permisos-table" aria-label="Matriz de permisos">
+            <thead>
+              <tr>
+                <th scope="col">Tabla</th>
+                @for (accion of acciones; track accion) {
+                  <th scope="col" class="action-header">{{ accionLabels[accion] }}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (tabla of tablas(); track tabla) {
+                <tr>
+                  <td class="tabla-name">{{ tabla }}</td>
+                  @for (accion of acciones; track accion) {
+                    <td class="checkbox-cell">
+                      <input
+                        type="checkbox"
+                        [checked]="getPermiso(tabla, accion)"
+                        (change)="togglePermiso(tabla, accion)"
+                        [attr.aria-label]="accionLabels[accion] + ' - ' + tabla"
+                      />
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+
+    <section class="contexto-section">
+      <h2>Contexto</h2>
+      <p class="section-description">
+        Defina qué tablas relacionadas son visibles en el contexto de cada tabla.
+      </p>
+
+      @for (entry of contexto(); track $index) {
+        <div class="contexto-entry">
+          <input
+            type="text"
+            [value]="entry.tabla"
+            (input)="updateContextoTabla($index, $any($event.target).value)"
+            placeholder="Nombre de tabla"
+            class="contexto-tabla-input"
+          />
+          <input
+            type="text"
+            [value]="entry.values"
+            (input)="updateContextoValues($index, $any($event.target).value)"
+            placeholder="Tablas visibles (separadas por coma)"
+            class="contexto-values-input"
+          />
+          <button
+            type="button"
+            class="btn-remove"
+            (click)="removeContextoEntry($index)"
+            aria-label="Eliminar entrada de contexto"
+          >
+            ✕
+          </button>
+        </div>
+      }
+
+      <button type="button" class="btn-add-contexto" (click)="addContextoEntry()">
+        + Agregar entrada de contexto
+      </button>
+    </section>
+
+    <div class="editor-actions">
+      <app-animated-button
+        variant="secondary"
+        type="button"
+        ariaLabel="Cancelar"
+        (buttonClick)="cancel()">
+        Cancelar
+      </app-animated-button>
+      <app-animated-button
+        variant="primary"
+        type="button"
+        [loading]="saving()"
+        ariaLabel="Guardar permisos"
+        (buttonClick)="save()">
+        {{ saving() ? 'Guardando...' : 'Guardar Permisos' }}
+      </app-animated-button>
+    </div>
+  }
+</div>

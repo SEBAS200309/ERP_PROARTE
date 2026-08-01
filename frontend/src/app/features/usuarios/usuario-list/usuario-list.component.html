@@ -1,0 +1,38 @@
+<div class="usuario-list-container">
+  <header class="list-header">
+    <h1>Gestión de Usuarios</h1>
+    @if (canCreate) {
+      <app-animated-button
+        variant="primary"
+        ariaLabel="Crear nuevo usuario"
+        (buttonClick)="createUsuario()">
+        + Nuevo Usuario
+      </app-animated-button>
+    }
+  </header>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="usuarios()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron usuarios"
+    (viewAction)="onView($event)"
+    (editAction)="onEdit($event)"
+    (deleteAction)="onDelete($event)"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Usuario"
+    message="¿Está seguro que desea eliminar este usuario? Esta acción no se puede deshacer."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>

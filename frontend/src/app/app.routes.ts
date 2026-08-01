@@ -26,18 +26,16 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./shared/components/placeholder/placeholder.component').then(
-            (m) => m.PlaceholderComponent
+          import('./features/dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent
           ),
       },
       {
         path: 'usuarios',
         canActivate: [permissionGuard],
         data: { tabla: 'usuario', accion: 'ver_listado' },
-        loadComponent: () =>
-          import('./shared/components/placeholder/placeholder.component').then(
-            (m) => m.PlaceholderComponent
-          ),
+        loadChildren: () =>
+          import('./features/usuarios/usuarios.routes').then((m) => m.default),
       },
       {
         path: 'leads',
