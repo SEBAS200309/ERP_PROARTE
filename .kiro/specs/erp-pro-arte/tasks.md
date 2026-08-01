@@ -229,7 +229,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Controller: `EmpresaController` — /api/v1/empresas + /asignar-rol
   - Search by razon_social, nit
 
-- [ ] 4.5 Implement Proveedores module (Requirement 3)
+- [x] 4.5 Implement Proveedores module (Requirement 3)
   - Entity: `Proveedor`, `Portafolio`, `SolicitudServicio` — `solicitud_servicio.estado_id` UUID FK → estado(contexto='solicitud')
   - DTOs: `CreateProveedorRequest`, `ProveedorResponse`, `PortafolioResponse`, `CreateSolicitudRequest`, `SolicitudResponse`
   - Repository: `ProveedorRepository`, `PortafolioRepository`, `SolicitudServicioRepository`

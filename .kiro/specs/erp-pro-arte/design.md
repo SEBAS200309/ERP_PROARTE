@@ -52,6 +52,7 @@ Diseno tecnico del ERP Pro Arte. Sistema web de tres capas: Angular (frontend), 
 | Presentaciones | /api/v1/presentaciones | CRUD + /pdf |
 | Inventario | /api/v1/inventario | consultar + /ingresos + /retiros |
 | Alimentacion | /api/v1/eventos/{id}/alimentacion | consultar + /ingresos + /retiros |
+| Catalogos | /api/v1/catalogos/{tipo} | GET list + POST create + PUT update + DELETE (tipos: tipo-documento, rol-entidad, estado, categoria-servicio, unidad-medida, rol-evento) |
 
 ### Formato JSON Request/Response
 
@@ -208,31 +209,44 @@ src/app/
 
 ### Tablas Principales (Resumen)
 
+#### Tablas Lookup (Normalizacion V10)
+
+| Tabla | Descripcion | Usada por |
+|-------|-------------|-----------|
+| tipo_documento | Tipos de documento (CC, CE, NIT, PA, TI, RC) | persona.tipo_documento_id |
+| rol_entidad | Roles de persona/empresa (contacto, cliente, proveedor, aliado, artista) | persona.rol_entidad_id, empresa.rol_entidad_id |
+| estado | Estados con contexto (lead, cotizacion, evento, solicitud, orden) | lead.estado_id, cotizacion.estado_id, evento.estado_id, solicitud_servicio.estado_id, orden_compra.estado_id |
+| categoria_servicio | Categorias de servicio (Propio, Tercero) | servicio.categoria_id |
+| unidad_medida | Unidades de medida (Unidad, Kilogramo, Litro, Metro, Caja) | insumo.unidad_medida_id |
+| rol_evento | Roles en evento (organizador, responsable, asistente, promotor, coordinador, personal) | evento_contacto.rol_evento_id |
+
+#### Tablas de Negocio
+
 | Tabla | Descripcion | Relaciones clave |
 |-------|-------------|-----------------|
 | usuario | Usuarios del sistema | rol_id -> rol |
-| rol | Roles (Admin, Comercial, Operativo, Coordinador) | - |
-| permiso | Permisos por modulo y accion | rol_id -> rol |
-| persona | Contactos, clientes, trabajadores | created_by -> usuario |
-| empresa | Empresas/organizaciones | created_by -> usuario |
+| rol | Roles del sistema (Admin, Comercial, Operativo, Coordinador) | - |
+| permiso | Permisos por modulo y accion (JSONB) | rol_id -> rol |
+| persona | Contactos, clientes, trabajadores | tipo_documento_id -> tipo_documento, rol_entidad_id -> rol_entidad, created_by -> usuario |
+| empresa | Empresas/organizaciones | rol_entidad_id -> rol_entidad, created_by -> usuario |
 | persona_empresa | Relacion muchos-a-muchos | persona_id, empresa_id |
-| lead | Oportunidades comerciales | persona_id, empresa_id |
+| lead | Oportunidades comerciales | estado_id -> estado(contexto='lead'), persona_id, empresa_id |
 | proveedor | Proveedores de servicios | persona_id o empresa_id |
 | portafolio | Servicios que ofrece un proveedor | proveedor_id, servicio_id |
-| servicio | Catalogo de servicios | servicio_padre (self-ref) |
-| porcentaje | Adiciones/descuentos configurables | - |
-| solicitud_servicio | Solicitudes a proveedores | proveedor_id, servicio_id, evento_id |
-| cotizacion | Propuestas comerciales | persona_id, empresa_id |
-| cotizacion_item | Items de una cotizacion | cotizacion_id, servicio_id |
-| evento | Eventos derivados de cotizaciones | cotizacion_id |
-| evento_persona | Personas asociadas a evento con rol | evento_id, persona_id |
-| evento_proveedor | Proveedores de un evento | evento_id, proveedor_id |
-| evento_personal | Personal contratado para evento | evento_id, persona_id, proveedor_id |
+| servicio | Catalogo de servicios | categoria_id -> categoria_servicio, servicio_padre (self-ref) |
+| descuento_recargo | Descuentos/recargos aplicables | tipo_id -> tipo_descuento_recargo |
+| solicitud_servicio | Solicitudes a proveedores | estado_id -> estado(contexto='solicitud'), proveedor_id, servicio_id, evento_id |
+| cotizacion | Propuestas comerciales | estado_id -> estado(contexto='cotizacion'), persona_id, empresa_id |
+| cotizacion_item | Items de una cotizacion | cotizacion_id, servicio_id, descuento_recargo_id |
+| evento | Eventos derivados de cotizaciones | estado_id -> estado(contexto='evento'), cotizacion_id |
+| evento_contacto | Personas asociadas a evento con rol | evento_id, persona_id, rol_evento_id -> rol_evento |
+| evento_proveedor | Proveedores de un evento | evento_id, proveedor_id, servicio_id |
+| evento_personal | Personal contratado para evento | evento_id, persona_id, proveedor_id, servicio_id |
 | evento_observacion | Observaciones de un evento | evento_id |
 | evento_insumo | Insumos asignados a evento | evento_id, insumo_id |
 | evento_alimentacion | Movimientos de alimentacion | evento_id |
-| orden_compra | Ordenes de compra | solicitud_id |
-| insumo | Catalogo de insumos | - |
+| orden_compra | Ordenes de compra | estado_id -> estado(contexto='orden'), solicitud_id |
+| insumo | Catalogo de insumos | unidad_medida_id -> unidad_medida |
 | insumo_movimiento | Ingresos/retiros de inventario | insumo_id |
 | presentacion | Presentaciones comerciales | servicio_id |
 | mensaje | Plantillas de mensajes | - |
@@ -266,6 +280,10 @@ Todo registro creado tiene campo created_by con el UUID del usuario que lo creo.
 ### Property 7: Seguridad de credenciales
 Los passwords se almacenan como hash bcrypt, nunca en texto plano. El JWT token expira en 8 horas, el refresh token en 7 dias.
 **Validates: Requirements 1.1**
+
+### Property 8: Normalizacion de campos variables
+Ningun campo que represente un valor de catalogo (tipo de documento, rol, estado, categoria, unidad de medida, rol de evento) se almacena como VARCHAR/texto libre. Todos se almacenan como UUID FK referenciando tablas de catalogo normalizadas. Los valores validos se gestionan exclusivamente desde las tablas lookup.
+**Validates: Requirements 2.15, 2.16, 4.1, 5.1, 5.10, 13.5, 13.6, 13.7, 13.8**
 
 ## Error Handling
 
