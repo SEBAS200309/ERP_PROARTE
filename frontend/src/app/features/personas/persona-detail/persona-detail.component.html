@@ -1,0 +1,53 @@
+<div class="persona-detail-container">
+  <header class="detail-header">
+    <app-animated-button
+      variant="secondary"
+      type="button"
+      ariaLabel="Volver a la lista"
+      (buttonClick)="goBack()">
+      ← Volver
+    </app-animated-button>
+    <h1>Detalle de Persona</h1>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando datos de la persona...</p>
+    </div>
+  } @else if (persona()) {
+    <div class="detail-content">
+      <div class="detail-field">
+        <span class="detail-label">Nombres</span>
+        <span class="detail-value">{{ persona()!.nombres }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="detail-label">Apellidos</span>
+        <span class="detail-value">{{ persona()!.apellidos }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="detail-label">Tipo de Documento</span>
+        <span class="detail-value">{{ getTipoDocumentoNombre() }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="detail-label">Documento</span>
+        <span class="detail-value">{{ persona()!.documento || '—' }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="detail-label">Teléfono</span>
+        <span class="detail-value">{{ persona()!.telefono || '—' }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="detail-label">Email</span>
+        <span class="detail-value">{{ persona()!.email || '—' }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="detail-label">Dirección</span>
+        <span class="detail-value">{{ persona()!.direccion || '—' }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="detail-label">Rol de Entidad</span>
+        <span class="detail-value">{{ getRolEntidadNombre() }}</span>
+      </div>
+    </div>
+  }
+</div>

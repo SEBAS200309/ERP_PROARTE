@@ -1,0 +1,47 @@
+<div class="persona-list-container">
+  <header class="list-header">
+    <h1>Gestión de Personas</h1>
+    @if (canCreate) {
+      <app-animated-button
+        variant="primary"
+        ariaLabel="Crear nueva persona"
+        (buttonClick)="createPersona()">
+        + Nueva Persona
+      </app-animated-button>
+    }
+  </header>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="personas()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron personas"
+    (viewAction)="onView($event)"
+    (editAction)="onEdit($event)"
+    (deleteAction)="onDelete($event)"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <app-detail-view
+    [visible]="showDetail()"
+    title="Detalle de Persona"
+    [record]="selectedPersona()"
+    [fields]="detailFields"
+    [contextSections]="detailContextSections()"
+    (closed)="closeDetail()"
+  />
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Persona"
+    message="¿Está seguro que desea eliminar esta persona? Esta acción no se puede deshacer."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>

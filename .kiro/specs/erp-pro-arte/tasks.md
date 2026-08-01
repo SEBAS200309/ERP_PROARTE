@@ -417,7 +417,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `LeadService` extending BaseCrudService + estadisticas endpoint
   - Routes: /leads, /leads/nuevo, /leads/:id/editar
 
-- [ ] 6.4 Implement Personas feature (Requirement 2 - Personas)
+- [x] 6.4 Implement Personas feature (Requirement 2 - Personas)
   - `PersonaListComponent` — DataTable with search by nombre, documento
   - `PersonaFormComponent` — create/edit form, assign role (contacto/cliente/proveedor)
   - `PersonaDetailComponent` — detail view with context (empresas, leads, cotizaciones)

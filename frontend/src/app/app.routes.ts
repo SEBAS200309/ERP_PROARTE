@@ -48,10 +48,8 @@ export const routes: Routes = [
         path: 'personas',
         canActivate: [permissionGuard],
         data: { tabla: 'persona', accion: 'ver_listado' },
-        loadComponent: () =>
-          import('./shared/components/placeholder/placeholder.component').then(
-            (m) => m.PlaceholderComponent
-          ),
+        loadChildren: () =>
+          import('./features/personas/personas.routes').then((m) => m.default),
       },
       {
         path: 'empresas',
