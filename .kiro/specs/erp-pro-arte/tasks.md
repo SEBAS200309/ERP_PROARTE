@@ -269,7 +269,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Controller: `EventoPersonalController` — /api/v1/eventos/{id}/personal + /execute/calcular_turno
   - Include ARL/OP validation warnings in response
 
-- [ ] 4.10 Implement Ordenes de Compra module (Requirement 7)
+- [x] 4.10 Implement Ordenes de Compra module (Requirement 7)
   - Entity: `OrdenCompra` — campo `estadoId` UUID FK → estado(contexto='orden')
   - DTOs: `CreateOrdenCompraRequest`, `OrdenCompraResponse`
   - Repository: `OrdenCompraRepository`
