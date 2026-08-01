@@ -245,7 +245,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Controller: `ServicioController` — /api/v1/servicios + /subservicios + /categorizar
   - Controller: `DescuentoRecargoController` — /api/v1/descuentos-recargos + /aplicar
 
-- [ ] 4.7 Implement Cotizaciones module (Requirement 5)
+- [x] 4.7 Implement Cotizaciones module (Requirement 5)
   - Entity: `Cotizacion` — campo `estadoId` UUID FK → estado(contexto='cotizacion'), `CotizacionItem`
   - DTOs: `CreateCotizacionRequest`, `CotizacionResponse`, `CotizacionItemRequest`, `CambiarEstadoRequest` (estadoId UUID)
   - Repository: `CotizacionRepository`, `CotizacionItemRepository`
