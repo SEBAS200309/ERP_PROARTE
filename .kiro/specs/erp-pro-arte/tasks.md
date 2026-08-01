@@ -236,7 +236,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Service: `ProveedorService` — CRUD proveedores + portafolio + solicitudes
   - Controller: `ProveedorController` — /api/v1/proveedores + /portafolio + /solicitudes
 
-- [ ] 4.6 Implement Servicios module (Requirement 4)
+- [x] 4.6 Implement Servicios module (Requirement 4)
   - Entity: `Servicio` — campo `categoriaId` UUID FK → categoria_servicio (reemplaza categoria ENUM), `Porcentaje`
   - DTOs: `CreateServicioRequest` (categoriaId UUID), `ServicioResponse`, `CreatePorcentajeRequest`, `PorcentajeResponse`
   - Repository: `ServicioRepository` (support self-referencing hierarchy), `PorcentajeRepository`
