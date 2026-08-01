@@ -284,7 +284,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Service: `MensajeService` — CRUD message templates
   - Controller: `MensajeController` — /api/v1/mensajes
 
-- [ ] 4.12 Implement Presentaciones module (Requirement 9)
+- [x] 4.12 Implement Presentaciones module (Requirement 9)
   - Entity: `Presentacion`
   - DTOs: `CreatePresentacionRequest`, `UpdatePresentacionRequest`, `PresentacionResponse`
   - Repository: `PresentacionRepository`
