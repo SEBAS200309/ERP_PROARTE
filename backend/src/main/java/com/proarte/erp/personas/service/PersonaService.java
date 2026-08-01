@@ -22,8 +22,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PersonaService {
 
-    private static final String DEFAULT_ROL = "contacto";
-
     private final PersonaRepository personaRepository;
     private final PersonaEmpresaRepository personaEmpresaRepository;
 
@@ -55,13 +53,12 @@ public class PersonaService {
         Persona persona = Persona.builder()
                 .nombres(request.nombres())
                 .apellidos(request.apellidos())
-                .tipoDocumento(request.tipoDocumento())
+                .tipoDocumentoId(request.tipoDocumentoId())
                 .documento(request.documento())
                 .telefono(request.telefono())
                 .email(request.email())
                 .direccion(request.direccion())
-                .rolPersona(request.rolPersona() != null && !request.rolPersona().isBlank()
-                        ? request.rolPersona() : DEFAULT_ROL)
+                .rolEntidadId(request.rolEntidadId())
                 .build();
         persona.setActivo(true);
 
@@ -81,8 +78,8 @@ public class PersonaService {
         if (request.apellidos() != null) {
             persona.setApellidos(request.apellidos());
         }
-        if (request.tipoDocumento() != null) {
-            persona.setTipoDocumento(request.tipoDocumento());
+        if (request.tipoDocumentoId() != null) {
+            persona.setTipoDocumentoId(request.tipoDocumentoId());
         }
         if (request.documento() != null) {
             persona.setDocumento(request.documento());
@@ -96,8 +93,8 @@ public class PersonaService {
         if (request.direccion() != null) {
             persona.setDireccion(request.direccion());
         }
-        if (request.rolPersona() != null) {
-            persona.setRolPersona(request.rolPersona());
+        if (request.rolEntidadId() != null) {
+            persona.setRolEntidadId(request.rolEntidadId());
         }
 
         Persona updated = personaRepository.save(persona);
@@ -132,13 +129,13 @@ public class PersonaService {
     }
 
     @Transactional
-    public Persona asignarRol(UUID personaId, String rol) {
+    public Persona asignarRol(UUID personaId, UUID rolEntidadId) {
         Persona persona = personaRepository.findById(personaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Persona", "id", personaId));
 
-        persona.setRolPersona(rol);
+        persona.setRolEntidadId(rolEntidadId);
         Persona updated = personaRepository.save(persona);
-        log.info("Rol asignado a persona: id={}, rol={}", personaId, rol);
+        log.info("Rol asignado a persona: id={}, rolEntidadId={}", personaId, rolEntidadId);
         return updated;
     }
 }

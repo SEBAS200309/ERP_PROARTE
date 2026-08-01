@@ -19,8 +19,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EmpresaService {
 
-    private static final String DEFAULT_ROL = "cliente";
-
     private final EmpresaRepository empresaRepository;
 
     @Transactional(readOnly = true)
@@ -51,8 +49,7 @@ public class EmpresaService {
                 .direccion(request.direccion())
                 .telefono(request.telefono())
                 .email(request.email())
-                .rolEmpresa(request.rolEmpresa() != null && !request.rolEmpresa().isBlank()
-                        ? request.rolEmpresa() : DEFAULT_ROL)
+                .rolEntidadId(request.rolEntidadId())
                 .build();
         empresa.setActivo(true);
 
@@ -81,8 +78,8 @@ public class EmpresaService {
         if (request.email() != null) {
             empresa.setEmail(request.email());
         }
-        if (request.rolEmpresa() != null) {
-            empresa.setRolEmpresa(request.rolEmpresa());
+        if (request.rolEntidadId() != null) {
+            empresa.setRolEntidadId(request.rolEntidadId());
         }
 
         Empresa updated = empresaRepository.save(empresa);
@@ -100,13 +97,13 @@ public class EmpresaService {
     }
 
     @Transactional
-    public Empresa asignarRol(UUID empresaId, String rol) {
+    public Empresa asignarRol(UUID empresaId, UUID rolEntidadId) {
         Empresa empresa = empresaRepository.findById(empresaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa", "id", empresaId));
 
-        empresa.setRolEmpresa(rol);
+        empresa.setRolEntidadId(rolEntidadId);
         Empresa updated = empresaRepository.save(empresa);
-        log.info("Rol asignado a empresa: id={}, rol={}", empresaId, rol);
+        log.info("Rol asignado a empresa: id={}, rolEntidadId={}", empresaId, rolEntidadId);
         return updated;
     }
 }

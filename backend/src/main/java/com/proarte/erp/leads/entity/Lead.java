@@ -22,8 +22,8 @@ public class Lead extends BaseEntity {
     @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
 
-    @Column(name = "estado", length = 20, nullable = false)
-    private String estado;
+    @Column(name = "estado_id", nullable = false)
+    private UUID estadoId;
 
     @Column(name = "persona_id")
     private UUID personaId;

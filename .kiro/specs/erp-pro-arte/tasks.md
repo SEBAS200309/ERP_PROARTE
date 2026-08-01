@@ -16,16 +16,16 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
     ["2.2", "2.3", "5.1"],
     ["2.4", "2.5", "2.6", "2.7", "5.2"],
     ["2.8", "2.9", "3.1", "5.3", "5.4", "5.5", "5.6"],
-    ["3.2", "3.3", "5.7", "5.8"],
+    ["2.10", "3.2", "3.3", "5.7", "5.8"],
     ["3.4", "3.5", "3.6", "5.9", "5.10"],
     ["4.1", "6.1"],
-    ["4.2", "4.3", "4.4", "6.2"],
+    ["4.2", "4.3", "4.4", "4.15", "6.2"],
     ["4.5", "4.6", "6.3", "6.4", "6.5"],
     ["4.7", "6.6", "6.7"],
     ["4.8", "6.8"],
     ["4.9", "4.10", "4.11", "4.12", "6.9"],
     ["4.13", "4.14", "6.10", "6.11", "6.12", "6.13"],
-    ["6.14", "6.15"],
+    ["6.14", "6.15", "6.16"],
     ["7.1", "7.4"],
     ["7.2", "7.5"],
     ["7.3", "7.6"]
@@ -75,39 +75,45 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - All tables with `activo BOOLEAN DEFAULT TRUE`, `created_at`, `updated_at`
 
 - [x] 2.2 Create personas and empresas migration (V2__personas_empresas.sql)
-  - Table `persona` (id UUID PK, nombres, apellidos, documento, tipo_documento, email, telefono, rol_persona, created_by FK, activo, timestamps)
-  - Table `empresa` (id UUID PK, razon_social, nit, direccion, telefono, email, rol_empresa, created_by FK, activo, timestamps)
+  - Table `persona` (id UUID PK, nombres, apellidos, documento, tipo_documento_id UUID FK → tipo_documento, email, telefono, rol_entidad_id UUID FK → rol_entidad, created_by FK, activo, timestamps)
+  - Table `empresa` (id UUID PK, razon_social, nit, direccion, telefono, email, rol_entidad_id UUID FK → rol_entidad, created_by FK, activo, timestamps)
   - Table `persona_empresa` (id UUID PK, persona_id FK, empresa_id FK, cargo, activo, timestamps)
-  - Table `lead` (id UUID PK, titulo, descripcion, estado, persona_id FK, empresa_id FK, created_by FK, activo, timestamps)
+  - Table `lead` (id UUID PK, titulo, descripcion, estado_id UUID FK → estado(contexto='lead'), persona_id FK, empresa_id FK, created_by FK, activo, timestamps)
+  - Nota: Campos tipo_documento, rol_persona, rol_empresa y estado normalizados a UUID FK en migracion V10
 
 - [x] 2.3 Create proveedores and servicios migration (V3__proveedores_servicios.sql)
   - Table `proveedor` (id UUID PK, persona_id FK nullable, empresa_id FK nullable, tipo, activo, timestamps)
-  - Table `servicio` (id UUID PK, nombre, descripcion, precio_base, categoria ENUM(propio,tercero), servicio_padre FK self-ref nullable, requiere_orden_compra BOOLEAN, activo, timestamps)
+  - Table `servicio` (id UUID PK, nombre, descripcion, precio_base, categoria_id UUID FK → categoria_servicio, servicio_padre FK self-ref nullable, requiere_orden_compra BOOLEAN, activo, timestamps)
   - Table `portafolio` (id UUID PK, proveedor_id FK, servicio_id FK, precio, activo, timestamps)
   - Table `porcentaje` (id UUID PK, nombre, valor NUMERIC, tipo ENUM(descuento,recargo), activo, timestamps)
-  - Table `solicitud_servicio` (id UUID PK, proveedor_id FK, servicio_id FK, evento_id FK nullable, estado, descripcion, activo, timestamps)
+  - Table `solicitud_servicio` (id UUID PK, proveedor_id FK, servicio_id FK, evento_id FK nullable, estado_id UUID FK → estado(contexto='solicitud'), descripcion, activo, timestamps)
+  - Nota: Campos categoria y estado normalizados a UUID FK en migracion V10
 
 - [x] 2.4 Create cotizaciones migration (V4__cotizaciones.sql)
-  - Table `cotizacion` (id UUID PK, codigo, persona_id FK, empresa_id FK, estado, fecha_emision, fecha_vencimiento, total NUMERIC, observaciones, created_by FK, activo, timestamps)
+  - Table `cotizacion` (id UUID PK, codigo, persona_id FK, empresa_id FK, estado_id UUID FK → estado(contexto='cotizacion'), fecha_emision, fecha_vencimiento, total NUMERIC, observaciones, created_by FK, activo, timestamps)
   - Table `cotizacion_item` (id UUID PK, cotizacion_id FK, servicio_id FK, descripcion, cantidad, precio_unitario, porcentaje_id FK nullable, subtotal NUMERIC, activo, timestamps)
+  - Nota: Campo estado normalizado a UUID FK en migracion V10
 
 - [x] 2.5 Create eventos migration (V5__eventos.sql)
-  - Table `evento` (id UUID PK, codigo, cotizacion_id FK, nombre, fecha_inicio, fecha_fin, lugar, estado, activo, timestamps)
-  - Table `evento_persona` (id UUID PK, evento_id FK, persona_id FK, rol_evento ENUM(promotor,contacto,coordinador,personal), activo, timestamps)
+  - Table `evento` (id UUID PK, codigo, cotizacion_id FK, nombre, fecha_inicio, fecha_fin, lugar, estado_id UUID FK → estado(contexto='evento'), activo, timestamps)
+  - Table `evento_persona` (id UUID PK, evento_id FK, persona_id FK, rol_evento_id UUID FK → rol_evento, activo, timestamps)
   - Table `evento_proveedor` (id UUID PK, evento_id FK, proveedor_id FK, activo, timestamps)
   - Table `evento_observacion` (id UUID PK, evento_id FK, contenido TEXT, created_by FK, activo, timestamps)
   - Table `evento_personal` (id UUID PK, evento_id FK, persona_id FK, proveedor_id FK nullable, servicio_id FK, turno, valor_turno NUMERIC, observaciones, tiene_arl BOOLEAN, tiene_op BOOLEAN, activo, timestamps)
+  - Nota: Campos estado y rol_evento normalizados a UUID FK en migracion V10
 
 - [x] 2.6 Create ordenes, mensajes, presentaciones migration (V6__ordenes_mensajes_presentaciones.sql)
-  - Table `orden_compra` (id UUID PK, codigo, solicitud_id FK, descripcion, monto NUMERIC, estado, activo, timestamps)
+  - Table `orden_compra` (id UUID PK, codigo, solicitud_id FK, descripcion, monto NUMERIC, estado_id UUID FK → estado(contexto='orden'), activo, timestamps)
   - Table `mensaje` (id UUID PK, titulo, contenido TEXT, tipo, activo, timestamps)
   - Table `presentacion` (id UUID PK, titulo, descripcion, servicio_id FK nullable, contenido TEXT, activo, timestamps)
+  - Nota: Campo estado normalizado a UUID FK en migracion V10
 
 - [x] 2.7 Create inventario and alimentacion migration (V7__inventario_alimentacion.sql)
-  - Table `insumo` (id UUID PK, nombre, descripcion, unidad_medida, stock_actual NUMERIC DEFAULT 0, activo, timestamps)
+  - Table `insumo` (id UUID PK, nombre, descripcion, unidad_medida_id UUID FK → unidad_medida, stock_actual NUMERIC DEFAULT 0, activo, timestamps)
   - Table `insumo_movimiento` (id UUID PK, insumo_id FK, tipo ENUM(ingreso,retiro), cantidad NUMERIC, motivo, fecha, created_by FK, activo, timestamps)
   - Table `evento_insumo` (id UUID PK, evento_id FK, insumo_id FK, cantidad_asignada NUMERIC, activo, timestamps)
   - Table `evento_alimentacion` (id UUID PK, evento_id FK, descripcion, tipo ENUM(ingreso,retiro), cantidad NUMERIC, fecha, created_by FK, activo, timestamps)
+  - Nota: Campo unidad_medida normalizado a UUID FK en migracion V10
 
 - [x] 2.8 Create business logic functions and triggers (V8__functions_triggers.sql)
   - Function `fn_recalcular_total_cotizacion(cotizacion_uuid)` — recalculates cotizacion total from items
@@ -123,6 +129,26 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Default permissions JSON for each role
   - Admin user with bcrypt-hashed password
   - Sample servicios catalog entries
+
+- [x] 2.10 Create lookup tables normalization migration (V10__normalizacion_lookup_tables.sql)
+  - Table `tipo_documento` (id UUID PK, nombre VARCHAR UNIQUE, activo, timestamps) — CC, NIT, CE, Pasaporte, etc.
+  - Table `rol_entidad` (id UUID PK, nombre VARCHAR UNIQUE, activo, timestamps) — contacto, cliente, proveedor
+  - Table `estado` (id UUID PK, nombre VARCHAR, contexto VARCHAR, activo, timestamps) — estados por entidad (lead, cotizacion, evento, solicitud, orden)
+  - Table `categoria_servicio` (id UUID PK, nombre VARCHAR UNIQUE, activo, timestamps) — propio, de tercero
+  - Table `unidad_medida` (id UUID PK, nombre VARCHAR UNIQUE, abreviatura VARCHAR, activo, timestamps) — unidad, kg, litro, metro
+  - Table `rol_evento` (id UUID PK, nombre VARCHAR UNIQUE, activo, timestamps) — promotor, contacto, coordinador, personal
+  - ALTER persona: tipo_documento → tipo_documento_id UUID FK, rol_persona → rol_entidad_id UUID FK
+  - ALTER empresa: rol_empresa → rol_entidad_id UUID FK
+  - ALTER lead: estado → estado_id UUID FK
+  - ALTER servicio: categoria → categoria_id UUID FK
+  - ALTER solicitud_servicio: estado → estado_id UUID FK
+  - ALTER cotizacion: estado → estado_id UUID FK
+  - ALTER evento: estado → estado_id UUID FK
+  - ALTER evento_persona: rol_evento → rol_evento_id UUID FK
+  - ALTER orden_compra: estado → estado_id UUID FK
+  - ALTER insumo: unidad_medida → unidad_medida_id UUID FK
+  - Seed data: valores iniciales para cada catalogo
+  - Migracion de datos existentes de VARCHAR a UUID FK
 
 ### Phase 3: Backend Common Layer
 
@@ -180,48 +206,48 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Permission validation on each endpoint
 
 - [x] 4.2 Implement Leads module (Requirement 2 - Leads)
-  - Entity: `Lead`
+  - Entity: `Lead` — campo `estadoId` UUID FK referenciando tabla `estado` (contexto='lead')
   - DTOs: `CreateLeadRequest`, `UpdateLeadRequest`, `LeadResponse`, `LeadEstadisticasResponse`
-  - Repository: `LeadRepository` with filters by estado, fecha
+  - Repository: `LeadRepository` con native query JOIN a tabla estado para filtros por nombre de estado
   - Service: `LeadService` — CRUD + estadisticas (count by estado for chart)
   - Controller: `LeadController` — /api/v1/leads + /estadisticas
   - Pagination and search support
 
 - [x] 4.3 Implement Personas module (Requirement 2 - Personas)
-  - Entity: `Persona`, `PersonaEmpresa`
-  - DTOs: `CreatePersonaRequest`, `UpdatePersonaRequest`, `PersonaResponse`, `AsociarEmpresaRequest`
+  - Entity: `Persona`, `PersonaEmpresa` — campos `tipoDocumentoId` UUID FK → tipo_documento, `rolEntidadId` UUID FK → rol_entidad
+  - DTOs: `CreatePersonaRequest` (tipoDocumentoId UUID, rolEntidadId UUID), `UpdatePersonaRequest`, `PersonaResponse`, `AsociarEmpresaRequest`
   - Repository: `PersonaRepository`, `PersonaEmpresaRepository`
-  - Service: `PersonaService` — CRUD + asociar-empresa + asignar-rol
+  - Service: `PersonaService` — CRUD + asociar-empresa + asignar-rol (recibe UUID de rol_entidad)
   - Controller: `PersonaController` — /api/v1/personas + /asociar-empresa + /asignar-rol
   - Search by nombre, documento, email
 
 - [x] 4.4 Implement Empresas module (Requirement 2 - Empresas)
-  - Entity: `Empresa`
-  - DTOs: `CreateEmpresaRequest`, `UpdateEmpresaRequest`, `EmpresaResponse`
+  - Entity: `Empresa` — campo `rolEntidadId` UUID FK → rol_entidad (reemplaza rol_empresa String)
+  - DTOs: `CreateEmpresaRequest` (rolEntidadId UUID), `UpdateEmpresaRequest`, `EmpresaResponse`
   - Repository: `EmpresaRepository`
-  - Service: `EmpresaService` — CRUD + asignar-rol
+  - Service: `EmpresaService` — CRUD + asignar-rol (recibe UUID de rol_entidad)
   - Controller: `EmpresaController` — /api/v1/empresas + /asignar-rol
   - Search by razon_social, nit
 
 - [ ] 4.5 Implement Proveedores module (Requirement 3)
-  - Entity: `Proveedor`, `Portafolio`, `SolicitudServicio`
+  - Entity: `Proveedor`, `Portafolio`, `SolicitudServicio` — `solicitud_servicio.estado_id` UUID FK → estado(contexto='solicitud')
   - DTOs: `CreateProveedorRequest`, `ProveedorResponse`, `PortafolioResponse`, `CreateSolicitudRequest`, `SolicitudResponse`
   - Repository: `ProveedorRepository`, `PortafolioRepository`, `SolicitudServicioRepository`
   - Service: `ProveedorService` — CRUD proveedores + portafolio + solicitudes
   - Controller: `ProveedorController` — /api/v1/proveedores + /portafolio + /solicitudes
 
 - [ ] 4.6 Implement Servicios module (Requirement 4)
-  - Entity: `Servicio`, `Porcentaje`
-  - DTOs: `CreateServicioRequest`, `ServicioResponse`, `CreatePorcentajeRequest`, `PorcentajeResponse`
+  - Entity: `Servicio` — campo `categoriaId` UUID FK → categoria_servicio (reemplaza categoria ENUM), `Porcentaje`
+  - DTOs: `CreateServicioRequest` (categoriaId UUID), `ServicioResponse`, `CreatePorcentajeRequest`, `PorcentajeResponse`
   - Repository: `ServicioRepository` (support self-referencing hierarchy), `PorcentajeRepository`
-  - Service: `ServicioService` — CRUD + subservicios hierarchy + categorizar
+  - Service: `ServicioService` — CRUD + subservicios hierarchy + categorizar (asigna categoria_id)
   - Service: `PorcentajeService` — CRUD porcentajes + aplicar
   - Controller: `ServicioController` — /api/v1/servicios + /subservicios + /categorizar
   - Controller: `DescuentoRecargoController` — /api/v1/descuentos-recargos + /aplicar
 
 - [ ] 4.7 Implement Cotizaciones module (Requirement 5)
-  - Entity: `Cotizacion`, `CotizacionItem`
-  - DTOs: `CreateCotizacionRequest`, `CotizacionResponse`, `CotizacionItemRequest`, `CambiarEstadoRequest`
+  - Entity: `Cotizacion` — campo `estadoId` UUID FK → estado(contexto='cotizacion'), `CotizacionItem`
+  - DTOs: `CreateCotizacionRequest`, `CotizacionResponse`, `CotizacionItemRequest`, `CambiarEstadoRequest` (estadoId UUID)
   - Repository: `CotizacionRepository`, `CotizacionItemRepository`
   - Service: `CotizacionService` — CRUD + estados + vencimientos + execute fn_recalcular_total_cotizacion
   - Controller: `CotizacionController` — /api/v1/cotizaciones + /estados + /vencimientos + /pdf
@@ -229,8 +255,8 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Filters by estado, cliente, fecha; pagination
 
 - [ ] 4.8 Implement Eventos module (Requirement 6)
-  - Entity: `Evento`, `EventoPersona`, `EventoProveedor`, `EventoObservacion`, `EventoInsumo`
-  - DTOs: `CreateEventoRequest`, `EventoResponse`, `EventoPersonaRequest`, `ObservacionRequest`
+  - Entity: `Evento` — campo `estadoId` UUID FK → estado(contexto='evento'), `EventoPersona` — campo `rolEventoId` UUID FK → rol_evento, `EventoProveedor`, `EventoObservacion`, `EventoInsumo`
+  - DTOs: `CreateEventoRequest`, `EventoResponse`, `EventoPersonaRequest` (rolEventoId UUID), `ObservacionRequest`
   - Repository: `EventoRepository`, `EventoPersonaRepository`, `EventoProveedorRepository`, `EventoObservacionRepository`
   - Service: `EventoService` — CRUD + execute fn_crear_evento_desde_cotizacion + associate providers/personas/observations
   - Controller: `EventoController` — /api/v1/eventos + /proveedores + /servicios + /personas + /observaciones
@@ -244,7 +270,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Include ARL/OP validation warnings in response
 
 - [ ] 4.10 Implement Ordenes de Compra module (Requirement 7)
-  - Entity: `OrdenCompra`
+  - Entity: `OrdenCompra` — campo `estadoId` UUID FK → estado(contexto='orden')
   - DTOs: `CreateOrdenCompraRequest`, `OrdenCompraResponse`
   - Repository: `OrdenCompraRepository`
   - Service: `OrdenCompraService` — CRUD + Excel generation
@@ -266,7 +292,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Controller: `PresentacionController` — /api/v1/presentaciones + /pdf
 
 - [ ] 4.13 Implement Inventario module (Requirement 11)
-  - Entity: `Insumo`, `InsumoMovimiento`
+  - Entity: `Insumo` — campo `unidadMedidaId` UUID FK → unidad_medida, `InsumoMovimiento`
   - DTOs: `InsumoResponse`, `CreateMovimientoRequest`, `MovimientoResponse`
   - Repository: `InsumoRepository`, `InsumoMovimientoRepository`
   - Service: `InventarioService` — consultar stock + registrar ingresos/retiros (trigger updates stock)
@@ -280,6 +306,15 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Service: `AlimentacionService` — consultar + ingresos/retiros per evento
   - Controller: `AlimentacionController` — /api/v1/eventos/{id}/alimentacion + /ingresos + /retiros
   - Quantity validation handled by PostgreSQL trigger
+
+- [ ] 4.15 Implement Catalogos module (Requirement 13)
+  - Entities: `TipoDocumento`, `RolEntidad`, `Estado`, `CategoriaServicio`, `UnidadMedida`, `RolEvento`
+  - DTOs: `CatalogoResponse` (id UUID, nombre String), `CreateCatalogoRequest` (nombre String), generico para todos los catalogos
+  - Repository: uno por entidad extendiendo JpaRepository — `TipoDocumentoRepository`, `RolEntidadRepository`, `EstadoRepository`, `CategoriaServicioRepository`, `UnidadMedidaRepository`, `RolEventoRepository`
+  - Service: `CatalogoService` — CRUD generico para todas las tablas de catalogo + validacion de FK en uso antes de eliminar
+  - Controller: `CatalogoController` — /api/v1/catalogos/{tipo} (GET list, POST create, PUT update, DELETE with FK validation)
+  - Tipos soportados: tipo-documento, rol-entidad, estado, categoria-servicio, unidad-medida, rol-evento
+  - Filtro por contexto para estados: GET /api/v1/catalogos/estado?contexto=lead
 
 ### Phase 5: Frontend Shared Components and Core Services
 
@@ -479,6 +514,15 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `AlimentacionService` extending BaseCrudService
   - Routes: /eventos/:id/alimentacion
 
+- [ ] 6.16 Implement Catalogos feature (Requirement 13)
+  - `CatalogoListComponent` — DataTable generica para listar valores de un catalogo seleccionado
+  - `CatalogoFormComponent` — crear/editar valor de catalogo (nombre, contexto para estados)
+  - `CatalogoSelectorComponent` — componente shared dropdown que carga opciones desde /api/v1/catalogos/{tipo}
+  - `CatalogoService` extending BaseCrudService — GET, POST, PUT, DELETE por tipo de catalogo
+  - Selector de tipo de catalogo: tipo-documento, rol-entidad, estado, categoria-servicio, unidad-medida, rol-evento
+  - Validacion visual: advertencia antes de eliminar si el valor esta en uso
+  - Routes: /catalogos, /catalogos/:tipo
+
 ### Phase 7: Integration and Testing
 
 - [ ] 7.1 Backend unit tests for services layer
@@ -533,7 +577,8 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
 - Las fases 1-3 son prerequisitos estrictos: no se puede iniciar backend modules sin la capa comun ni el schema de DB.
 - Las fases frontend (5-6) pueden avanzar en paralelo con backend (3-4) una vez completado el setup (Phase 1).
 - Phase 7 (testing) requiere que ambas capas (frontend + backend) esten funcionales.
-- Todas las migraciones Flyway deben ser idempotentes y ejecutarse en orden estricto (V1 a V9).
+- Todas las migraciones Flyway deben ser idempotentes y ejecutarse en orden estricto (V1 a V10).
+- La migracion V10 normaliza campos VARCHAR (tipo_documento, rol, estado, categoria, unidad_medida, rol_evento) a UUID FK references hacia tablas de catalogo.
 - Los modulos backend son independientes entre si dentro de Phase 4, excepto Eventos (4.8) que depende de Cotizaciones (4.7).
 - El frontend sigue el patron: cada feature module tiene list + form + service + model, reutilizando DataTable y DetailView compartidos.
 - La logica de negocio (calculos, validaciones de stock, creacion condicional de eventos) reside exclusivamente en PostgreSQL.

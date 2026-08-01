@@ -8,7 +8,7 @@ import java.util.UUID;
 public record LeadResponse(
         UUID id,
         String descripcion,
-        String estado,
+        UUID estadoId,
         UUID personaId,
         UUID empresaId,
         UUID createdBy,
@@ -20,7 +20,7 @@ public record LeadResponse(
         return new LeadResponse(
                 lead.getId(),
                 lead.getDescripcion(),
-                lead.getEstado(),
+                lead.getEstadoId(),
                 lead.getPersonaId(),
                 lead.getEmpresaId(),
                 lead.getCreatedBy(),

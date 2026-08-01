@@ -2,6 +2,8 @@ package com.proarte.erp.empresas.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.UUID;
+
 public record CreateEmpresaRequest(
         @NotBlank(message = "La razón social es obligatoria")
         String razonSocial,
@@ -14,6 +16,6 @@ public record CreateEmpresaRequest(
 
         String email,
 
-        String rolEmpresa
+        UUID rolEntidadId
 ) {
 }

@@ -105,8 +105,8 @@ public class PersonaController {
             @RequestBody Map<String, String> body) {
         validatePermission("editar");
 
-        String rol = body.get("rol");
-        Persona persona = personaService.asignarRol(id, rol);
+        UUID rolEntidadId = UUID.fromString(body.get("rolEntidadId"));
+        Persona persona = personaService.asignarRol(id, rolEntidadId);
         return ResponseEntity.ok(ApiResponse.success(PersonaResponse.from(persona), "Rol asignado exitosamente"));
     }
 

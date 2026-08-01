@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public record UpdateLeadRequest(
         String descripcion,
-        String estado,
+        UUID estadoId,
         UUID personaId,
         UUID empresaId
 ) {

@@ -88,8 +88,8 @@ public class EmpresaController {
             @RequestBody Map<String, String> body) {
         validatePermission("editar");
 
-        String rol = body.get("rol");
-        Empresa empresa = empresaService.asignarRol(id, rol);
+        UUID rolEntidadId = UUID.fromString(body.get("rolEntidadId"));
+        Empresa empresa = empresaService.asignarRol(id, rolEntidadId);
         return ResponseEntity.ok(ApiResponse.success(EmpresaResponse.from(empresa), "Rol asignado exitosamente"));
     }
 

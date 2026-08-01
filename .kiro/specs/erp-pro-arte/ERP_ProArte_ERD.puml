@@ -1,0 +1,571 @@
+@startuml ERP_ProArte_ERD
+!theme plain
+title Diagrama Entidad-Relación - ERP Pro Arte\n(Cascada: de menor a mayor relaciones)
+
+' ============================================================
+' ESTILOS POR MÓDULO
+' ============================================================
+skinparam class {
+    FontSize 10
+    AttributeFontSize 9
+}
+
+skinparam entity {
+    FontSize 10
+    AttributeFontSize 9
+}
+
+' Colores por módulo
+!define SEGURIDAD_COLOR #E8F5E9
+!define PERSONAS_COLOR #E3F2FD
+!define SERVICIOS_COLOR #FFF3E0
+!define EVENTOS_COLOR #FCE4EC
+!define INVENTARIO_COLOR #F3E5F5
+!define LOOKUP_COLOR #FFFDE7
+!define TRAZABILIDAD_COLOR #ECEFF1
+
+' ============================================================
+' TABLAS LOOKUP (Normalización)
+' ============================================================
+
+entity "tipo_documento" as tipo_documento LOOKUP_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombre : VARCHAR(20)
+}
+
+entity "rol_entidad" as rol_entidad LOOKUP_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombre : VARCHAR(50)
+}
+
+entity "estado" as estado LOOKUP_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombre : VARCHAR(50)
+    * contexto : VARCHAR(30)
+}
+
+entity "categoria_servicio" as categoria_servicio LOOKUP_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombre : VARCHAR(50)
+}
+
+entity "unidad_medida" as unidad_medida LOOKUP_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombre : VARCHAR(30)
+    abreviatura : VARCHAR(10)
+}
+
+entity "rol_evento" as rol_evento LOOKUP_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombre : VARCHAR(50)
+}
+
+
+' ============================================================
+' MÓDULO: Seguridad y Control de Acceso
+' ============================================================
+
+entity "rol" as rol SEGURIDAD_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombre : VARCHAR(50)
+    descripcion : TEXT
+    * activo : BOOLEAN
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+entity "permiso" as permiso SEGURIDAD_COLOR {
+    * id : UUID <<PK>>
+    --
+    * rol_id : UUID <<FK>>
+    * configuracion : JSONB
+    * activo : BOOLEAN
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+entity "usuario" as usuario SEGURIDAD_COLOR {
+    * id : UUID <<PK>>
+    --
+    * username : VARCHAR(50)
+    * password_hash : VARCHAR(255)
+    * nombre_completo : VARCHAR(150)
+    email : VARCHAR(100)
+    * rol_id : UUID <<FK>>
+    * activo : BOOLEAN
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+
+' ============================================================
+' MÓDULO: Personas y Empresas
+' ============================================================
+
+entity "persona" as persona PERSONAS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombres : VARCHAR(100)
+    * apellidos : VARCHAR(100)
+    tipo_documento_id : UUID <<FK>>
+    documento : VARCHAR(20)
+    telefono : VARCHAR(20)
+    email : VARCHAR(100)
+    direccion : TEXT
+    rol_entidad_id : UUID <<FK>>
+    * activo : BOOLEAN
+    created_by : UUID <<FK>>
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+entity "empresa" as empresa PERSONAS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * razon_social : VARCHAR(200)
+    nit : VARCHAR(20)
+    direccion : TEXT
+    telefono : VARCHAR(20)
+    email : VARCHAR(100)
+    rol_entidad_id : UUID <<FK>>
+    * activo : BOOLEAN
+    created_by : UUID <<FK>>
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+entity "persona_empresa" as persona_empresa PERSONAS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * persona_id : UUID <<FK>>
+    * empresa_id : UUID <<FK>>
+    cargo : VARCHAR(100)
+}
+
+entity "lead" as lead PERSONAS_COLOR {
+    * id : UUID <<PK>>
+    --
+    descripcion : TEXT
+    * estado_id : UUID <<FK>>
+    persona_id : UUID <<FK>>
+    empresa_id : UUID <<FK>>
+    * activo : BOOLEAN
+    created_by : UUID <<FK>>
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+
+' ============================================================
+' MÓDULO: Servicios y Proveedores
+' ============================================================
+
+entity "servicio" as servicio SERVICIOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombre : VARCHAR(150)
+    descripcion : TEXT
+    categoria_id : UUID <<FK>>
+    * es_propio : BOOLEAN
+    * requiere_oc : BOOLEAN
+    servicio_padre_id : UUID <<FK>>
+    * activo : BOOLEAN
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+entity "proveedor" as proveedor SERVICIOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    persona_id : UUID <<FK>>
+    empresa_id : UUID <<FK>>
+    especialidad : VARCHAR(100)
+    * activo : BOOLEAN
+    created_by : UUID <<FK>>
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+entity "portafolio" as portafolio SERVICIOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * proveedor_id : UUID <<FK>>
+    * servicio_id : UUID <<FK>>
+    precio_unitario : DECIMAL(12,2)
+    * activo : BOOLEAN
+}
+
+entity "solicitud_servicio" as solicitud_servicio SERVICIOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * proveedor_id : UUID <<FK>>
+    * servicio_id : UUID <<FK>>
+    evento_id : UUID <<FK>>
+    * estado_id : UUID <<FK>>
+    * activo : BOOLEAN
+    created_by : UUID <<FK>>
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+
+' ============================================================
+' MÓDULO: Descuentos y Recargos
+' ============================================================
+
+entity "tipo_descuento_recargo" as tipo_descuento_recargo SERVICIOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombre : VARCHAR(50)
+}
+
+entity "descuento_recargo" as descuento_recargo SERVICIOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombre : VARCHAR(100)
+    * valor : DECIMAL(5,2)
+    * tipo_id : UUID <<FK>>
+    * activo : BOOLEAN
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+entity "servicio_descuento_recargo" as servicio_dr SERVICIOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * servicio_id : UUID <<FK>>
+    * descuento_recargo_id : UUID <<FK>>
+}
+
+entity "persona_descuento_recargo" as persona_dr SERVICIOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * persona_id : UUID <<FK>>
+    * descuento_recargo_id : UUID <<FK>>
+}
+
+entity "empresa_descuento_recargo" as empresa_dr SERVICIOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * empresa_id : UUID <<FK>>
+    * descuento_recargo_id : UUID <<FK>>
+}
+
+
+' ============================================================
+' MÓDULO: Cotizaciones
+' ============================================================
+
+entity "cotizacion" as cotizacion SERVICIOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * codigo : VARCHAR(20)
+    * estado_id : UUID <<FK>>
+    fecha_creacion : TIMESTAMPTZ
+    fecha_vencimiento : DATE
+    total : DECIMAL(14,2)
+    persona_id : UUID <<FK>>
+    empresa_id : UUID <<FK>>
+    * activo : BOOLEAN
+    created_by : UUID <<FK>>
+    * updated_at : TIMESTAMPTZ
+}
+
+entity "cotizacion_item" as cotizacion_item SERVICIOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * cotizacion_id : UUID <<FK>>
+    * servicio_id : UUID <<FK>>
+    * cantidad : INTEGER
+    * precio_unitario : DECIMAL(12,2)
+    descuento_recargo_id : UUID <<FK>>
+    subtotal : DECIMAL(14,2)
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+
+' ============================================================
+' MÓDULO: Eventos
+' ============================================================
+
+entity "evento" as evento EVENTOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * cotizacion_id : UUID <<FK>>
+    * nombre : VARCHAR(200)
+    fecha_inicio : TIMESTAMPTZ
+    fecha_fin : TIMESTAMPTZ
+    lugar : TEXT
+    * estado_id : UUID <<FK>>
+    * activo : BOOLEAN
+    created_by : UUID <<FK>>
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+entity "evento_contacto" as evento_contacto EVENTOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * evento_id : UUID <<FK>>
+    * persona_id : UUID <<FK>>
+    * rol_evento_id : UUID <<FK>>
+    observaciones : TEXT
+}
+
+entity "evento_proveedor" as evento_proveedor EVENTOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * evento_id : UUID <<FK>>
+    * proveedor_id : UUID <<FK>>
+    servicio_id : UUID <<FK>>
+}
+
+entity "evento_personal" as evento_personal EVENTOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * evento_id : UUID <<FK>>
+    * persona_id : UUID <<FK>>
+    * proveedor_id : UUID <<FK>>
+    servicio_id : UUID <<FK>>
+    valor_turno : DECIMAL(12,2)
+    tiene_arl : BOOLEAN
+    tiene_op : BOOLEAN
+    observaciones : TEXT
+}
+
+entity "evento_observacion" as evento_observacion EVENTOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * evento_id : UUID <<FK>>
+    * texto : TEXT
+    fecha : TIMESTAMPTZ
+    created_by : UUID <<FK>>
+}
+
+entity "evento_insumo" as evento_insumo EVENTOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * evento_id : UUID <<FK>>
+    insumo_id : UUID <<FK>>
+    * cantidad : DECIMAL(10,2)
+}
+
+entity "evento_alimentacion" as evento_alimentacion EVENTOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * evento_id : UUID <<FK>>
+    descripcion : VARCHAR(200)
+    * cantidad : DECIMAL(10,2)
+    * tipo_movimiento : VARCHAR(10)
+    fecha : TIMESTAMPTZ
+    created_by : UUID <<FK>>
+}
+
+
+' ============================================================
+' MÓDULO: Órdenes de Compra
+' ============================================================
+
+entity "orden_compra" as orden_compra EVENTOS_COLOR {
+    * id : UUID <<PK>>
+    --
+    * solicitud_id : UUID <<FK>>
+    numero : VARCHAR(20)
+    fecha : DATE
+    * estado_id : UUID <<FK>>
+    total : DECIMAL(14,2)
+    * activo : BOOLEAN
+    created_by : UUID <<FK>>
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+' ============================================================
+' MÓDULO: Inventario
+' ============================================================
+
+entity "insumo" as insumo INVENTARIO_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombre : VARCHAR(150)
+    descripcion : TEXT
+    unidad_medida_id : UUID <<FK>>
+    stock_actual : DECIMAL(10,2)
+    * activo : BOOLEAN
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+entity "insumo_movimiento" as insumo_movimiento INVENTARIO_COLOR {
+    * id : UUID <<PK>>
+    --
+    * insumo_id : UUID <<FK>>
+    * tipo_movimiento : VARCHAR(10)
+    * cantidad : DECIMAL(10,2)
+    fecha : TIMESTAMPTZ
+    motivo : TEXT
+    created_by : UUID <<FK>>
+}
+
+
+' ============================================================
+' MÓDULO: Mensajes y Presentaciones
+' ============================================================
+
+entity "mensaje" as mensaje TRAZABILIDAD_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombre : VARCHAR(100)
+    contenido : TEXT
+    * activo : BOOLEAN
+    created_by : UUID <<FK>>
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+entity "presentacion" as presentacion TRAZABILIDAD_COLOR {
+    * id : UUID <<PK>>
+    --
+    * nombre : VARCHAR(150)
+    descripcion : TEXT
+    servicio_id : UUID <<FK>>
+    * activo : BOOLEAN
+    created_by : UUID <<FK>>
+    * created_at : TIMESTAMPTZ
+    * updated_at : TIMESTAMPTZ
+}
+
+
+' ============================================================
+' RELACIONES — Seguridad
+' ============================================================
+rol ||--o{ permiso : "rol_id"
+rol ||--o{ usuario : "rol_id"
+
+' ============================================================
+' RELACIONES — Lookup → Entidades principales
+' ============================================================
+tipo_documento ||--o{ persona : "tipo_documento_id"
+rol_entidad ||--o{ persona : "rol_entidad_id"
+rol_entidad ||--o{ empresa : "rol_entidad_id"
+estado ||--o{ lead : "estado_id"
+estado ||--o{ cotizacion : "estado_id"
+estado ||--o{ evento : "estado_id"
+estado ||--o{ solicitud_servicio : "estado_id"
+estado ||--o{ orden_compra : "estado_id"
+categoria_servicio ||--o{ servicio : "categoria_id"
+unidad_medida ||--o{ insumo : "unidad_medida_id"
+rol_evento ||--o{ evento_contacto : "rol_evento_id"
+
+' ============================================================
+' RELACIONES — Personas y Empresas
+' ============================================================
+usuario ||--o{ persona : "created_by"
+usuario ||--o{ empresa : "created_by"
+usuario ||--o{ lead : "created_by"
+persona ||--o{ persona_empresa : "persona_id"
+empresa ||--o{ persona_empresa : "empresa_id"
+persona ||--o{ lead : "persona_id"
+empresa ||--o{ lead : "empresa_id"
+
+
+' ============================================================
+' RELACIONES — Servicios y Proveedores
+' ============================================================
+servicio ||--o{ servicio : "servicio_padre_id"
+persona ||--o{ proveedor : "persona_id"
+empresa ||--o{ proveedor : "empresa_id"
+usuario ||--o{ proveedor : "created_by"
+proveedor ||--o{ portafolio : "proveedor_id"
+servicio ||--o{ portafolio : "servicio_id"
+proveedor ||--o{ solicitud_servicio : "proveedor_id"
+servicio ||--o{ solicitud_servicio : "servicio_id"
+usuario ||--o{ solicitud_servicio : "created_by"
+
+' ============================================================
+' RELACIONES — Descuentos/Recargos
+' ============================================================
+tipo_descuento_recargo ||--o{ descuento_recargo : "tipo_id"
+servicio ||--o{ servicio_dr : "servicio_id"
+descuento_recargo ||--o{ servicio_dr : "descuento_recargo_id"
+persona ||--o{ persona_dr : "persona_id"
+descuento_recargo ||--o{ persona_dr : "descuento_recargo_id"
+empresa ||--o{ empresa_dr : "empresa_id"
+descuento_recargo ||--o{ empresa_dr : "descuento_recargo_id"
+
+' ============================================================
+' RELACIONES — Cotizaciones
+' ============================================================
+persona ||--o{ cotizacion : "persona_id"
+empresa ||--o{ cotizacion : "empresa_id"
+usuario ||--o{ cotizacion : "created_by"
+cotizacion ||--o{ cotizacion_item : "cotizacion_id"
+servicio ||--o{ cotizacion_item : "servicio_id"
+descuento_recargo ||--o{ cotizacion_item : "descuento_recargo_id"
+
+
+' ============================================================
+' RELACIONES — Eventos
+' ============================================================
+cotizacion ||--o{ evento : "cotizacion_id"
+usuario ||--o{ evento : "created_by"
+evento ||--o{ evento_contacto : "evento_id"
+persona ||--o{ evento_contacto : "persona_id"
+evento ||--o{ evento_proveedor : "evento_id"
+proveedor ||--o{ evento_proveedor : "proveedor_id"
+servicio ||--o{ evento_proveedor : "servicio_id"
+evento ||--o{ evento_personal : "evento_id"
+persona ||--o{ evento_personal : "persona_id"
+proveedor ||--o{ evento_personal : "proveedor_id"
+servicio ||--o{ evento_personal : "servicio_id"
+evento ||--o{ evento_observacion : "evento_id"
+usuario ||--o{ evento_observacion : "created_by"
+evento ||--o{ evento_insumo : "evento_id"
+insumo ||--o{ evento_insumo : "insumo_id"
+evento ||--o{ evento_alimentacion : "evento_id"
+usuario ||--o{ evento_alimentacion : "created_by"
+evento ||--o{ solicitud_servicio : "evento_id"
+
+' ============================================================
+' RELACIONES — Órdenes de Compra
+' ============================================================
+solicitud_servicio ||--o{ orden_compra : "solicitud_id"
+usuario ||--o{ orden_compra : "created_by"
+
+' ============================================================
+' RELACIONES — Inventario
+' ============================================================
+insumo ||--o{ insumo_movimiento : "insumo_id"
+usuario ||--o{ insumo_movimiento : "created_by"
+
+' ============================================================
+' RELACIONES — Mensajes y Presentaciones
+' ============================================================
+usuario ||--o{ mensaje : "created_by"
+servicio ||--o{ presentacion : "servicio_id"
+usuario ||--o{ presentacion : "created_by"
+
+
+' ============================================================
+' LEYENDA
+' ============================================================
+legend bottom left
+  |= Color |= Módulo |
+  | <LOOKUP_COLOR> | Tablas Lookup (Normalización) |
+  | <SEGURIDAD_COLOR> | Seguridad y Control de Acceso |
+  | <PERSONAS_COLOR> | Personas y Empresas |
+  | <SERVICIOS_COLOR> | Servicios, Cotizaciones y Comercial |
+  | <EVENTOS_COLOR> | Eventos y Operaciones |
+  | <INVENTARIO_COLOR> | Inventario |
+  | <TRAZABILIDAD_COLOR> | Comunicaciones y Presentaciones |
+endlegend
+
+@enduml

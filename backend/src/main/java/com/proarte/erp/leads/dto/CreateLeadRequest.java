@@ -8,7 +8,7 @@ public record CreateLeadRequest(
         @NotBlank(message = "La descripción es obligatoria")
         String descripcion,
 
-        String estado,
+        UUID estadoId,
 
         UUID personaId,
 

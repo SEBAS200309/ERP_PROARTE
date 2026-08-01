@@ -10,20 +10,21 @@ import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface LeadRepository extends SoftDeleteRepository<Lead> {
 
-    Page<Lead> findByEstado(String estado, Pageable pageable);
+    Page<Lead> findByEstadoId(UUID estadoId, Pageable pageable);
 
     Page<Lead> findByCreatedAtBetween(OffsetDateTime from, OffsetDateTime to, Pageable pageable);
 
     @Query("SELECT l FROM Lead l WHERE LOWER(l.descripcion) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<Lead> searchByDescripcion(@Param("search") String search, Pageable pageable);
 
-    @Query("SELECT l FROM Lead l WHERE LOWER(l.descripcion) LIKE LOWER(CONCAT('%', :search, '%')) AND l.estado = :estado")
-    Page<Lead> searchByDescripcionAndEstado(@Param("search") String search, @Param("estado") String estado, Pageable pageable);
+    @Query("SELECT l FROM Lead l WHERE LOWER(l.descripcion) LIKE LOWER(CONCAT('%', :search, '%')) AND l.estadoId = :estadoId")
+    Page<Lead> searchByDescripcionAndEstadoId(@Param("search") String search, @Param("estadoId") UUID estadoId, Pageable pageable);
 
-    @Query("SELECT l.estado, COUNT(l) FROM Lead l GROUP BY l.estado")
+    @Query(value = "SELECT e.nombre, COUNT(l.id) FROM lead l JOIN estado e ON e.id = l.estado_id WHERE l.activo = true GROUP BY e.nombre", nativeQuery = true)
     List<Object[]> countByEstado();
 }

@@ -2,6 +2,8 @@ package com.proarte.erp.personas.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.UUID;
+
 public record CreatePersonaRequest(
         @NotBlank(message = "Los nombres son obligatorios")
         String nombres,
@@ -9,7 +11,7 @@ public record CreatePersonaRequest(
         @NotBlank(message = "Los apellidos son obligatorios")
         String apellidos,
 
-        String tipoDocumento,
+        UUID tipoDocumentoId,
 
         String documento,
 
@@ -19,6 +21,6 @@ public record CreatePersonaRequest(
 
         String direccion,
 
-        String rolPersona
+        UUID rolEntidadId
 ) {
 }

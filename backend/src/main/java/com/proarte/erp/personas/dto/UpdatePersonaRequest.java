@@ -1,13 +1,15 @@
 package com.proarte.erp.personas.dto;
 
+import java.util.UUID;
+
 public record UpdatePersonaRequest(
         String nombres,
         String apellidos,
-        String tipoDocumento,
+        UUID tipoDocumentoId,
         String documento,
         String telefono,
         String email,
         String direccion,
-        String rolPersona
+        UUID rolEntidadId
 ) {
 }

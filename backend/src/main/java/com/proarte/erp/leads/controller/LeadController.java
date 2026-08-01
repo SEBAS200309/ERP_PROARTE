@@ -34,11 +34,11 @@ public class LeadController {
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<LeadResponse>>> getAll(
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) String estado,
+            @RequestParam(required = false) UUID estadoId,
             @PageableDefault(size = 20) Pageable pageable) {
         validatePermission("leer");
 
-        Page<LeadResponse> page = leadService.getAll(search, estado, pageable)
+        Page<LeadResponse> page = leadService.getAll(search, estadoId, pageable)
                 .map(LeadResponse::from);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(page)));

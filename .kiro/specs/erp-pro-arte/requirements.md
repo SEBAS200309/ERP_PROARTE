@@ -21,6 +21,13 @@ Nota: Se espera recibir diagrama ERD y UML de clases para proceder al Design.
 - **CRUD**: Operaciones de Crear, Leer, Actualizar y Eliminar sobre registros
 - **ARL**: Administradora de Riesgos Laborales
 - **OP**: Orden de Prestacion de servicios
+- **Catalogo (Lookup Table)**: Tabla normalizada que almacena valores de referencia (tipos, estados, categorias, roles) con id UUID y nombre, reemplazando campos VARCHAR por FK references
+- **tipo_documento**: Catalogo de tipos de documento de identidad (CC, NIT, CE, Pasaporte, etc.)
+- **rol_entidad**: Catalogo de roles asignables a personas y empresas (contacto, cliente, proveedor)
+- **estado**: Catalogo de estados con contexto (lead, cotizacion, evento, solicitud, orden) — permite definir estados validos por entidad
+- **categoria_servicio**: Catalogo de categorias de servicio (propio, de tercero)
+- **unidad_medida**: Catalogo de unidades de medida para insumos (unidad, kg, litro, metro, etc.)
+- **rol_evento**: Catalogo de roles de participantes en un evento (promotor, contacto, coordinador, personal)
 
 ## Requirements
 
@@ -52,7 +59,7 @@ Nota: Se espera recibir diagrama ERD y UML de clases para proceder al Design.
 
 #### Acceptance Criteria
 
-1. CUANDO el usuario registra un lead ENTONCES el sistema DEBE almacenar la solicitud con su estado inicial
+1. CUANDO el usuario registra un lead ENTONCES el sistema DEBE almacenar la solicitud con su estado_id inicial (UUID FK referenciando la tabla `estado` con contexto='lead')
 2. CUANDO el usuario actualiza un lead ENTONCES el sistema DEBE reflejar los cambios en la lista
 3. CUANDO el usuario elimina un lead ENTONCES el sistema DEBE removerlo de la vista activa
 4. CUANDO el usuario consulta leads ENTONCES el sistema DEBE mostrar la lista con filtros y paginacion
@@ -66,8 +73,8 @@ Nota: Se espera recibir diagrama ERD y UML de clases para proceder al Design.
 12. CUANDO el usuario elimina una empresa ENTONCES el sistema DEBE realizar eliminacion logica
 13. CUANDO el usuario consulta empresas ENTONCES el sistema DEBE mostrar la lista con busqueda y filtros
 14. CUANDO el usuario asocia una persona a una empresa ENTONCES el sistema DEBE crear la relacion persona-empresa
-15. CUANDO el usuario asigna un rol (contacto, cliente o proveedor) a una persona ENTONCES el sistema DEBE actualizar el rol en la base de datos
-16. CUANDO el usuario asigna un rol (cliente o proveedor) a una empresa ENTONCES el sistema DEBE actualizar el rol en la base de datos
+15. CUANDO el usuario asigna un rol (contacto, cliente o proveedor) a una persona ENTONCES el sistema DEBE actualizar el rol_entidad_id (UUID FK referenciando la tabla catalogo `rol_entidad`) en la base de datos
+16. CUANDO el usuario asigna un rol (cliente o proveedor) a una empresa ENTONCES el sistema DEBE actualizar el rol_entidad_id (UUID FK referenciando la tabla catalogo `rol_entidad`) en la base de datos
 
 ### Requirement 3: Gestion de proveedores y servicios tercerizados
 
@@ -94,11 +101,11 @@ Nota: Se espera recibir diagrama ERD y UML de clases para proceder al Design.
 
 #### Acceptance Criteria
 
-1. CUANDO el usuario registra un servicio ENTONCES el sistema DEBE almacenarlo con su categoria (propio o de tercero)
+1. CUANDO el usuario registra un servicio ENTONCES el sistema DEBE almacenarlo con su categoria_id (UUID FK referenciando la tabla catalogo `categoria_servicio`)
 2. CUANDO el usuario actualiza un servicio ENTONCES el sistema DEBE reflejar los cambios
 3. CUANDO el usuario elimina un servicio ENTONCES el sistema DEBE realizar eliminacion logica
-4. CUANDO el usuario consulta servicios ENTONCES el sistema DEBE mostrar la lista con filtros por categoria
-5. CUANDO el usuario categoriza un servicio ENTONCES el sistema DEBE distinguir si es propio de la organizacion o de terceros
+4. CUANDO el usuario consulta servicios ENTONCES el sistema DEBE mostrar la lista con filtros por categoria (obtenida desde la tabla catalogo `categoria_servicio`)
+5. CUANDO el usuario categoriza un servicio ENTONCES el sistema DEBE asignar el categoria_id correspondiente desde la tabla catalogo `categoria_servicio`
 6. CUANDO el usuario asigna un servicio como subservicio de otro ENTONCES el sistema DEBE crear la relacion jerarquica
 7. CUANDO el usuario marca un servicio ENTONCES el sistema DEBE permitir identificar si necesita orden de compra
 8. CUANDO el usuario registra un porcentaje de adicion o descuento ENTONCES el sistema DEBE almacenarlo
@@ -115,7 +122,7 @@ Nota: Se espera recibir diagrama ERD y UML de clases para proceder al Design.
 
 #### Acceptance Criteria
 
-1. CUANDO el usuario registra una cotizacion ENTONCES el sistema DEBE almacenarla con estado inicial y asociar al usuario creador
+1. CUANDO el usuario registra una cotizacion ENTONCES el sistema DEBE almacenarla con estado_id inicial (UUID FK referenciando la tabla `estado` con contexto='cotizacion') y asociar al usuario creador
 2. CUANDO el usuario actualiza una cotizacion ENTONCES el sistema DEBE reflejar los cambios y mantener historial
 3. CUANDO el usuario consulta cotizaciones ENTONCES el sistema DEBE mostrar la lista con filtros por estado, cliente y fecha
 4. CUANDO el usuario elimina una cotizacion ENTONCES el sistema DEBE realizar eliminacion logica
@@ -124,7 +131,7 @@ Nota: Se espera recibir diagrama ERD y UML de clases para proceder al Design.
 7. CUANDO el usuario consulta cotizaciones proximas a vencer ENTONCES el sistema DEBE mostrar un listado filtrado
 8. CUANDO el usuario aplica porcentajes de adicion o descuento ENTONCES el sistema DEBE recalcular el total
 9. CUANDO el usuario asocia clientes o contactos a una cotizacion ENTONCES el sistema DEBE registrar la relacion
-10. CUANDO el usuario cambia el estado de una cotizacion ENTONCES el sistema DEBE actualizar el estado y registrar la transicion
+10. CUANDO el usuario cambia el estado de una cotizacion ENTONCES el sistema DEBE actualizar el estado_id (UUID FK referenciando la tabla `estado` con contexto='cotizacion') y registrar la transicion
 
 ### Requirement 6: Gestion de eventos derivados de cotizaciones aprobadas
 
@@ -207,7 +214,7 @@ Nota: Se espera recibir diagrama ERD y UML de clases para proceder al Design.
 
 #### Acceptance Criteria
 
-1. CUANDO el usuario registra un ingreso al inventario ENTONCES el sistema DEBE almacenar el movimiento con fecha, cantidad y detalle
+1. CUANDO el usuario registra un ingreso al inventario ENTONCES el sistema DEBE almacenar el movimiento con fecha, cantidad, detalle y unidad_medida_id (UUID FK referenciando la tabla catalogo `unidad_medida`)
 2. CUANDO el usuario consulta ingresos del inventario ENTONCES el sistema DEBE mostrar el historial de ingresos
 3. CUANDO el usuario registra un retiro del inventario ENTONCES el sistema DEBE almacenar el movimiento con fecha, cantidad y motivo
 4. CUANDO el usuario consulta retiros del inventario ENTONCES el sistema DEBE mostrar el historial de retiros
@@ -229,3 +236,18 @@ Nota: Se espera recibir diagrama ERD y UML de clases para proceder al Design.
 5. CUANDO el usuario consulta alimentacion del evento ENTONCES el sistema DEBE mostrar el estado actual
 6. CUANDO se registra un ingreso o retiro ENTONCES el sistema DEBE calcular automaticamente las cantidades disponibles via trigger de PostgreSQL
 7. SI se intenta retirar mas de lo disponible ENTONCES el sistema DEBE mostrar "No hay suficiente cantidad para este retiro"
+
+### Requirement 13: Gestion de catalogos del sistema
+
+**User Story:** Como administrador, quiero gestionar las tablas de catalogo del sistema (tipo_documento, rol_entidad, estado, categoria_servicio, unidad_medida, rol_evento) para mantener valores normalizados y consistentes que son referenciados por las entidades principales del ERP.
+
+#### Acceptance Criteria
+
+1. CUANDO el administrador consulta un catalogo ENTONCES el sistema DEBE mostrar la lista de valores activos
+2. CUANDO el administrador registra un valor en un catalogo ENTONCES el sistema DEBE almacenarlo con id UUID generado y nombre
+3. CUANDO el administrador actualiza un valor de un catalogo ENTONCES el sistema DEBE reflejar los cambios
+4. CUANDO el administrador elimina un valor de un catalogo ENTONCES el sistema DEBE verificar que no este en uso (referenciado por FK) antes de eliminarlo
+5. CUANDO el sistema necesita valores de tipo_documento, rol_entidad, estado, categoria_servicio, unidad_medida o rol_evento ENTONCES DEBE obtenerlos de las tablas de catalogo correspondientes
+6. CUANDO el usuario crea una persona ENTONCES el sistema DEBE mostrar un selector con los tipos de documento disponibles desde la tabla tipo_documento
+7. CUANDO el usuario asigna un rol a persona o empresa ENTONCES el sistema DEBE mostrar un selector con los roles disponibles desde la tabla rol_entidad
+8. CUANDO el usuario cambia el estado de un lead, cotizacion, evento, solicitud u orden ENTONCES el sistema DEBE mostrar solo los estados validos para ese contexto desde la tabla estado

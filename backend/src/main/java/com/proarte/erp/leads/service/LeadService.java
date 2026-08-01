@@ -22,8 +22,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class LeadService {
 
-    private static final String DEFAULT_ESTADO = "nuevo";
-
     private final LeadRepository leadRepository;
 
     @Transactional(readOnly = true)
@@ -32,16 +30,16 @@ public class LeadService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Lead> getAll(String search, String estado, Pageable pageable) {
+    public Page<Lead> getAll(String search, UUID estadoId, Pageable pageable) {
         boolean hasSearch = search != null && !search.isBlank();
-        boolean hasEstado = estado != null && !estado.isBlank();
+        boolean hasEstadoId = estadoId != null;
 
-        if (hasSearch && hasEstado) {
-            return leadRepository.searchByDescripcionAndEstado(search, estado, pageable);
+        if (hasSearch && hasEstadoId) {
+            return leadRepository.searchByDescripcionAndEstadoId(search, estadoId, pageable);
         } else if (hasSearch) {
             return leadRepository.searchByDescripcion(search, pageable);
-        } else if (hasEstado) {
-            return leadRepository.findByEstado(estado, pageable);
+        } else if (hasEstadoId) {
+            return leadRepository.findByEstadoId(estadoId, pageable);
         }
 
         return leadRepository.findAll(pageable);
@@ -57,7 +55,7 @@ public class LeadService {
     public Lead create(CreateLeadRequest request) {
         Lead lead = Lead.builder()
                 .descripcion(request.descripcion())
-                .estado(request.estado() != null && !request.estado().isBlank() ? request.estado() : DEFAULT_ESTADO)
+                .estadoId(request.estadoId())
                 .personaId(request.personaId())
                 .empresaId(request.empresaId())
                 .build();
@@ -76,8 +74,8 @@ public class LeadService {
         if (request.descripcion() != null) {
             lead.setDescripcion(request.descripcion());
         }
-        if (request.estado() != null) {
-            lead.setEstado(request.estado());
+        if (request.estadoId() != null) {
+            lead.setEstadoId(request.estadoId());
         }
         if (request.personaId() != null) {
             lead.setPersonaId(request.personaId());

@@ -7,6 +7,8 @@ import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "empresa")
 @SQLRestriction("activo = true")
@@ -32,6 +34,6 @@ public class Empresa extends BaseEntity {
     @Column(name = "email", length = 100)
     private String email;
 
-    @Column(name = "rol_empresa", length = 20)
-    private String rolEmpresa;
+    @Column(name = "rol_entidad_id")
+    private UUID rolEntidadId;
 }
