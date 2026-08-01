@@ -55,10 +55,8 @@ export const routes: Routes = [
         path: 'empresas',
         canActivate: [permissionGuard],
         data: { tabla: 'empresa', accion: 'ver_listado' },
-        loadComponent: () =>
-          import('./shared/components/placeholder/placeholder.component').then(
-            (m) => m.PlaceholderComponent
-          ),
+        loadChildren: () =>
+          import('./features/empresas/empresas.routes').then((m) => m.default),
       },
       {
         path: 'proveedores',

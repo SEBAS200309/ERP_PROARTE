@@ -1,0 +1,47 @@
+<div class="empresa-list-container">
+  <header class="list-header">
+    <h1>Gestión de Empresas</h1>
+    @if (canCreate) {
+      <app-animated-button
+        variant="primary"
+        ariaLabel="Crear nueva empresa"
+        (buttonClick)="createEmpresa()">
+        + Nueva Empresa
+      </app-animated-button>
+    }
+  </header>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="empresas()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron empresas"
+    (viewAction)="onView($event)"
+    (editAction)="onEdit($event)"
+    (deleteAction)="onDelete($event)"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <app-detail-view
+    [visible]="showDetail()"
+    title="Detalle de Empresa"
+    [record]="selectedEmpresa()"
+    [fields]="detailFields"
+    [contextSections]="detailContextSections()"
+    (closed)="closeDetail()"
+  />
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Empresa"
+    message="¿Está seguro que desea eliminar esta empresa? Esta acción no se puede deshacer."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>

@@ -1,0 +1,52 @@
+<div class="empresa-detail-container">
+  <header class="detail-header">
+    <h1>Detalle de Empresa</h1>
+    <app-animated-button
+      variant="secondary"
+      ariaLabel="Volver al listado"
+      (buttonClick)="goBack()">
+      Volver
+    </app-animated-button>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando datos de la empresa...</p>
+    </div>
+  } @else if (empresa()) {
+    <div class="detail-content">
+      <div class="detail-field">
+        <span class="field-label">Razón Social</span>
+        <span class="field-value">{{ empresa()!.razonSocial }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="field-label">NIT</span>
+        <span class="field-value">{{ empresa()!.nit || '—' }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="field-label">Dirección</span>
+        <span class="field-value">{{ empresa()!.direccion || '—' }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="field-label">Teléfono</span>
+        <span class="field-value">{{ empresa()!.telefono || '—' }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="field-label">Email</span>
+        <span class="field-value">{{ empresa()!.email || '—' }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="field-label">Rol Entidad</span>
+        <span class="field-value">{{ rolEntidadNombre() }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="field-label">Estado</span>
+        <span class="field-value">{{ empresa()!.activo ? 'Activo' : 'Inactivo' }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="field-label">Fecha Creación</span>
+        <span class="field-value">{{ empresa()!.createdAt }}</span>
+      </div>
+    </div>
+  }
+</div>

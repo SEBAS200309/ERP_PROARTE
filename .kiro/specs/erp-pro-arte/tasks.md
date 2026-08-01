@@ -424,7 +424,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `PersonaService` extending BaseCrudService + asociar-empresa + asignar-rol
   - Routes: /personas, /personas/nuevo, /personas/:id/editar
 
-- [ ] 6.5 Implement Empresas feature (Requirement 2 - Empresas)
+- [x] 6.5 Implement Empresas feature (Requirement 2 - Empresas)
   - `EmpresaListComponent` — DataTable with search by razon_social, nit
   - `EmpresaFormComponent` — create/edit form, assign role
   - `EmpresaDetailComponent` — detail view with context (personas asociadas)

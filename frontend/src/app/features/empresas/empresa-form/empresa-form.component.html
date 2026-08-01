@@ -1,0 +1,94 @@
+<div class="empresa-form-container">
+  <header class="form-header">
+    <h1>{{ pageTitle() }}</h1>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando datos de la empresa...</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()" class="empresa-form">
+      <div class="form-field">
+        <label for="razonSocial">Razón Social</label>
+        <input
+          id="razonSocial"
+          type="text"
+          formControlName="razonSocial"
+          placeholder="Razón social de la empresa"
+        />
+        @if (hasError('razonSocial', 'required')) {
+          <span class="error-message">La razón social es obligatoria</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="nit">NIT</label>
+        <input
+          id="nit"
+          type="text"
+          formControlName="nit"
+          placeholder="Número de Identificación Tributaria"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="direccion">Dirección</label>
+        <input
+          id="direccion"
+          type="text"
+          formControlName="direccion"
+          placeholder="Dirección de la empresa"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="telefono">Teléfono</label>
+        <input
+          id="telefono"
+          type="text"
+          formControlName="telefono"
+          placeholder="Teléfono de contacto"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Correo electrónico"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="rolEntidadId">Rol de Entidad</label>
+        <select id="rolEntidadId" formControlName="rolEntidadId">
+          <option value="">Seleccione un rol</option>
+          @for (rol of rolesEntidad(); track rol.id) {
+            <option [value]="rol.id">{{ rol.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <app-animated-button
+          variant="secondary"
+          type="button"
+          ariaLabel="Cancelar"
+          (buttonClick)="cancel()">
+          Cancelar
+        </app-animated-button>
+        <app-animated-button
+          variant="primary"
+          type="submit"
+          [disabled]="form.invalid || saving()"
+          [loading]="saving()"
+          ariaLabel="Guardar empresa">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </app-animated-button>
+      </div>
+    </form>
+  }
+</div>
