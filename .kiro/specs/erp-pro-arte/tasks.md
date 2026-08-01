@@ -318,7 +318,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
 
 ### Phase 5: Frontend Shared Components and Core Services
 
-- [ ] 5.1 Implement core authentication services and guards
+- [x] 5.1 Implement core authentication services and guards
   - `AuthService` — login, logout, refresh token, store JWT in localStorage
   - `AuthGuard` (functional) — redirect to login if no session
   - `PermissionGuard` (functional) — check user permissions from loaded JSON
