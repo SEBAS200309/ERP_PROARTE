@@ -1,0 +1,53 @@
+<div class="lead-list-container">
+  <header class="list-header">
+    <h1>Gestión de Leads</h1>
+    @if (canCreate) {
+      <app-animated-button
+        variant="primary"
+        ariaLabel="Crear nuevo lead"
+        (buttonClick)="createLead()">
+        + Nuevo Lead
+      </app-animated-button>
+    }
+  </header>
+
+  <div class="filter-bar">
+    <div class="filter-field">
+      <label for="estadoFilter">Filtrar por estado</label>
+      <select
+        id="estadoFilter"
+        [ngModel]="selectedEstadoId()"
+        (ngModelChange)="onEstadoFilterChange($event)">
+        <option value="">Todos los estados</option>
+        @for (estado of estados(); track estado.id) {
+          <option [value]="estado.id">{{ estado.nombre }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="leads()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron leads"
+    (viewAction)="onView($event)"
+    (editAction)="onEdit($event)"
+    (deleteAction)="onDelete($event)"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Lead"
+    message="¿Está seguro que desea eliminar este lead? Esta acción no se puede deshacer."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>

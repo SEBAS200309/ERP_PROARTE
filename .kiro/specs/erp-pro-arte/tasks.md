@@ -410,7 +410,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `UsuarioService` extending BaseCrudService
   - Routes: /usuarios, /usuarios/nuevo, /usuarios/:id/editar, /usuarios/roles/:id/permisos
 
-- [ ] 6.3 Implement Leads feature (Requirement 2 - Leads)
+- [x] 6.3 Implement Leads feature (Requirement 2 - Leads)
   - `LeadListComponent` — DataTable with filters by estado
   - `LeadFormComponent` — create/edit form, associate persona/empresa
   - `LeadChartComponent` — pie chart showing distribution by estado

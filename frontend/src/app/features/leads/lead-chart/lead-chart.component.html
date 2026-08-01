@@ -1,0 +1,43 @@
+<div class="lead-chart-container">
+  <h2 class="chart-title">Distribución de Leads por Estado</h2>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando estadísticas...</p>
+    </div>
+  } @else if (!hasData()) {
+    <div class="empty-state">
+      <p>No hay datos de leads para mostrar</p>
+    </div>
+  } @else {
+    <div class="chart-content">
+      <div class="chart-svg-wrapper">
+        <svg viewBox="0 0 200 200" class="pie-chart" aria-label="Gráfico de distribución de leads por estado">
+          @for (slice of slices(); track slice.nombre) {
+            <path
+              [attr.d]="slice.path"
+              [attr.fill]="slice.color"
+              class="pie-slice"
+            >
+              <title>{{ slice.nombre }}: {{ slice.cantidad }} ({{ slice.porcentaje | number:'1.1-1' }}%)</title>
+            </path>
+          }
+        </svg>
+        <div class="chart-center-label">
+          <span class="total-count">{{ totalLeads() }}</span>
+          <span class="total-text">Total</span>
+        </div>
+      </div>
+
+      <ul class="chart-legend" aria-label="Leyenda del gráfico">
+        @for (slice of slices(); track slice.nombre) {
+          <li class="legend-item">
+            <span class="legend-color" [style.background-color]="slice.color"></span>
+            <span class="legend-label">{{ slice.nombre }}</span>
+            <span class="legend-value">{{ slice.cantidad }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</div>
