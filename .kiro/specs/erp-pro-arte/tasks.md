@@ -291,7 +291,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Service: `PresentacionService` — CRUD + PDF generation
   - Controller: `PresentacionController` — /api/v1/presentaciones + /pdf
 
-- [ ] 4.13 Implement Inventario module (Requirement 11)
+- [x] 4.13 Implement Inventario module (Requirement 11)
   - Entity: `Insumo` — campo `unidadMedidaId` UUID FK → unidad_medida, `InsumoMovimiento`
   - DTOs: `InsumoResponse`, `CreateMovimientoRequest`, `MovimientoResponse`
   - Repository: `InsumoRepository`, `InsumoMovimientoRepository`
@@ -299,7 +299,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Controller: `InventarioController` — /api/v1/inventario + /ingresos + /retiros
   - Stock validation handled by PostgreSQL trigger (ERR_STOCK on insufficient)
 
-- [ ] 4.14 Implement Alimentacion module (Requirement 12)
+- [x] 4.14 Implement Alimentacion module (Requirement 12)
   - Entity: `EventoAlimentacion`
   - DTOs: `CreateAlimentacionRequest`, `AlimentacionResponse`
   - Repository: `EventoAlimentacionRepository`
@@ -307,7 +307,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Controller: `AlimentacionController` — /api/v1/eventos/{id}/alimentacion + /ingresos + /retiros
   - Quantity validation handled by PostgreSQL trigger
 
-- [ ] 4.15 Implement Catalogos module (Requirement 13)
+- [x] 4.15 Implement Catalogos module (Requirement 13)
   - Entities: `TipoDocumento`, `RolEntidad`, `Estado`, `CategoriaServicio`, `UnidadMedida`, `RolEvento`
   - DTOs: `CatalogoResponse` (id UUID, nombre String), `CreateCatalogoRequest` (nombre String), generico para todos los catalogos
   - Repository: uno por entidad extendiendo JpaRepository — `TipoDocumentoRepository`, `RolEntidadRepository`, `EstadoRepository`, `CategoriaServicioRepository`, `UnidadMedidaRepository`, `RolEventoRepository`
