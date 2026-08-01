@@ -1,0 +1,22 @@
+<div class="search-filter">
+  <span class="search-filter__icon" aria-hidden="true">🔍</span>
+  <input
+    type="text"
+    class="search-filter__input"
+    [placeholder]="placeholder()"
+    [value]="searchTerm()"
+    (input)="onInput($event)"
+    (keydown)="onKeydown($event)"
+    aria-label="Buscar"
+  />
+  @if (searchTerm()) {
+    <button
+      type="button"
+      class="search-filter__clear"
+      (click)="onClear()"
+      aria-label="Limpiar búsqueda"
+    >
+      ✕
+    </button>
+  }
+</div>

@@ -1,0 +1,39 @@
+@if (visible()) {
+  <div
+    class="confirm-dialog-overlay"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="'confirm-dialog-title'"
+    [attr.aria-describedby]="'confirm-dialog-message'"
+    (click)="onOverlayClick($event)"
+    (keydown)="onDialogKeydown($event)"
+    @overlay
+  >
+    <div class="confirm-dialog-box" @dialog>
+      <div class="confirm-dialog-header">
+        <span class="confirm-dialog-icon" aria-hidden="true">⚠</span>
+        <h2 id="confirm-dialog-title" class="confirm-dialog-title">{{ title() }}</h2>
+      </div>
+
+      <p id="confirm-dialog-message" class="confirm-dialog-message">{{ message() }}</p>
+
+      <div class="confirm-dialog-actions">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancel()"
+          cdkFocusInitial
+        >
+          {{ cancelLabel() }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="confirm()"
+        >
+          {{ confirmLabel() }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

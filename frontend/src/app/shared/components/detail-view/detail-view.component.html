@@ -1,0 +1,75 @@
+@if (visible()) {
+  <div
+    class="detail-view-overlay"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="title()"
+    (click)="onOverlayClick($event)"
+    @overlay
+  >
+    <aside class="detail-view-panel" @panel>
+      <!-- Header -->
+      <header class="detail-view-header">
+        <h2 class="detail-view-title">{{ title() }}</h2>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="close()"
+          aria-label="Cerrar panel de detalle"
+        >
+          ✕
+        </button>
+      </header>
+
+      <!-- Fields section -->
+      @if (record()) {
+        <section class="detail-view-fields" aria-label="Campos del registro">
+          <dl class="fields-grid">
+            @for (field of fields(); track field.key) {
+              <div class="field-item">
+                <dt class="field-label">{{ field.label }}</dt>
+                <dd class="field-value">{{ getFieldValue(field) }}</dd>
+              </div>
+            }
+          </dl>
+        </section>
+      }
+
+      <!-- Context sections (related tables) -->
+      @if (visibleSections().length > 0) {
+        <section class="detail-view-context" aria-label="Tablas relacionadas">
+          @for (section of visibleSections(); track section.tabla) {
+            <div class="context-section">
+              <h3 class="context-title">{{ section.title }}</h3>
+
+              @if (section.data.length === 0) {
+                <p class="context-empty">Sin registros asociados</p>
+              } @else {
+                <div class="context-table-wrapper">
+                  <table class="context-table" role="grid">
+                    <thead>
+                      <tr>
+                        @for (col of section.columns; track col.key) {
+                          <th>{{ col.label }}</th>
+                        }
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (row of section.data; track $index) {
+                        <tr>
+                          @for (col of section.columns; track col.key) {
+                            <td>{{ getCellValue(row, col) }}</td>
+                          }
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+            </div>
+          }
+        </section>
+      }
+    </aside>
+  </div>
+}

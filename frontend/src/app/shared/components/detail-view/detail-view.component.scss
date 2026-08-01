@@ -1,0 +1,196 @@
+:host {
+  display: contents;
+}
+
+// === Overlay ===
+.detail-view-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  background-color: var(--color-overlay);
+}
+
+// === Panel ===
+.detail-view-panel {
+  width: 100%;
+  max-width: 600px;
+  height: 100%;
+  background-color: var(--color-bg-surface);
+  border-left: 1px solid var(--color-border);
+  box-shadow: -4px 0 24px var(--color-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// === Header ===
+.detail-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.detail-view-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+// === Fields Section ===
+.detail-view-fields {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.field-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.field-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.field-value {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+// === Context Section ===
+.detail-view-context {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.context-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.context-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.context-empty {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  margin: 0;
+}
+
+// === Context Table ===
+.context-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.context-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+
+  thead {
+    background-color: var(--color-bg-secondary);
+  }
+
+  th {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  td {
+    padding: 0.5rem 0.75rem;
+    color: var(--color-text-primary);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover {
+    background-color: var(--color-bg-secondary);
+  }
+}
+
+// === Responsive ===
+@media (max-width: 480px) {
+  .detail-view-panel {
+    max-width: 100%;
+  }
+
+  .fields-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+// === Reduced motion ===
+@media (prefers-reduced-motion: reduce) {
+  .btn-close {
+    transition: none;
+  }
+}

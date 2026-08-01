@@ -1,0 +1,29 @@
+<button
+  [type]="type()"
+  [class]="buttonClasses()"
+  [disabled]="disabled() || loading()"
+  [attr.aria-label]="ariaLabel()"
+  [attr.aria-busy]="loading()"
+  [@.disabled]="reducedMotion"
+  [@buttonPress]="pressState()"
+  [@buttonHover]="hoverState()"
+  (mousedown)="onMouseDown()"
+  (mouseup)="onMouseUp()"
+  (mouseleave)="onMouseLeave()"
+  (mouseenter)="onMouseEnter()"
+  (click)="onClick($event)"
+>
+  <span class="btn-content" [class.hidden]="loading()">
+    <ng-content />
+  </span>
+
+  @if (loading()) {
+    <span class="btn-spinner" aria-hidden="true"></span>
+  }
+
+  <span class="ripple-container" aria-hidden="true">
+    @for (ripple of ripples(); track ripple) {
+      <span class="ripple" @buttonRipple (@buttonRipple.done)="onRippleDone()"></span>
+    }
+  </span>
+</button>

@@ -1,0 +1,84 @@
+<div class="login-container">
+  <div class="login-card">
+    <!-- Branding -->
+    <header class="login-header">
+      <div class="logo-icon" aria-hidden="true">🎭</div>
+      <h1 class="brand-name">PRO ARTE</h1>
+      <p class="brand-subtitle">Sistema ERP</p>
+    </header>
+
+    <!-- Login Form -->
+    <form
+      [formGroup]="loginForm"
+      (ngSubmit)="onSubmit()"
+      class="login-form"
+      autocomplete="on"
+    >
+      <!-- Username field -->
+      <div class="form-group">
+        <label for="username" class="form-label">Usuario</label>
+        <div class="input-wrapper">
+          <span class="input-icon" aria-hidden="true">👤</span>
+          <input
+            id="username"
+            type="text"
+            formControlName="username"
+            class="form-input"
+            placeholder="Ingrese su usuario"
+            autocomplete="username"
+            [attr.aria-invalid]="loginForm.get('username')?.touched && loginForm.get('username')?.invalid"
+            aria-describedby="username-error"
+          />
+        </div>
+        @if (loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required')) {
+          <span id="username-error" class="field-error" role="alert">
+            Este campo es obligatorio
+          </span>
+        }
+      </div>
+
+      <!-- Password field -->
+      <div class="form-group">
+        <label for="password" class="form-label">Contraseña</label>
+        <div class="input-wrapper">
+          <span class="input-icon" aria-hidden="true">🔒</span>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            class="form-input"
+            placeholder="Ingrese su contraseña"
+            autocomplete="current-password"
+            [attr.aria-invalid]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+            aria-describedby="password-error"
+          />
+        </div>
+        @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')) {
+          <span id="password-error" class="field-error" role="alert">
+            Este campo es obligatorio
+          </span>
+        }
+      </div>
+
+      <!-- Error message -->
+      @if (errorMessage()) {
+        <div class="login-error" role="alert" aria-live="assertive">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <!-- Submit button -->
+      <div class="form-actions">
+        <app-animated-button
+          type="submit"
+          variant="primary"
+          [loading]="loading()"
+          [disabled]="loginForm.invalid && loginForm.touched"
+          ariaLabel="Iniciar sesión"
+        >
+          Iniciar sesión
+        </app-animated-button>
+      </div>
+    </form>
+  </div>
+</div>

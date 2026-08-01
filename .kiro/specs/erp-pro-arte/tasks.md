@@ -333,7 +333,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `generalMessages` dictionary for CRUD operations (save, delete, load errors)
   - Never expose stack traces or technical errors to user
 
-- [ ] 5.3 Implement shared DataTable component
+- [x] 5.3 Implement shared DataTable component
   - `DataTableComponent` — standalone, reusable table with:
     - Pagination (page, pageSize)
     - Column sorting
@@ -346,27 +346,27 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Input: columns config, data array, permissions object
   - Output: events for view, edit, delete actions
 
-- [ ] 5.4 Implement shared ConfirmDialog component
+- [x] 5.4 Implement shared ConfirmDialog component
   - `ConfirmDialogComponent` — standalone modal for delete confirmations
   - Spanish messages: "¿Está seguro que desea eliminar este registro?"
   - Animated entry/exit transitions
   - Buttons: Cancelar (secondary), Eliminar (danger)
   - Returns Observable<boolean>
 
-- [ ] 5.5 Implement shared AnimatedButton component and animations
+- [x] 5.5 Implement shared AnimatedButton component and animations
   - `button.animations.ts` — buttonPress, buttonHover, buttonRipple triggers
   - `AnimatedButtonComponent` — standalone wrapper that applies animations
   - Variants: primary, secondary, danger, ghost
   - Respects `prefers-reduced-motion` media query
   - Works in dark/light theme
 
-- [ ] 5.6 Implement shared SearchFilter component
+- [x] 5.6 Implement shared SearchFilter component
   - `SearchFilterComponent` — standalone input with debounce (300ms)
   - Emits search term on change
   - Clear button, placeholder in Spanish
   - Works in dark/light theme
 
-- [ ] 5.7 Implement shared DetailView component (context pattern)
+- [x] 5.7 Implement shared DetailView component (context pattern)
   - `DetailViewComponent` — standalone panel/modal for record detail
   - Shows record fields in top section
   - Shows related tables (context) below, based on user permissions
@@ -374,21 +374,21 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - If user lacks permission for a related table, that section is hidden
   - Close button, dark/light theme support
 
-- [ ] 5.8 Implement app routing with lazy loading
+- [x] 5.8 Implement app routing with lazy loading
   - `app.routes.ts` with lazy-loaded routes per feature module
   - Apply `AuthGuard` to all routes except /auth/login
   - Apply `PermissionGuard` per feature route
   - Dashboard as default route after login
   - Wildcard route → redirect to dashboard
 
-- [ ] 5.9 Implement base CRUD service factory
+- [x] 5.9 Implement base CRUD service factory
   - `BaseCrudService<T>` abstract class with generic CRUD methods
   - Methods: getAll(params), getById(id), create(dto), update(id, dto), delete(id), executeFunction(name, params)
   - Handles ApiResponse<T> unwrapping
   - Pagination params support (page, size, sort, search)
   - Each feature service extends this base
 
-- [ ] 5.10 Implement login page
+- [x] 5.10 Implement login page
   - `LoginComponent` — standalone, form with username + password
   - Call AuthService.login, redirect to dashboard on success
   - Show "Credenciales incorrectas" on 401
