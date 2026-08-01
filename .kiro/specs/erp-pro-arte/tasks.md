@@ -254,7 +254,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - PDF generation endpoint (cotizacion formatted document)
   - Filters by estado, cliente, fecha; pagination
 
-- [ ] 4.8 Implement Eventos module (Requirement 6)
+- [x] 4.8 Implement Eventos module (Requirement 6)
   - Entity: `Evento` — campo `estadoId` UUID FK → estado(contexto='evento'), `EventoPersona` — campo `rolEventoId` UUID FK → rol_evento, `EventoProveedor`, `EventoObservacion`, `EventoInsumo`
   - DTOs: `CreateEventoRequest`, `EventoResponse`, `EventoPersonaRequest` (rolEventoId UUID), `ObservacionRequest`
   - Repository: `EventoRepository`, `EventoPersonaRepository`, `EventoProveedorRepository`, `EventoObservacionRepository`
