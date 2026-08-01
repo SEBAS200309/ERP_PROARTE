@@ -277,7 +277,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Controller: `OrdenCompraController` — /api/v1/ordenes-compra + /descargar-excel
   - Excel download using Apache POI or similar library
 
-- [ ] 4.11 Implement Mensajes module (Requirement 8)
+- [x] 4.11 Implement Mensajes module (Requirement 8)
   - Entity: `Mensaje`
   - DTOs: `CreateMensajeRequest`, `UpdateMensajeRequest`, `MensajeResponse`
   - Repository: `MensajeRepository`
