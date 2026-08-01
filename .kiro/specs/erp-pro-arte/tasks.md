@@ -179,7 +179,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Controller: `UsuarioController` — /api/v1/usuarios, /api/v1/usuarios/roles/{id}/permisos (GET, PUT)
   - Permission validation on each endpoint
 
-- [ ] 4.2 Implement Leads module (Requirement 2 - Leads)
+- [x] 4.2 Implement Leads module (Requirement 2 - Leads)
   - Entity: `Lead`
   - DTOs: `CreateLeadRequest`, `UpdateLeadRequest`, `LeadResponse`, `LeadEstadisticasResponse`
   - Repository: `LeadRepository` with filters by estado, fecha
@@ -187,7 +187,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Controller: `LeadController` — /api/v1/leads + /estadisticas
   - Pagination and search support
 
-- [ ] 4.3 Implement Personas module (Requirement 2 - Personas)
+- [x] 4.3 Implement Personas module (Requirement 2 - Personas)
   - Entity: `Persona`, `PersonaEmpresa`
   - DTOs: `CreatePersonaRequest`, `UpdatePersonaRequest`, `PersonaResponse`, `AsociarEmpresaRequest`
   - Repository: `PersonaRepository`, `PersonaEmpresaRepository`
@@ -195,7 +195,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Controller: `PersonaController` — /api/v1/personas + /asociar-empresa + /asignar-rol
   - Search by nombre, documento, email
 
-- [ ] 4.4 Implement Empresas module (Requirement 2 - Empresas)
+- [x] 4.4 Implement Empresas module (Requirement 2 - Empresas)
   - Entity: `Empresa`
   - DTOs: `CreateEmpresaRequest`, `UpdateEmpresaRequest`, `EmpresaResponse`
   - Repository: `EmpresaRepository`
