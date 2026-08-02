@@ -9,7 +9,7 @@ import { EventoProveedoresComponent } from '../evento-proveedores/evento-proveed
 import { EventoPersonasComponent } from '../evento-personas/evento-personas.component';
 import { EventoObservacionesComponent } from '../evento-observaciones/evento-observaciones.component';
 
-type TabKey = 'proveedores' | 'personas' | 'observaciones' | 'insumos' | 'alimentacion';
+type TabKey = 'proveedores' | 'personas' | 'observaciones' | 'insumos' | 'alimentacion' | 'personal';
 
 @Component({
   selector: 'app-evento-detail',
@@ -53,6 +53,7 @@ export class EventoDetailComponent implements OnInit {
   protected readonly tabs: { key: TabKey; label: string }[] = [
     { key: 'proveedores', label: 'Proveedores' },
     { key: 'personas', label: 'Personas' },
+    { key: 'personal', label: 'Personal' },
     { key: 'observaciones', label: 'Observaciones' },
     { key: 'insumos', label: 'Insumos' },
     { key: 'alimentacion', label: 'Alimentación' },
@@ -75,6 +76,10 @@ export class EventoDetailComponent implements OnInit {
   }
 
   protected setActiveTab(tab: TabKey): void {
+    if (tab === 'personal') {
+      this.router.navigate(['/eventos', this.eventoId, 'personal']);
+      return;
+    }
     this.activeTab.set(tab);
     if (tab === 'insumos' && this.insumos().length === 0) {
       this.loadInsumos();

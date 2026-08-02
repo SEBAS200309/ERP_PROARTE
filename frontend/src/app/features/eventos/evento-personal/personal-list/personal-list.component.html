@@ -1,0 +1,89 @@
+<div class="personal-list-container">
+  <header class="section-header">
+    <div class="header-left">
+      <app-animated-button
+        variant="ghost"
+        ariaLabel="Volver al detalle del evento"
+        (buttonClick)="goBack()">
+        ← Volver
+      </app-animated-button>
+      <h2>Personal del Evento</h2>
+    </div>
+  </header>
+
+  <!-- Formulario de creación / edición -->
+  <app-personal-form
+    [personasOptions]="personasOptions()"
+    [proveedoresOptions]="proveedoresOptions()"
+    [serviciosOptions]="serviciosOptions()"
+    [editingPersonal]="editingPersonal()"
+    (submitted)="onFormSubmitted($event)"
+    (cancelled)="cancelEdit()" />
+
+  <!-- Tabla de personal -->
+  @if (loading()) {
+    <p class="loading-text">Cargando personal del evento...</p>
+  } @else if (personal().length === 0) {
+    <p class="empty-text">No hay personal asignado a este evento.</p>
+  } @else {
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Persona</th>
+          <th>Proveedor</th>
+          <th>Servicio</th>
+          <th>Valor Turno</th>
+          <th>ARL</th>
+          <th>OP</th>
+          <th>Observaciones</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of personal(); track item.id) {
+          <tr>
+            <td>{{ getPersonaNombre(item.personaId) }}</td>
+            <td>{{ getProveedorNombre(item.proveedorId) }}</td>
+            <td>{{ getServicioNombre(item.servicioId) }}</td>
+            <td>{{ item.valorTurno != null ? ('$' + item.valorTurno) : '—' }}</td>
+            <td>
+              @if (item.tieneArl) {
+                <span class="status-icon ok" title="ARL vigente">✓</span>
+              } @else {
+                <span class="status-icon warning" [title]="item.alertaArl || 'Sin ARL'">⚠</span>
+              }
+            </td>
+            <td>
+              @if (item.tieneOp) {
+                <span class="status-icon ok" title="OP vigente">✓</span>
+              } @else {
+                <span class="status-icon warning" [title]="item.alertaOp || 'Sin OP'">⚠</span>
+              }
+            </td>
+            <td>{{ item.observaciones || '—' }}</td>
+            <td class="actions-cell">
+              <button
+                class="btn-icon"
+                title="Calcular valor turno"
+                (click)="calcularTurno(item)">
+                💰
+              </button>
+              <button
+                class="btn-icon"
+                title="Editar"
+                (click)="startEdit(item)">
+                ✎
+              </button>
+              <button
+                class="btn-icon danger"
+                title="Eliminar"
+                (click)="removePersonal(item.id)">
+                ✕
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

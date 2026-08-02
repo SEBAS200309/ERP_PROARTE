@@ -467,7 +467,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `EventoService` extending BaseCrudService + crear-desde-cotizacion + sub-associations
   - Routes: /eventos, /eventos/:id
 
-- [ ] 6.10 Implement Personal de Evento feature (Requirement 10)
+- [x] 6.10 Implement Personal de Evento feature (Requirement 10)
   - `PersonalListComponent` — DataTable of personal assigned to evento
   - `PersonalFormComponent` — assign persona, proveedor, servicio, turno
   - Automatic valor_turno calculation display (from backend fn)
