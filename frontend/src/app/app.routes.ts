@@ -97,10 +97,8 @@ export const routes: Routes = [
         path: 'ordenes-compra',
         canActivate: [permissionGuard],
         data: { tabla: 'orden_compra', accion: 'ver_listado' },
-        loadComponent: () =>
-          import('./shared/components/placeholder/placeholder.component').then(
-            (m) => m.PlaceholderComponent
-          ),
+        loadChildren: () =>
+          import('./features/ordenes-compra/ordenes-compra.routes').then((m) => m.default),
       },
       {
         path: 'mensajes',

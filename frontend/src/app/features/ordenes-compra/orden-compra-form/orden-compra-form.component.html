@@ -1,0 +1,98 @@
+<div class="orden-compra-form-container">
+  <header class="form-header">
+    <h1>{{ pageTitle() }}</h1>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando datos de la orden de compra...</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()" class="orden-compra-form">
+      <div class="form-section">
+        <h2>Datos Generales</h2>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="codigo">Código</label>
+            <input
+              id="codigo"
+              type="text"
+              formControlName="codigo"
+              placeholder="Se genera automáticamente si se deja vacío"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="estadoId">Estado *</label>
+            <select id="estadoId" formControlName="estadoId">
+              <option value="">Seleccione un estado</option>
+              @for (estado of estados(); track estado.id) {
+                <option [value]="estado.id">{{ estado.nombre }}</option>
+              }
+            </select>
+            @if (hasError('estadoId', 'required')) {
+              <span class="error-message">El estado es obligatorio</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="solicitudId">Solicitud de Servicio *</label>
+            <select id="solicitudId" formControlName="solicitudId">
+              <option value="">Seleccione una solicitud</option>
+              @for (solicitud of solicitudes(); track solicitud.id) {
+                <option [value]="solicitud.id">{{ solicitud.nombre }}</option>
+              }
+            </select>
+            @if (hasError('solicitudId', 'required')) {
+              <span class="error-message">La solicitud es obligatoria</span>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="monto">Monto</label>
+            <input
+              id="monto"
+              type="number"
+              formControlName="monto"
+              placeholder="0.00"
+              step="0.01"
+            />
+          </div>
+        </div>
+
+        <div class="form-row full-width">
+          <div class="form-field">
+            <label for="descripcion">Descripción</label>
+            <textarea
+              id="descripcion"
+              formControlName="descripcion"
+              rows="3"
+              placeholder="Descripción de la orden de compra"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <app-animated-button
+          variant="secondary"
+          type="button"
+          ariaLabel="Cancelar"
+          (buttonClick)="cancel()">
+          Cancelar
+        </app-animated-button>
+        <app-animated-button
+          variant="primary"
+          type="submit"
+          [disabled]="form.invalid || saving()"
+          [loading]="saving()"
+          ariaLabel="Guardar orden de compra">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </app-animated-button>
+      </div>
+    </form>
+  }
+</div>

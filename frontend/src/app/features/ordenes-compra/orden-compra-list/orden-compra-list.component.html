@@ -1,0 +1,74 @@
+<div class="orden-compra-list-container">
+  <header class="list-header">
+    <h1>Gestión de Órdenes de Compra</h1>
+    <div class="header-actions">
+      <app-animated-button
+        variant="secondary"
+        ariaLabel="Descargar Excel"
+        (buttonClick)="descargarExcel()">
+        Descargar Excel
+      </app-animated-button>
+      @if (canCreate) {
+        <app-animated-button
+          variant="primary"
+          ariaLabel="Crear nueva orden de compra"
+          (buttonClick)="createOrden()">
+          + Nueva Orden
+        </app-animated-button>
+      }
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <div class="filter-field">
+      <label for="estadoFilter">Estado:</label>
+      <select
+        id="estadoFilter"
+        [ngModel]="selectedEstadoId()"
+        (ngModelChange)="onEstadoChange($event)">
+        <option value="">Todos los estados</option>
+        @for (estado of estados(); track estado.id) {
+          <option [value]="estado.id">{{ estado.nombre }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-field">
+      <label for="solicitudFilter">Solicitud:</label>
+      <select
+        id="solicitudFilter"
+        [ngModel]="selectedSolicitudId()"
+        (ngModelChange)="onSolicitudChange($event)">
+        <option value="">Todas las solicitudes</option>
+        @for (solicitud of solicitudes(); track solicitud.id) {
+          <option [value]="solicitud.id">{{ solicitud.nombre }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="ordenes()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron órdenes de compra"
+    (viewAction)="onView($event)"
+    (editAction)="onEdit($event)"
+    (deleteAction)="onDelete($event)"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Orden de Compra"
+    message="¿Está seguro que desea eliminar esta orden de compra? Esta acción no se puede deshacer."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>

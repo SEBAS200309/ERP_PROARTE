@@ -476,7 +476,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `PersonalEventoService` extending BaseCrudService
   - Routes: /eventos/:id/personal
 
-- [ ] 6.11 Implement Ordenes de Compra feature (Requirement 7)
+- [x] 6.11 Implement Ordenes de Compra feature (Requirement 7)
   - `OrdenCompraListComponent` — DataTable with filters
   - `OrdenCompraFormComponent` — create/edit, link to solicitud
   - Excel download button (mass download)
