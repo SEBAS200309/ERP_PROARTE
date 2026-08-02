@@ -1,0 +1,46 @@
+<div class="proveedor-list-container">
+  <header class="list-header">
+    <h1>Gestión de Proveedores</h1>
+    <div class="header-actions">
+      <app-animated-button
+        variant="secondary"
+        ariaLabel="Ver solicitudes"
+        (buttonClick)="goToSolicitudes()">
+        Solicitudes
+      </app-animated-button>
+      @if (canCreate) {
+        <app-animated-button
+          variant="primary"
+          ariaLabel="Crear nuevo proveedor"
+          (buttonClick)="createProveedor()">
+          + Nuevo Proveedor
+        </app-animated-button>
+      }
+    </div>
+  </header>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="proveedores()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron proveedores"
+    (viewAction)="onView($event)"
+    (editAction)="onEdit($event)"
+    (deleteAction)="onDelete($event)"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Proveedor"
+    message="¿Está seguro que desea eliminar este proveedor? Esta acción no se puede deshacer."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>

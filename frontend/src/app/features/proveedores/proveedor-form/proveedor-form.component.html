@@ -1,0 +1,64 @@
+<div class="proveedor-form-container">
+  <header class="form-header">
+    <h1>{{ pageTitle() }}</h1>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando datos del proveedor...</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()" class="proveedor-form">
+      <div class="form-field">
+        <label for="personaId">Persona</label>
+        <select id="personaId" formControlName="personaId">
+          <option value="">Seleccione una persona (opcional)</option>
+          @for (persona of personas(); track persona.id) {
+            <option [value]="persona.id">{{ persona.nombres }} {{ persona.apellidos }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label for="empresaId">Empresa</label>
+        <select id="empresaId" formControlName="empresaId">
+          <option value="">Seleccione una empresa (opcional)</option>
+          @for (empresa of empresas(); track empresa.id) {
+            <option [value]="empresa.id">{{ empresa.razonSocial }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label for="especialidad">Especialidad</label>
+        <input
+          id="especialidad"
+          type="text"
+          formControlName="especialidad"
+          placeholder="Especialidad del proveedor"
+        />
+        @if (hasError('especialidad', 'maxlength')) {
+          <span class="error-message">La especialidad no puede exceder 100 caracteres</span>
+        }
+      </div>
+
+      <div class="form-actions">
+        <app-animated-button
+          variant="secondary"
+          type="button"
+          ariaLabel="Cancelar"
+          (buttonClick)="cancel()">
+          Cancelar
+        </app-animated-button>
+        <app-animated-button
+          variant="primary"
+          type="submit"
+          [disabled]="form.invalid || saving()"
+          [loading]="saving()"
+          ariaLabel="Guardar proveedor">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </app-animated-button>
+      </div>
+    </form>
+  }
+</div>

@@ -431,7 +431,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `EmpresaService` extending BaseCrudService + asignar-rol
   - Routes: /empresas, /empresas/nuevo, /empresas/:id/editar
 
-- [ ] 6.6 Implement Proveedores feature (Requirement 3)
+- [x] 6.6 Implement Proveedores feature (Requirement 3)
   - `ProveedorListComponent` — DataTable with filters
   - `ProveedorFormComponent` — create/edit, link to persona or empresa
   - `PortafolioComponent` — manage servicios associated to proveedor

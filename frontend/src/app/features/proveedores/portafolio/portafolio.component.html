@@ -1,0 +1,114 @@
+<div class="portafolio-container">
+  <header class="page-header">
+    <h1>Portafolio de Servicios</h1>
+    <div class="header-actions">
+      <app-animated-button
+        variant="secondary"
+        ariaLabel="Volver a proveedores"
+        (buttonClick)="goBack()">
+        ← Volver
+      </app-animated-button>
+      <app-animated-button
+        variant="primary"
+        ariaLabel="Agregar servicio al portafolio"
+        (buttonClick)="openAddForm()">
+        + Agregar Servicio
+      </app-animated-button>
+    </div>
+  </header>
+
+  @if (showForm()) {
+    <div class="inline-form">
+      <h3>{{ editingItem() ? 'Editar Item' : 'Nuevo Item' }}</h3>
+      <form [formGroup]="form" (ngSubmit)="saveItem()" class="portafolio-form">
+        <div class="form-row">
+          <div class="form-field">
+            <label for="servicioId">Servicio</label>
+            <select id="servicioId" formControlName="servicioId">
+              <option value="">Seleccione un servicio</option>
+              @for (servicio of servicios(); track servicio.id) {
+                <option [value]="servicio.id">{{ servicio.nombre }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="precioUnitario">Precio Unitario</label>
+            <input
+              id="precioUnitario"
+              type="number"
+              formControlName="precioUnitario"
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+            />
+          </div>
+        </div>
+        <div class="form-actions">
+          <app-animated-button
+            variant="secondary"
+            type="button"
+            ariaLabel="Cancelar"
+            (buttonClick)="cancelForm()">
+            Cancelar
+          </app-animated-button>
+          <app-animated-button
+            variant="primary"
+            type="submit"
+            [disabled]="form.invalid || saving()"
+            [loading]="saving()"
+            ariaLabel="Guardar item">
+            {{ saving() ? 'Guardando...' : 'Guardar' }}
+          </app-animated-button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando portafolio...</p>
+    </div>
+  } @else if (portafolio().length === 0) {
+    <div class="empty-state">
+      <p>No hay servicios en el portafolio de este proveedor.</p>
+    </div>
+  } @else {
+    <div class="table-wrapper">
+      <table class="portafolio-table">
+        <thead>
+          <tr>
+            <th>Servicio</th>
+            <th>Precio Unitario</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of portafolio(); track item.id) {
+            <tr>
+              <td>{{ getServicioNombre(item.servicioId) }}</td>
+              <td>{{ item.precioUnitario | number:'1.2-2' }}</td>
+              <td>
+                <span class="badge" [class.active]="item.activo" [class.inactive]="!item.activo">
+                  {{ item.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="btn-icon" title="Editar" (click)="openEditForm(item)">✏️</button>
+                <button class="btn-icon btn-danger" title="Eliminar" (click)="onDeleteItem(item)">🗑️</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Item del Portafolio"
+    message="¿Está seguro que desea eliminar este servicio del portafolio? Esta acción no se puede deshacer."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>

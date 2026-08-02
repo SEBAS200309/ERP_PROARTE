@@ -1,0 +1,87 @@
+<div class="solicitud-form-container">
+  <header class="form-header">
+    <h1>{{ pageTitle() }}</h1>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando datos de la solicitud...</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()" class="solicitud-form">
+      <div class="form-field">
+        <label for="proveedorId">Proveedor *</label>
+        <select id="proveedorId" formControlName="proveedorId">
+          <option value="">Seleccione un proveedor</option>
+          @for (proveedor of proveedores(); track proveedor.id) {
+            <option [value]="proveedor.id">{{ proveedor.nombre }}</option>
+          }
+        </select>
+        @if (hasError('proveedorId', 'required')) {
+          <span class="error-message">El proveedor es obligatorio</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="servicioId">Servicio *</label>
+        <select id="servicioId" formControlName="servicioId">
+          <option value="">Seleccione un servicio</option>
+          @for (servicio of servicios(); track servicio.id) {
+            <option [value]="servicio.id">{{ servicio.nombre }}</option>
+          }
+        </select>
+        @if (hasError('servicioId', 'required')) {
+          <span class="error-message">El servicio es obligatorio</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="eventoId">Evento</label>
+        <select id="eventoId" formControlName="eventoId">
+          <option value="">Seleccione un evento (opcional)</option>
+          @for (evento of eventos(); track evento.id) {
+            <option [value]="evento.id">{{ evento.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label for="estadoId">Estado</label>
+        <select id="estadoId" formControlName="estadoId">
+          <option value="">Seleccione un estado (opcional)</option>
+          @for (estado of estados(); track estado.id) {
+            <option [value]="estado.id">{{ estado.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label for="descripcion">Descripción</label>
+        <textarea
+          id="descripcion"
+          formControlName="descripcion"
+          placeholder="Descripción de la solicitud (opcional)"
+          rows="4"
+        ></textarea>
+      </div>
+
+      <div class="form-actions">
+        <app-animated-button
+          variant="secondary"
+          type="button"
+          ariaLabel="Cancelar"
+          (buttonClick)="cancel()">
+          Cancelar
+        </app-animated-button>
+        <app-animated-button
+          variant="primary"
+          type="submit"
+          [disabled]="form.invalid || saving()"
+          [loading]="saving()"
+          ariaLabel="Guardar solicitud">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </app-animated-button>
+      </div>
+    </form>
+  }
+</div>

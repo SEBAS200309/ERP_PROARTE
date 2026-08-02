@@ -1,0 +1,45 @@
+<div class="solicitud-list-container">
+  <header class="list-header">
+    <h1>Solicitudes de Servicio</h1>
+    <div class="header-actions">
+      <app-animated-button
+        variant="secondary"
+        ariaLabel="Volver a proveedores"
+        (buttonClick)="goBack()">
+        ← Volver
+      </app-animated-button>
+      @if (canCreate) {
+        <app-animated-button
+          variant="primary"
+          ariaLabel="Crear nueva solicitud"
+          (buttonClick)="createSolicitud()">
+          + Nueva Solicitud
+        </app-animated-button>
+      }
+    </div>
+  </header>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="solicitudes()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron solicitudes"
+    (editAction)="onEdit($event)"
+    (deleteAction)="onDelete($event)"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Solicitud"
+    message="¿Está seguro que desea eliminar esta solicitud? Esta acción no se puede deshacer."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>
