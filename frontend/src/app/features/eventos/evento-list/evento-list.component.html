@@ -1,0 +1,55 @@
+<div class="evento-list-container">
+  <header class="list-header">
+    <h1>Gestión de Eventos</h1>
+    <div class="header-actions">
+      @if (canCreate) {
+        <app-animated-button
+          variant="secondary"
+          ariaLabel="Crear evento desde cotización"
+          (buttonClick)="crearDesdeCotizacion()">
+          Crear desde Cotización
+        </app-animated-button>
+      }
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <div class="filter-field">
+      <label for="estadoFilter">Estado:</label>
+      <select
+        id="estadoFilter"
+        [ngModel]="selectedEstadoId()"
+        (ngModelChange)="onEstadoChange($event)">
+        <option value="">Todos los estados</option>
+        @for (estado of estados(); track estado.id) {
+          <option [value]="estado.id">{{ estado.nombre }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="eventos()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron eventos"
+    (viewAction)="onView($event)"
+    (editAction)="onEdit($event)"
+    (deleteAction)="onDelete($event)"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Evento"
+    message="¿Está seguro que desea eliminar este evento? Esta acción no se puede deshacer."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>

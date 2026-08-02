@@ -1,0 +1,147 @@
+<div class="evento-detail-container">
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando evento...</p>
+    </div>
+  } @else if (evento(); as ev) {
+    <header class="detail-header">
+      <div class="header-left">
+        <app-animated-button
+          variant="ghost"
+          ariaLabel="Volver a la lista de eventos"
+          (buttonClick)="goBack()">
+          ← Volver
+        </app-animated-button>
+        <h1>{{ ev.nombre }}</h1>
+      </div>
+      <span class="estado-badge">{{ getEstadoNombre() }}</span>
+    </header>
+
+    <section class="evento-info-card">
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Lugar</span>
+          <span class="info-value">{{ ev.lugar || '—' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Fecha Inicio</span>
+          <span class="info-value">{{ ev.fechaInicio || '—' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Fecha Fin</span>
+          <span class="info-value">{{ ev.fechaFin || '—' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Estado</span>
+          <span class="info-value">{{ getEstadoNombre() }}</span>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tabs-nav" role="tablist">
+      @for (tab of tabs; track tab.key) {
+        <button
+          class="tab-btn"
+          [class.active]="activeTab() === tab.key"
+          [attr.aria-selected]="activeTab() === tab.key"
+          role="tab"
+          (click)="setActiveTab(tab.key)">
+          {{ tab.label }}
+        </button>
+      }
+    </nav>
+
+    <section class="tab-content" role="tabpanel">
+      @switch (activeTab()) {
+        @case ('proveedores') {
+          <app-evento-proveedores [eventoId]="ev.id" />
+        }
+        @case ('personas') {
+          <app-evento-personas [eventoId]="ev.id" />
+        }
+        @case ('observaciones') {
+          <app-evento-observaciones [eventoId]="ev.id" />
+        }
+        @case ('insumos') {
+          <div class="insumos-tab">
+            <div class="add-form">
+              <select [(ngModel)]="newInsumoId">
+                <option value="">Seleccionar insumo...</option>
+                @for (insumo of insumosOptions(); track insumo.id) {
+                  <option [value]="insumo.id">{{ insumo.nombre }}</option>
+                }
+              </select>
+              <input
+                type="number"
+                [(ngModel)]="newInsumoCantidad"
+                min="1"
+                placeholder="Cantidad" />
+              <app-animated-button
+                variant="primary"
+                ariaLabel="Agregar insumo"
+                [disabled]="!newInsumoId || newInsumoCantidad < 1"
+                (buttonClick)="addInsumo()">
+                Agregar
+              </app-animated-button>
+            </div>
+
+            @if (loadingInsumos()) {
+              <p class="loading-text">Cargando insumos...</p>
+            } @else if (insumos().length === 0) {
+              <p class="empty-text">No hay insumos asociados a este evento.</p>
+            } @else {
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Insumo</th>
+                    <th>Cantidad</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (insumo of insumos(); track insumo.id) {
+                    <tr>
+                      <td>{{ getInsumoNombre(insumo.insumoId) }}</td>
+                      <td>{{ insumo.cantidad }}</td>
+                      <td>
+                        <button class="btn-icon danger" (click)="removeInsumo(insumo.id)" title="Eliminar">
+                          ✕
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </div>
+        }
+        @case ('alimentacion') {
+          <div class="alimentacion-tab">
+            @if (loadingAlimentacion()) {
+              <p class="loading-text">Cargando alimentación...</p>
+            } @else if (alimentacion().length === 0) {
+              <p class="empty-text">No hay registros de alimentación para este evento.</p>
+            } @else {
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Detalle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of alimentacion(); track item.id) {
+                    <tr>
+                      <td>{{ item.id }}</td>
+                      <td>{{ item.descripcion || item.nombre || '—' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </div>
+        }
+      }
+    </section>
+  }
+</div>

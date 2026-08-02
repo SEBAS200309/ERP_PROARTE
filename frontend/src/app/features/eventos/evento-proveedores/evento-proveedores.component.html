@@ -1,0 +1,54 @@
+<div class="evento-proveedores">
+  <div class="add-form">
+    <select [(ngModel)]="newProveedorId">
+      <option value="">Seleccionar proveedor...</option>
+      @for (prov of proveedoresOptions(); track prov.id) {
+        <option [value]="prov.id">{{ prov.nombre }}</option>
+      }
+    </select>
+
+    <select [(ngModel)]="newServicioId">
+      <option value="">Seleccionar servicio...</option>
+      @for (serv of serviciosOptions(); track serv.id) {
+        <option [value]="serv.id">{{ serv.nombre }}</option>
+      }
+    </select>
+
+    <app-animated-button
+      variant="primary"
+      ariaLabel="Agregar proveedor al evento"
+      [disabled]="!newProveedorId || !newServicioId"
+      (buttonClick)="addProveedor()">
+      Agregar
+    </app-animated-button>
+  </div>
+
+  @if (loading()) {
+    <p class="loading-text">Cargando proveedores...</p>
+  } @else if (proveedores().length === 0) {
+    <p class="empty-text">No hay proveedores asociados a este evento.</p>
+  } @else {
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Proveedor</th>
+          <th>Servicio</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (prov of proveedores(); track prov.id) {
+          <tr>
+            <td>{{ getProveedorNombre(prov.proveedorId) }}</td>
+            <td>{{ getServicioNombre(prov.servicioId) }}</td>
+            <td>
+              <button class="btn-icon danger" (click)="removeProveedor(prov.id)" title="Eliminar">
+                ✕
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

@@ -458,7 +458,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `CotizacionService` extending BaseCrudService + estados + vencimientos + pdf download
   - Routes: /cotizaciones, /cotizaciones/nuevo, /cotizaciones/:id/editar, /cotizaciones/vencimientos
 
-- [ ] 6.9 Implement Eventos feature (Requirement 6)
+- [x] 6.9 Implement Eventos feature (Requirement 6)
   - `EventoListComponent` — DataTable of eventos
   - `EventoDetailComponent` — full detail with tabs: proveedores, servicios, personas, observaciones, insumos, alimentacion
   - `EventoProveedoresComponent` — associate proveedores to evento

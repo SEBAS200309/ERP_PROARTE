@@ -1,0 +1,62 @@
+<div class="evento-observaciones">
+  <div class="add-form">
+    <textarea
+      [(ngModel)]="newTexto"
+      placeholder="Escribir nueva observación..."
+      rows="3"
+      class="obs-textarea"></textarea>
+    <app-animated-button
+      variant="primary"
+      ariaLabel="Agregar observación"
+      [disabled]="!newTexto.trim()"
+      (buttonClick)="addObservacion()">
+      Agregar Observación
+    </app-animated-button>
+  </div>
+
+  @if (loading()) {
+    <p class="loading-text">Cargando observaciones...</p>
+  } @else if (observaciones().length === 0) {
+    <p class="empty-text">No hay observaciones registradas para este evento.</p>
+  } @else {
+    <div class="observaciones-list">
+      @for (obs of observaciones(); track obs.id) {
+        <div class="obs-card">
+          @if (editingId() === obs.id) {
+            <div class="edit-form">
+              <textarea
+                [(ngModel)]="editTexto"
+                rows="3"
+                class="obs-textarea"></textarea>
+              <div class="edit-actions">
+                <app-animated-button
+                  variant="primary"
+                  ariaLabel="Guardar cambios"
+                  [disabled]="!editTexto.trim()"
+                  (buttonClick)="saveEdit(obs.id)">
+                  Guardar
+                </app-animated-button>
+                <app-animated-button
+                  variant="ghost"
+                  ariaLabel="Cancelar edición"
+                  (buttonClick)="cancelEdit()">
+                  Cancelar
+                </app-animated-button>
+              </div>
+            </div>
+          } @else {
+            <div class="obs-content">
+              <p class="obs-texto">{{ obs.texto }}</p>
+              <div class="obs-meta">
+                <span class="obs-fecha">{{ obs.fecha }}</span>
+                <button class="btn-edit" (click)="startEdit(obs)" title="Editar observación">
+                  ✎ Editar
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

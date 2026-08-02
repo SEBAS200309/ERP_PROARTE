@@ -90,10 +90,8 @@ export const routes: Routes = [
         path: 'eventos',
         canActivate: [permissionGuard],
         data: { tabla: 'evento', accion: 'ver_listado' },
-        loadComponent: () =>
-          import('./shared/components/placeholder/placeholder.component').then(
-            (m) => m.PlaceholderComponent
-          ),
+        loadChildren: () =>
+          import('./features/eventos/eventos.routes').then((m) => m.default),
       },
       {
         path: 'ordenes-compra',

@@ -1,0 +1,62 @@
+<div class="evento-personas">
+  <div class="add-form">
+    <select [(ngModel)]="newPersonaId">
+      <option value="">Seleccionar persona...</option>
+      @for (persona of personasOptions(); track persona.id) {
+        <option [value]="persona.id">{{ persona.nombre }}</option>
+      }
+    </select>
+
+    <select [(ngModel)]="newRolEventoId">
+      <option value="">Seleccionar rol...</option>
+      @for (rol of rolesOptions(); track rol.id) {
+        <option [value]="rol.id">{{ rol.nombre }}</option>
+      }
+    </select>
+
+    <input
+      type="text"
+      [(ngModel)]="newObservaciones"
+      placeholder="Observaciones (opcional)"
+      class="obs-input" />
+
+    <app-animated-button
+      variant="primary"
+      ariaLabel="Agregar persona al evento"
+      [disabled]="!newPersonaId || !newRolEventoId"
+      (buttonClick)="addContacto()">
+      Agregar
+    </app-animated-button>
+  </div>
+
+  @if (loading()) {
+    <p class="loading-text">Cargando personas...</p>
+  } @else if (contactos().length === 0) {
+    <p class="empty-text">No hay personas asociadas a este evento.</p>
+  } @else {
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Persona</th>
+          <th>Rol</th>
+          <th>Observaciones</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (contacto of contactos(); track contacto.id) {
+          <tr>
+            <td>{{ getPersonaNombre(contacto.personaId) }}</td>
+            <td>{{ getRolNombre(contacto.rolEventoId) }}</td>
+            <td>{{ contacto.observaciones || '—' }}</td>
+            <td>
+              <button class="btn-icon danger" (click)="removeContacto(contacto.id)" title="Eliminar">
+                ✕
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
