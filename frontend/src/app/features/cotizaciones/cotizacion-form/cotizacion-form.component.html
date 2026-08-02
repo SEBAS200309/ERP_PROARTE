@@ -1,0 +1,139 @@
+<div class="cotizacion-form-container">
+  <header class="form-header">
+    <h1>{{ pageTitle() }}</h1>
+    @if (isEditMode()) {
+      <div class="header-actions">
+        <app-animated-button
+          variant="secondary"
+          ariaLabel="Recalcular total"
+          (buttonClick)="recalcular()">
+          Recalcular
+        </app-animated-button>
+        <app-animated-button
+          variant="secondary"
+          ariaLabel="Descargar PDF"
+          (buttonClick)="downloadPdf()">
+          Descargar PDF
+        </app-animated-button>
+      </div>
+    }
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando datos de la cotización...</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()" class="cotizacion-form">
+      <div class="form-section">
+        <h2>Datos Generales</h2>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="codigo">Código</label>
+            <input
+              id="codigo"
+              type="text"
+              formControlName="codigo"
+              placeholder="Se genera automáticamente si se deja vacío"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="estadoId">Estado *</label>
+            <select id="estadoId" formControlName="estadoId">
+              <option value="">Seleccione un estado</option>
+              @for (estado of estados(); track estado.id) {
+                <option [value]="estado.id">{{ estado.nombre }}</option>
+              }
+            </select>
+            @if (hasError('estadoId', 'required')) {
+              <span class="error-message">El estado es obligatorio</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="fechaVencimiento">Fecha de Vencimiento</label>
+            <input
+              id="fechaVencimiento"
+              type="date"
+              formControlName="fechaVencimiento"
+            />
+          </div>
+
+          <div class="form-field">
+            @if (isEditMode() && cotizacion()) {
+              <label>Total</label>
+              <div class="total-display">{{ cotizacion()!.total | number:'1.0-2' }}</div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Cliente</h2>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="personaId">Persona</label>
+            <select id="personaId" formControlName="personaId">
+              <option value="">Sin persona asignada</option>
+              @for (persona of personas(); track persona.id) {
+                <option [value]="persona.id">{{ persona.nombre }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="empresaId">Empresa</label>
+            <select id="empresaId" formControlName="empresaId">
+              <option value="">Sin empresa asignada</option>
+              @for (empresa of empresas(); track empresa.id) {
+                <option [value]="empresa.id">{{ empresa.nombre }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Ítems de la Cotización</h2>
+        <app-cotizacion-items
+          [items]="items()"
+          (itemsChange)="onItemsChange($event)"
+        />
+      </div>
+
+      @if (isEditMode() && cotizacion()) {
+        <div class="form-section">
+          <h2>Cambiar Estado</h2>
+          <app-cotizacion-estado
+            [cotizacionId]="cotizacion()!.id"
+            [currentEstadoId]="cotizacion()!.estadoId"
+            (estadoChanged)="onEstadoChanged($event)"
+          />
+        </div>
+      }
+
+      <div class="form-actions">
+        <app-animated-button
+          variant="secondary"
+          type="button"
+          ariaLabel="Cancelar"
+          (buttonClick)="cancel()">
+          Cancelar
+        </app-animated-button>
+        <app-animated-button
+          variant="primary"
+          type="submit"
+          [disabled]="form.invalid || saving()"
+          [loading]="saving()"
+          ariaLabel="Guardar cotización">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </app-animated-button>
+      </div>
+    </form>
+  }
+</div>

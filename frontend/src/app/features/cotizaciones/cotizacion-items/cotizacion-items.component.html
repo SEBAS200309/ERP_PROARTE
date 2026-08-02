@@ -1,0 +1,87 @@
+<div class="cotizacion-items-container">
+  <div class="items-header">
+    <app-animated-button
+      variant="secondary"
+      ariaLabel="Agregar ítem"
+      (buttonClick)="addItem()">
+      + Agregar Ítem
+    </app-animated-button>
+  </div>
+
+  @if (editableItems().length === 0) {
+    <p class="empty-message">No hay ítems agregados. Haga clic en "Agregar Ítem" para comenzar.</p>
+  } @else {
+    <div class="items-table-wrapper">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Servicio</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Descuento/Recargo</th>
+            <th>Subtotal</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of editableItems(); track $index) {
+            <tr>
+              <td>
+                <select
+                  [ngModel]="item.servicioId"
+                  (ngModelChange)="updateItem($index, 'servicioId', $event)"
+                  class="item-select">
+                  <option value="">Seleccione servicio</option>
+                  @for (servicio of servicios(); track servicio.id) {
+                    <option [value]="servicio.id">{{ servicio.nombre }}</option>
+                  }
+                </select>
+              </td>
+              <td>
+                <input
+                  type="number"
+                  [ngModel]="item.cantidad"
+                  (ngModelChange)="updateItem($index, 'cantidad', $event)"
+                  min="1"
+                  class="item-input item-input-small"
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  [ngModel]="item.precioUnitario"
+                  (ngModelChange)="updateItem($index, 'precioUnitario', $event)"
+                  min="0"
+                  step="0.01"
+                  class="item-input"
+                />
+              </td>
+              <td>
+                <select
+                  [ngModel]="item.descuentoRecargoId"
+                  (ngModelChange)="updateItem($index, 'descuentoRecargoId', $event)"
+                  class="item-select">
+                  <option value="">Sin descuento/recargo</option>
+                  @for (dr of descuentosRecargos(); track dr.id) {
+                    <option [value]="dr.id">{{ dr.nombre }} ({{ dr.valor }}%)</option>
+                  }
+                </select>
+              </td>
+              <td class="subtotal-cell">
+                {{ getSubtotal(item) | number:'1.0-2' }}
+              </td>
+              <td>
+                <app-animated-button
+                  variant="danger"
+                  ariaLabel="Eliminar ítem"
+                  (buttonClick)="removeItem($index)">
+                  ✕
+                </app-animated-button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

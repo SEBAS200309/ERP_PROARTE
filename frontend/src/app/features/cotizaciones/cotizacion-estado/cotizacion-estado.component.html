@@ -1,0 +1,34 @@
+<div class="cotizacion-estado-container">
+  <div class="estado-current">
+    <span class="estado-label">Estado actual:</span>
+    <span class="estado-value">{{ getEstadoNombre(currentEstadoId()) }}</span>
+  </div>
+
+  <div class="estado-change">
+    <div class="estado-field">
+      <label for="nuevoEstado">Nuevo estado:</label>
+      <select
+        id="nuevoEstado"
+        [ngModel]="selectedEstadoId()"
+        (ngModelChange)="selectedEstadoId.set($event)">
+        <option value="">Seleccione un estado</option>
+        @for (estado of estados(); track estado.id) {
+          <option [value]="estado.id">{{ estado.nombre }}</option>
+        }
+      </select>
+    </div>
+
+    <app-animated-button
+      variant="primary"
+      [disabled]="saving() || !selectedEstadoId() || selectedEstadoId() === currentEstadoId()"
+      [loading]="saving()"
+      ariaLabel="Cambiar estado"
+      (buttonClick)="cambiarEstado()">
+      {{ saving() ? 'Cambiando...' : 'Cambiar Estado' }}
+    </app-animated-button>
+  </div>
+
+  @if (errorMessage()) {
+    <p class="error-message">{{ errorMessage() }}</p>
+  }
+</div>

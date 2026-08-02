@@ -449,7 +449,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `ServicioService`, `PorcentajeService` extending BaseCrudService
   - Routes: /servicios, /servicios/nuevo, /servicios/:id, /descuentos-recargos
 
-- [ ] 6.8 Implement Cotizaciones feature (Requirement 5)
+- [x] 6.8 Implement Cotizaciones feature (Requirement 5)
   - `CotizacionListComponent` — DataTable with filters by estado, cliente, fecha, vencimiento
   - `CotizacionFormComponent` — create/edit with items, apply porcentajes, assign cliente
   - `CotizacionItemsComponent` — inline table to add/remove/edit items

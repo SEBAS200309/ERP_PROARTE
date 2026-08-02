@@ -1,0 +1,42 @@
+<div class="vencimiento-container">
+  <header class="list-header">
+    <h1>Cotizaciones Próximas a Vencer</h1>
+    <div class="header-actions">
+      <app-animated-button
+        variant="secondary"
+        ariaLabel="Volver a la lista de cotizaciones"
+        (buttonClick)="goBack()">
+        ← Volver
+      </app-animated-button>
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <div class="filter-field">
+      <label for="diasFilter">Días para vencimiento:</label>
+      <select
+        id="diasFilter"
+        [ngModel]="dias()"
+        (ngModelChange)="onDiasChange($event)">
+        <option [value]="3">3 días</option>
+        <option [value]="7">7 días</option>
+        <option [value]="15">15 días</option>
+        <option [value]="30">30 días</option>
+      </select>
+    </div>
+  </div>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="cotizaciones()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No hay cotizaciones próximas a vencer"
+    (viewAction)="onView($event)"
+    (editAction)="onEdit($event)"
+    (pageChange)="onPageChange($event)"
+  />
+</div>

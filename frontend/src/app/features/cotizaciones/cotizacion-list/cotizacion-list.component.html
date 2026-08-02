@@ -1,0 +1,87 @@
+<div class="cotizacion-list-container">
+  <header class="list-header">
+    <h1>Gestión de Cotizaciones</h1>
+    <div class="header-actions">
+      <app-animated-button
+        variant="secondary"
+        ariaLabel="Ver cotizaciones próximas a vencer"
+        (buttonClick)="goToVencimientos()">
+        Vencimientos
+      </app-animated-button>
+      @if (canCreate) {
+        <app-animated-button
+          variant="primary"
+          ariaLabel="Crear nueva cotización"
+          (buttonClick)="createCotizacion()">
+          + Nueva Cotización
+        </app-animated-button>
+      }
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <div class="filter-field">
+      <label for="estadoFilter">Estado:</label>
+      <select
+        id="estadoFilter"
+        [ngModel]="selectedEstadoId()"
+        (ngModelChange)="onEstadoChange($event)">
+        <option value="">Todos los estados</option>
+        @for (estado of estados(); track estado.id) {
+          <option [value]="estado.id">{{ estado.nombre }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-field">
+      <label for="personaFilter">Cliente (Persona):</label>
+      <select
+        id="personaFilter"
+        [ngModel]="selectedPersonaId()"
+        (ngModelChange)="onPersonaChange($event)">
+        <option value="">Todas las personas</option>
+        @for (persona of personas(); track persona.id) {
+          <option [value]="persona.id">{{ persona.nombre }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-field">
+      <label for="empresaFilter">Cliente (Empresa):</label>
+      <select
+        id="empresaFilter"
+        [ngModel]="selectedEmpresaId()"
+        (ngModelChange)="onEmpresaChange($event)">
+        <option value="">Todas las empresas</option>
+        @for (empresa of empresas(); track empresa.id) {
+          <option [value]="empresa.id">{{ empresa.nombre }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="cotizaciones()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron cotizaciones"
+    (viewAction)="onView($event)"
+    (editAction)="onEdit($event)"
+    (deleteAction)="onDelete($event)"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Cotización"
+    message="¿Está seguro que desea eliminar esta cotización? Esta acción no se puede deshacer."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>
