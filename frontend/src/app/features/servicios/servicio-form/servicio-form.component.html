@@ -1,0 +1,96 @@
+<div class="servicio-form-container">
+  <header class="form-header">
+    <h1>{{ pageTitle() }}</h1>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando datos del servicio...</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()" class="servicio-form">
+      <div class="form-field">
+        <label for="nombre">Nombre *</label>
+        <input
+          id="nombre"
+          type="text"
+          formControlName="nombre"
+          placeholder="Nombre del servicio"
+        />
+        @if (hasError('nombre', 'required')) {
+          <span class="error-message">El nombre es obligatorio</span>
+        }
+        @if (hasError('nombre', 'maxlength')) {
+          <span class="error-message">El nombre no puede exceder 200 caracteres</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="descripcion">Descripción</label>
+        <textarea
+          id="descripcion"
+          formControlName="descripcion"
+          placeholder="Descripción del servicio"
+          rows="3"
+        ></textarea>
+        @if (hasError('descripcion', 'maxlength')) {
+          <span class="error-message">La descripción no puede exceder 500 caracteres</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="categoriaId">Categoría</label>
+        <select id="categoriaId" formControlName="categoriaId">
+          <option value="">Sin categoría</option>
+          @for (cat of categorias(); track cat.id) {
+            <option [value]="cat.id">{{ cat.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label for="servicioPadreId">Servicio Padre</label>
+        <select id="servicioPadreId" formControlName="servicioPadreId">
+          <option value="">Ninguno (servicio raíz)</option>
+          @for (srv of serviciosPadre(); track srv.id) {
+            <option [value]="srv.id">{{ srv.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field checkbox-field">
+          <label>
+            <input type="checkbox" formControlName="esPropio" />
+            Es servicio propio
+          </label>
+        </div>
+
+        <div class="form-field checkbox-field">
+          <label>
+            <input type="checkbox" formControlName="requiereOc" />
+            Requiere orden de compra
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <app-animated-button
+          variant="secondary"
+          type="button"
+          ariaLabel="Cancelar"
+          (buttonClick)="cancel()">
+          Cancelar
+        </app-animated-button>
+        <app-animated-button
+          variant="primary"
+          type="submit"
+          [disabled]="form.invalid || saving()"
+          [loading]="saving()"
+          ariaLabel="Guardar servicio">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </app-animated-button>
+      </div>
+    </form>
+  }
+</div>

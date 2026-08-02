@@ -1,0 +1,61 @@
+<div class="servicio-list-container">
+  <header class="list-header">
+    <h1>Gestión de Servicios</h1>
+    <div class="header-actions">
+      <app-animated-button
+        variant="secondary"
+        ariaLabel="Ver árbol de servicios"
+        (buttonClick)="goToTree()">
+        Árbol
+      </app-animated-button>
+      @if (canCreate) {
+        <app-animated-button
+          variant="primary"
+          ariaLabel="Crear nuevo servicio"
+          (buttonClick)="createServicio()">
+          + Nuevo Servicio
+        </app-animated-button>
+      }
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <div class="filter-field">
+      <label for="categoriaFilter">Categoría:</label>
+      <select
+        id="categoriaFilter"
+        [ngModel]="selectedCategoriaId()"
+        (ngModelChange)="onCategoriaChange($event)">
+        <option value="">Todas las categorías</option>
+        @for (cat of categorias(); track cat.id) {
+          <option [value]="cat.id">{{ cat.nombre }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="servicios()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron servicios"
+    (viewAction)="onView($event)"
+    (editAction)="onEdit($event)"
+    (deleteAction)="onDelete($event)"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Servicio"
+    message="¿Está seguro que desea eliminar este servicio? Esta acción no se puede deshacer."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>

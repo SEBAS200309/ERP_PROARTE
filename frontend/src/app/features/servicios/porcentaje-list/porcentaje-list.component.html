@@ -1,0 +1,40 @@
+<div class="porcentaje-list-container">
+  <header class="list-header">
+    <h1>Descuentos y Recargos</h1>
+    <div class="header-actions">
+      @if (canCreate) {
+        <app-animated-button
+          variant="primary"
+          ariaLabel="Crear nuevo descuento o recargo"
+          (buttonClick)="createPorcentaje()">
+          + Nuevo
+        </app-animated-button>
+      }
+    </div>
+  </header>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="porcentajes()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron descuentos ni recargos"
+    (viewAction)="onView($event)"
+    (editAction)="onEdit($event)"
+    (deleteAction)="onDelete($event)"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Descuento/Recargo"
+    message="¿Está seguro que desea eliminar este registro? Esta acción no se puede deshacer."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>

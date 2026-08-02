@@ -1,0 +1,82 @@
+<div class="porcentaje-form-container">
+  <header class="form-header">
+    <h1>{{ pageTitle() }}</h1>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando datos...</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()" class="porcentaje-form">
+      <div class="form-field">
+        <label for="nombre">Nombre *</label>
+        <input
+          id="nombre"
+          type="text"
+          formControlName="nombre"
+          placeholder="Nombre del descuento o recargo"
+        />
+        @if (hasError('nombre', 'required')) {
+          <span class="error-message">El nombre es obligatorio</span>
+        }
+        @if (hasError('nombre', 'maxlength')) {
+          <span class="error-message">El nombre no puede exceder 200 caracteres</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="valor">Valor (%) *</label>
+        <input
+          id="valor"
+          type="number"
+          formControlName="valor"
+          placeholder="Ej: 15"
+          min="0"
+          max="100"
+          step="0.01"
+        />
+        @if (hasError('valor', 'required')) {
+          <span class="error-message">El valor es obligatorio</span>
+        }
+        @if (hasError('valor', 'min')) {
+          <span class="error-message">El valor mínimo es 0</span>
+        }
+        @if (hasError('valor', 'max')) {
+          <span class="error-message">El valor máximo es 100</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="tipoId">Tipo *</label>
+        <select id="tipoId" formControlName="tipoId">
+          <option value="">Seleccione un tipo</option>
+          @for (tipo of tipos(); track tipo.id) {
+            <option [value]="tipo.id">{{ tipo.nombre }}</option>
+          }
+        </select>
+        @if (hasError('tipoId', 'required')) {
+          <span class="error-message">Debe seleccionar un tipo</span>
+        }
+      </div>
+
+      <div class="form-actions">
+        <app-animated-button
+          variant="secondary"
+          type="button"
+          ariaLabel="Cancelar"
+          (buttonClick)="cancel()">
+          Cancelar
+        </app-animated-button>
+        <app-animated-button
+          variant="primary"
+          type="submit"
+          [disabled]="form.invalid || saving()"
+          [loading]="saving()"
+          ariaLabel="Guardar descuento o recargo">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </app-animated-button>
+      </div>
+    </form>
+  }
+</div>

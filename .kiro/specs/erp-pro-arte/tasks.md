@@ -440,7 +440,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `ProveedorService` extending BaseCrudService + portafolio + solicitudes
   - Routes: /proveedores, /proveedores/nuevo, /proveedores/:id/editar, /proveedores/:id/portafolio
 
-- [ ] 6.7 Implement Servicios feature (Requirement 4)
+- [x] 6.7 Implement Servicios feature (Requirement 4)
   - `ServicioListComponent` — DataTable with filter by categoria (propio/tercero)
   - `ServicioFormComponent` — create/edit, select parent servicio (hierarchy)
   - `SubservicioTreeComponent` — tree view of servicio hierarchy

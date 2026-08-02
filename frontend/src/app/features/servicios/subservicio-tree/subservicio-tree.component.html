@@ -1,0 +1,55 @@
+<div class="subservicio-tree-container">
+  <header class="tree-header">
+    <h1>Árbol de Servicios</h1>
+    <app-animated-button
+      variant="secondary"
+      ariaLabel="Volver al listado"
+      (buttonClick)="goBack()">
+      ← Volver
+    </app-animated-button>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando árbol de servicios...</p>
+    </div>
+  } @else if (treeNodes().length === 0) {
+    <div class="empty-state">
+      <p>No hay servicios registrados.</p>
+    </div>
+  } @else {
+    <div class="tree-content">
+      <ng-container *ngTemplateOutlet="treeLevel; context: { nodes: treeNodes(), level: 0 }" />
+    </div>
+  }
+</div>
+
+<ng-template #treeLevel let-nodes="nodes" let-level="level">
+  <ul class="tree-list" [class.root-level]="level === 0">
+    @for (node of nodes; track node.servicio.id) {
+      <li class="tree-node">
+        <div class="node-content" [style.padding-left.rem]="level * 1.5">
+          <button
+            class="expand-btn"
+            (click)="toggleNode(node)"
+            [attr.aria-expanded]="node.expanded"
+            aria-label="Expandir/Colapsar">
+            <span class="expand-icon" [class.expanded]="node.expanded">▶</span>
+          </button>
+          <div class="node-info" (click)="navigateToServicio(node.servicio)">
+            <span class="node-name">{{ node.servicio.nombre }}</span>
+            <span class="node-meta">
+              <span class="badge" [class.badge-propio]="node.servicio.esPropio" [class.badge-tercero]="!node.servicio.esPropio">
+                {{ node.servicio.esPropio ? 'Propio' : 'Tercero' }}
+              </span>
+              <span class="node-categoria">{{ getCategoriaNombre(node.servicio.categoriaId) }}</span>
+            </span>
+          </div>
+        </div>
+        @if (node.expanded && node.children.length > 0) {
+          <ng-container *ngTemplateOutlet="treeLevel; context: { nodes: node.children, level: level + 1 }" />
+        }
+      </li>
+    }
+  </ul>
+</ng-template>

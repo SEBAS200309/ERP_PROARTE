@@ -69,10 +69,15 @@ export const routes: Routes = [
         path: 'servicios',
         canActivate: [permissionGuard],
         data: { tabla: 'servicio', accion: 'ver_listado' },
-        loadComponent: () =>
-          import('./shared/components/placeholder/placeholder.component').then(
-            (m) => m.PlaceholderComponent
-          ),
+        loadChildren: () =>
+          import('./features/servicios/servicios.routes').then((m) => m.default),
+      },
+      {
+        path: 'descuentos-recargos',
+        canActivate: [permissionGuard],
+        data: { tabla: 'descuentos_recargos', accion: 'ver_listado' },
+        loadChildren: () =>
+          import('./features/servicios/servicios.routes').then((m) => m.descuentosRecargosRoutes),
       },
       {
         path: 'cotizaciones',
