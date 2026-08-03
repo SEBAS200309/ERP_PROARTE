@@ -1,0 +1,40 @@
+<div class="presentacion-list-container">
+  <header class="list-header">
+    <h1>Gestión de Presentaciones</h1>
+    <div class="header-actions">
+      @if (canCreate) {
+        <app-animated-button
+          variant="primary"
+          ariaLabel="Crear nueva presentación"
+          (buttonClick)="createPresentacion()">
+          + Nueva Presentación
+        </app-animated-button>
+      }
+    </div>
+  </header>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="presentaciones()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron presentaciones"
+    (viewAction)="onView($event)"
+    (editAction)="onEdit($event)"
+    (deleteAction)="onDelete($event)"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Presentación"
+    message="¿Está seguro que desea eliminar esta presentación? Esta acción no se puede deshacer."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>

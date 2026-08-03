@@ -489,7 +489,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `MensajeService` extending BaseCrudService
   - Routes: /mensajes, /mensajes/nuevo, /mensajes/:id/editar
 
-- [ ] 6.13 Implement Presentaciones feature (Requirement 9)
+- [x] 6.13 Implement Presentaciones feature (Requirement 9)
   - `PresentacionListComponent` — DataTable with filters
   - `PresentacionFormComponent` — create/edit, link to servicio
   - PDF generation/download button

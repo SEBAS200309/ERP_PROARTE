@@ -111,10 +111,8 @@ export const routes: Routes = [
         path: 'presentaciones',
         canActivate: [permissionGuard],
         data: { tabla: 'presentacion', accion: 'ver_listado' },
-        loadComponent: () =>
-          import('./shared/components/placeholder/placeholder.component').then(
-            (m) => m.PlaceholderComponent
-          ),
+        loadChildren: () =>
+          import('./features/presentaciones/presentaciones.routes').then((m) => m.default),
       },
       {
         path: 'inventario',

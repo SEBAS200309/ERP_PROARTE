@@ -1,0 +1,102 @@
+<div class="presentacion-form-container">
+  <header class="form-header">
+    <h1>{{ pageTitle() }}</h1>
+    <div class="header-actions">
+      @if (isEditMode()) {
+        <app-animated-button
+          variant="secondary"
+          [disabled]="downloadingPdf()"
+          [loading]="downloadingPdf()"
+          ariaLabel="Descargar PDF"
+          (buttonClick)="descargarPdf()">
+          {{ downloadingPdf() ? 'Generando...' : 'Descargar PDF' }}
+        </app-animated-button>
+      }
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando datos de la presentación...</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()" class="presentacion-form">
+      <div class="form-section">
+        <h2>Datos de la Presentación</h2>
+
+        <div class="form-row full-width">
+          <div class="form-field">
+            <label for="titulo">Título *</label>
+            <input
+              id="titulo"
+              type="text"
+              formControlName="titulo"
+              placeholder="Título de la presentación"
+              maxlength="200"
+            />
+            @if (hasError('titulo', 'required')) {
+              <span class="error-message">El título es obligatorio</span>
+            }
+            @if (hasError('titulo', 'maxlength')) {
+              <span class="error-message">El título no puede exceder 200 caracteres</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row full-width">
+          <div class="form-field">
+            <label for="descripcion">Descripción</label>
+            <textarea
+              id="descripcion"
+              formControlName="descripcion"
+              rows="4"
+              placeholder="Descripción de la presentación..."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-row full-width">
+          <div class="form-field">
+            <label for="servicioId">Servicio</label>
+            <select id="servicioId" formControlName="servicioId">
+              <option value="">Sin servicio vinculado</option>
+              @for (servicio of servicios(); track servicio.id) {
+                <option [value]="servicio.id">{{ servicio.nombre }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row full-width">
+          <div class="form-field">
+            <label for="contenido">Contenido</label>
+            <textarea
+              id="contenido"
+              formControlName="contenido"
+              rows="12"
+              placeholder="Escriba el contenido de la presentación..."
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <app-animated-button
+          variant="secondary"
+          type="button"
+          ariaLabel="Cancelar"
+          (buttonClick)="cancel()">
+          Cancelar
+        </app-animated-button>
+        <app-animated-button
+          variant="primary"
+          type="submit"
+          [disabled]="form.invalid || saving()"
+          [loading]="saving()"
+          ariaLabel="Guardar presentación">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </app-animated-button>
+      </div>
+    </form>
+  }
+</div>
