@@ -104,10 +104,8 @@ export const routes: Routes = [
         path: 'mensajes',
         canActivate: [permissionGuard],
         data: { tabla: 'mensaje', accion: 'ver_listado' },
-        loadComponent: () =>
-          import('./shared/components/placeholder/placeholder.component').then(
-            (m) => m.PlaceholderComponent
-          ),
+        loadChildren: () =>
+          import('./features/mensajes/mensajes.routes').then((m) => m.default),
       },
       {
         path: 'presentaciones',

@@ -1,0 +1,66 @@
+<div class="mensaje-form-container">
+  <header class="form-header">
+    <h1>{{ pageTitle() }}</h1>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando datos del mensaje...</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()" class="mensaje-form">
+      <div class="form-section">
+        <h2>Datos del Mensaje</h2>
+
+        <div class="form-row full-width">
+          <div class="form-field">
+            <label for="nombre">Nombre *</label>
+            <input
+              id="nombre"
+              type="text"
+              formControlName="nombre"
+              placeholder="Nombre del mensaje"
+              maxlength="100"
+            />
+            @if (hasError('nombre', 'required')) {
+              <span class="error-message">El nombre es obligatorio</span>
+            }
+            @if (hasError('nombre', 'maxlength')) {
+              <span class="error-message">El nombre no puede exceder 100 caracteres</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row full-width">
+          <div class="form-field">
+            <label for="contenido">Contenido</label>
+            <textarea
+              id="contenido"
+              formControlName="contenido"
+              rows="12"
+              placeholder="Escriba el contenido del mensaje..."
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <app-animated-button
+          variant="secondary"
+          type="button"
+          ariaLabel="Cancelar"
+          (buttonClick)="cancel()">
+          Cancelar
+        </app-animated-button>
+        <app-animated-button
+          variant="primary"
+          type="submit"
+          [disabled]="form.invalid || saving()"
+          [loading]="saving()"
+          ariaLabel="Guardar mensaje">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </app-animated-button>
+      </div>
+    </form>
+  }
+</div>

@@ -483,7 +483,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `OrdenCompraService` extending BaseCrudService + descargar-excel
   - Routes: /ordenes-compra, /ordenes-compra/nuevo, /ordenes-compra/:id/editar
 
-- [ ] 6.12 Implement Mensajes feature (Requirement 8)
+- [x] 6.12 Implement Mensajes feature (Requirement 8)
   - `MensajeListComponent` — DataTable of message templates
   - `MensajeFormComponent` — create/edit message template (rich text or plain)
   - `MensajeService` extending BaseCrudService
