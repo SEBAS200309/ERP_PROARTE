@@ -11,6 +11,15 @@ spring:
   flyway:
     enabled: true
 
+app:
+  jwt:
+    secret: test-secret-key-for-integration-tests-minimum-256-bits-long-value-here
+    access-token-expiration: 3600000
+    refresh-token-expiration: 86400000
+  cors:
+    allowed-origins:
+      - http://localhost:4200
+
 logging:
   level:
     com.proarte.erp: WARN

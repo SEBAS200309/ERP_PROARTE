@@ -532,7 +532,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Test AuthService token generation/validation
   - Minimum 80% coverage on services
 
-- [ ] 7.2 Backend integration tests with Testcontainers
+- [x] 7.2 Backend integration tests with Testcontainers
   - PostgreSQL Testcontainer configuration
   - Test Flyway migrations run correctly
   - Test repository queries with real database
@@ -540,7 +540,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Test fn_crear_evento_desde_cotizacion validates estado=APROBADA
   - Test soft-delete behavior (records hidden after deactivation)
 
-- [ ] 7.3 Backend controller tests with MockMvc
+- [x] 7.3 Backend controller tests with MockMvc
   - Test all endpoints return correct HTTP status codes
   - Test authentication required (401 for unauthenticated)
   - Test permission denied (403 for unauthorized)
