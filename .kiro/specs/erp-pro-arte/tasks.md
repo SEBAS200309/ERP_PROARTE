@@ -525,7 +525,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
 
 ### Phase 7: Integration and Testing
 
-- [ ] 7.1 Backend unit tests for services layer
+- [x] 7.1 Backend unit tests for services layer
   - JUnit 5 + Mockito tests for each service class
   - Test CRUD operations, permission checks, edge cases
   - Test ProcedureExecutorService with mocked JDBC
