@@ -548,14 +548,14 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Test pagination parameters work correctly
   - Minimum 60% coverage on controllers
 
-- [ ] 7.4 Frontend unit tests for services
+- [x] 7.4 Frontend unit tests for services
   - Jasmine tests for AuthService, PermissionService, ErrorMessageService, ThemeService
   - Test BaseCrudService generic methods
   - Test interceptors (JWT attachment, error handling)
   - Test guards (auth redirect, permission check)
   - Minimum 70% coverage on services
 
-- [ ] 7.5 Frontend component tests
+- [x] 7.5 Frontend component tests
   - Test DataTableComponent renders columns, handles actions
   - Test ConfirmDialogComponent emits correct events
   - Test LoginComponent form validation and error display
@@ -563,7 +563,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - Test permission-based UI element visibility
   - Minimum 50% coverage on components
 
-- [ ] 7.6 End-to-end integration validation
+- [x] 7.6 End-to-end integration validation
   - Verify full login → dashboard → CRUD flow for each module
   - Verify permission enforcement (backend blocks + frontend hides)
   - Verify soft-delete (records disappear from lists but exist in DB)
