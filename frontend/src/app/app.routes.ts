@@ -118,10 +118,8 @@ export const routes: Routes = [
         path: 'inventario',
         canActivate: [permissionGuard],
         data: { tabla: 'insumo', accion: 'ver_listado' },
-        loadComponent: () =>
-          import('./shared/components/placeholder/placeholder.component').then(
-            (m) => m.PlaceholderComponent
-          ),
+        loadChildren: () =>
+          import('./features/inventario/inventario.routes').then((m) => m.default),
       },
       {
         path: 'catalogos',

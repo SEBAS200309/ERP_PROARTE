@@ -1,0 +1,57 @@
+<div class="retiro-list-container">
+  <header class="list-header">
+    <div class="header-title">
+      <app-animated-button
+        variant="secondary"
+        ariaLabel="Volver al inventario"
+        (buttonClick)="goBack()">
+        ← Volver
+      </app-animated-button>
+      <h1>Historial de Retiros</h1>
+    </div>
+    <div class="header-actions">
+      @if (canCreate) {
+        <app-animated-button
+          variant="primary"
+          ariaLabel="Registrar nuevo retiro"
+          (buttonClick)="goToNuevoRetiro()">
+          + Nuevo Retiro
+        </app-animated-button>
+      }
+    </div>
+  </header>
+
+  <div class="filter-section">
+    <div class="form-field">
+      <label for="insumo-select">Seleccionar Insumo</label>
+      <select
+        id="insumo-select"
+        [value]="selectedInsumoId()"
+        (change)="onInsumoChange($any($event.target).value)">
+        <option value="">-- Seleccione un insumo --</option>
+        @for (insumo of insumos(); track insumo.id) {
+          <option [value]="insumo.id">{{ insumo.nombre }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  @if (selectedInsumoId()) {
+    <app-data-table
+      [columns]="columns"
+      [data]="movimientos()"
+      [permissions]="permissions"
+      [loading]="loading()"
+      [totalItems]="totalItems()"
+      [pageSize]="pageSize()"
+      [currentPage]="currentPage()"
+      emptyMessage="No se encontraron movimientos"
+      (pageChange)="onPageChange($event)"
+      (sortChange)="onSortChange($event)"
+    />
+  } @else {
+    <div class="empty-state">
+      <p>Seleccione un insumo para ver su historial de retiros</p>
+    </div>
+  }
+</div>

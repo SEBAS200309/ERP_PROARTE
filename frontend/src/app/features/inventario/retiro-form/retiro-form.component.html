@@ -1,0 +1,91 @@
+<div class="retiro-form-container">
+  <header class="form-header">
+    <h1>Registrar Retiro</h1>
+  </header>
+
+  @if (successMessage()) {
+    <div class="success-message">
+      <p>{{ successMessage() }}</p>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="error-banner">
+      <p>{{ errorMessage() }}</p>
+    </div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="retiro-form">
+    <div class="form-section">
+      <h2>Datos del Retiro</h2>
+
+      <div class="form-row full-width">
+        <div class="form-field">
+          <label for="insumoId">Insumo *</label>
+          <select id="insumoId" formControlName="insumoId" (change)="onInsumoSelected()">
+            <option value="">-- Seleccione un insumo --</option>
+            @for (insumo of insumos(); track insumo.id) {
+              <option [value]="insumo.id">{{ insumo.nombre }} (Stock: {{ insumo.stockActual }})</option>
+            }
+          </select>
+          @if (hasError('insumoId', 'required')) {
+            <span class="error-message">Este campo es obligatorio</span>
+          }
+          @if (selectedInsumoStock() !== null) {
+            <span class="stock-info">Stock disponible: {{ selectedInsumoStock() }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-row full-width">
+        <div class="form-field">
+          <label for="cantidad">Cantidad *</label>
+          <input
+            id="cantidad"
+            type="number"
+            formControlName="cantidad"
+            placeholder="Cantidad a retirar"
+            min="0.01"
+            step="0.01"
+          />
+          @if (hasError('cantidad', 'required')) {
+            <span class="error-message">Este campo es obligatorio</span>
+          }
+          @if (hasError('cantidad', 'min')) {
+            <span class="error-message">La cantidad debe ser mayor a cero</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-row full-width">
+        <div class="form-field">
+          <label for="motivo">Motivo</label>
+          <textarea
+            id="motivo"
+            formControlName="motivo"
+            rows="3"
+            placeholder="Motivo del retiro (opcional)"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <app-animated-button
+        variant="secondary"
+        type="button"
+        ariaLabel="Cancelar"
+        (buttonClick)="cancel()">
+        Cancelar
+      </app-animated-button>
+      <app-animated-button
+        variant="primary"
+        type="submit"
+        [disabled]="form.invalid || saving()"
+        [loading]="saving()"
+        ariaLabel="Registrar retiro">
+        {{ saving() ? 'Registrando...' : 'Registrar Retiro' }}
+      </app-animated-button>
+    </div>
+  </form>
+</div>

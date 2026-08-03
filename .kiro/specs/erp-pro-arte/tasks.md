@@ -496,7 +496,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `PresentacionService` extending BaseCrudService + pdf
   - Routes: /presentaciones, /presentaciones/nuevo, /presentaciones/:id/editar
 
-- [ ] 6.14 Implement Inventario feature (Requirement 11)
+- [x] 6.14 Implement Inventario feature (Requirement 11)
   - `InventarioStockComponent` — current stock table with visual indicators (agotado)
   - `IngresoListComponent` — history of ingresos
   - `IngresoFormComponent` — register new ingreso (cantidad, detalle, fecha)

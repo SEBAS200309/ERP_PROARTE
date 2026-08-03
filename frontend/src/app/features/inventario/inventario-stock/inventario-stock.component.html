@@ -1,0 +1,57 @@
+<div class="inventario-stock-container">
+  <header class="list-header">
+    <h1>Inventario de Insumos</h1>
+    <div class="header-actions">
+      <app-animated-button
+        variant="secondary"
+        ariaLabel="Ver historial de ingresos"
+        (buttonClick)="goToIngresosHistory()">
+        Ingresos
+      </app-animated-button>
+      <app-animated-button
+        variant="secondary"
+        ariaLabel="Ver historial de retiros"
+        (buttonClick)="goToRetirosHistory()">
+        Retiros
+      </app-animated-button>
+      @if (canCreateIngreso) {
+        <app-animated-button
+          variant="primary"
+          ariaLabel="Registrar nuevo ingreso"
+          (buttonClick)="goToIngresos()">
+          + Nuevo Ingreso
+        </app-animated-button>
+      }
+      @if (canCreateRetiro) {
+        <app-animated-button
+          variant="primary"
+          ariaLabel="Registrar nuevo retiro"
+          (buttonClick)="goToRetiros()">
+          + Nuevo Retiro
+        </app-animated-button>
+      }
+    </div>
+  </header>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="insumos()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron insumos"
+    (viewAction)="onView($event)"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <!-- Stock badges overlay -->
+  @for (insumo of insumos(); track insumo.id) {
+    @if (insumo.isAgotado) {
+      <!-- Badge rendered via CSS class on row -->
+    }
+  }
+</div>
