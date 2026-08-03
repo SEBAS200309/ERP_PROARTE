@@ -22,6 +22,27 @@ const routes: Routes = [
         (m) => m.PersonalListComponent
       ),
   },
+  {
+    path: ':id/alimentacion',
+    loadComponent: () =>
+      import('./alimentacion/alimentacion-list/alimentacion-list.component').then(
+        (m) => m.AlimentacionListComponent
+      ),
+  },
+  {
+    path: ':id/alimentacion/ingresos/nuevo',
+    loadComponent: () =>
+      import('./alimentacion/alimentacion-ingreso-form/alimentacion-ingreso-form.component').then(
+        (m) => m.AlimentacionIngresoFormComponent
+      ),
+  },
+  {
+    path: ':id/alimentacion/retiros/nuevo',
+    loadComponent: () =>
+      import('./alimentacion/alimentacion-retiro-form/alimentacion-retiro-form.component').then(
+        (m) => m.AlimentacionRetiroFormComponent
+      ),
+  },
 ];
 
 export default routes;

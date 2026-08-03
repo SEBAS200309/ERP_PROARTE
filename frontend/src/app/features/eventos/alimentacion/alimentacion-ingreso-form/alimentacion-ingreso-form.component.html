@@ -1,0 +1,70 @@
+<div class="alimentacion-form-container">
+  <header class="form-header">
+    <h1>Registrar Ingreso de Alimentación</h1>
+  </header>
+
+  @if (successMessage()) {
+    <div class="success-message">
+      <p>{{ successMessage() }}</p>
+    </div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="alimentacion-form">
+    <div class="form-section">
+      <h2>Datos del Ingreso</h2>
+
+      <div class="form-row full-width">
+        <div class="form-field">
+          <label for="cantidad">Cantidad *</label>
+          <input
+            id="cantidad"
+            type="number"
+            formControlName="cantidad"
+            placeholder="Cantidad a ingresar"
+            min="0.01"
+            step="0.01"
+          />
+          @if (hasError('cantidad', 'required')) {
+            <span class="error-message">Este campo es obligatorio</span>
+          }
+          @if (hasError('cantidad', 'min')) {
+            <span class="error-message">La cantidad debe ser mayor a cero</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-row full-width">
+        <div class="form-field">
+          <label for="descripcion">Descripción</label>
+          <textarea
+            id="descripcion"
+            formControlName="descripcion"
+            rows="3"
+            placeholder="Descripción del ingreso (opcional, máx. 200 caracteres)"
+          ></textarea>
+          @if (hasError('descripcion', 'maxlength')) {
+            <span class="error-message">La descripción no puede exceder 200 caracteres</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <app-animated-button
+        variant="secondary"
+        type="button"
+        ariaLabel="Cancelar"
+        (buttonClick)="cancel()">
+        Cancelar
+      </app-animated-button>
+      <app-animated-button
+        variant="primary"
+        type="submit"
+        [disabled]="form.invalid || saving()"
+        [loading]="saving()"
+        ariaLabel="Registrar ingreso de alimentación">
+        {{ saving() ? 'Registrando...' : 'Registrar Ingreso' }}
+      </app-animated-button>
+    </div>
+  </form>
+</div>

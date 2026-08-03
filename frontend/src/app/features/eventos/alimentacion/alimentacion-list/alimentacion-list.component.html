@@ -1,0 +1,59 @@
+<div class="alimentacion-list-container">
+  <header class="list-header">
+    <h1>Alimentación del Evento</h1>
+    <div class="header-actions">
+      <app-animated-button
+        variant="secondary"
+        ariaLabel="Volver al evento"
+        (buttonClick)="goBackToEvento()">
+        ← Volver
+      </app-animated-button>
+      <app-animated-button
+        [variant]="tipoFiltro() === undefined ? 'primary' : 'secondary'"
+        ariaLabel="Ver todos los movimientos"
+        (buttonClick)="filterByTipo(undefined)">
+        Todos
+      </app-animated-button>
+      <app-animated-button
+        [variant]="tipoFiltro() === 'ingreso' ? 'primary' : 'secondary'"
+        ariaLabel="Filtrar por ingresos"
+        (buttonClick)="filterByTipo('ingreso')">
+        Ingresos
+      </app-animated-button>
+      <app-animated-button
+        [variant]="tipoFiltro() === 'retiro' ? 'primary' : 'secondary'"
+        ariaLabel="Filtrar por retiros"
+        (buttonClick)="filterByTipo('retiro')">
+        Retiros
+      </app-animated-button>
+      @if (canCreate) {
+        <app-animated-button
+          variant="primary"
+          ariaLabel="Registrar nuevo ingreso de alimentación"
+          (buttonClick)="goToNuevoIngreso()">
+          + Nuevo Ingreso
+        </app-animated-button>
+        <app-animated-button
+          variant="primary"
+          ariaLabel="Registrar nuevo retiro de alimentación"
+          (buttonClick)="goToNuevoRetiro()">
+          + Nuevo Retiro
+        </app-animated-button>
+      }
+    </div>
+  </header>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="movimientos()"
+    [permissions]="permissions"
+    [loading]="loading()"
+    [totalItems]="totalItems()"
+    [pageSize]="pageSize()"
+    [currentPage]="currentPage()"
+    emptyMessage="No se encontraron movimientos de alimentación"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+</div>

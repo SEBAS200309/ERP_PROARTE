@@ -506,7 +506,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `InventarioService` extending BaseCrudService
   - Routes: /inventario, /inventario/ingresos, /inventario/retiros
 
-- [ ] 6.15 Implement Alimentacion feature (Requirement 12)
+- [x] 6.15 Implement Alimentacion feature (Requirement 12)
   - `AlimentacionListComponent` — current status per evento
   - `AlimentacionIngresoFormComponent` — register ingreso
   - `AlimentacionRetiroFormComponent` — register retiro
