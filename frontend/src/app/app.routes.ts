@@ -125,10 +125,8 @@ export const routes: Routes = [
         path: 'catalogos',
         canActivate: [permissionGuard],
         data: { tabla: 'catalogo', accion: 'ver_listado' },
-        loadComponent: () =>
-          import('./shared/components/placeholder/placeholder.component').then(
-            (m) => m.PlaceholderComponent
-          ),
+        loadChildren: () =>
+          import('./features/catalogos/catalogos.routes').then((m) => m.default),
       },
     ],
   },

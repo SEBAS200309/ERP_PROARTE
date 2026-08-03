@@ -1,0 +1,93 @@
+<div class="catalogo-form-container">
+  <header class="form-header">
+    <h1>{{ pageTitle() }}</h1>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando datos del registro...</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()" class="catalogo-form">
+      <div class="form-section">
+        <h2>Datos del Registro</h2>
+
+        <div class="form-row full-width">
+          <div class="form-field">
+            <label for="nombre">Nombre *</label>
+            <input
+              id="nombre"
+              type="text"
+              formControlName="nombre"
+              placeholder="Nombre del registro"
+              maxlength="100"
+            />
+            @if (hasError('nombre', 'required')) {
+              <span class="error-message">El nombre es obligatorio</span>
+            }
+            @if (hasError('nombre', 'maxlength')) {
+              <span class="error-message">El nombre no puede exceder 100 caracteres</span>
+            }
+          </div>
+        </div>
+
+        @if (showContexto()) {
+          <div class="form-row full-width">
+            <div class="form-field">
+              <label for="contexto">Contexto *</label>
+              <input
+                id="contexto"
+                type="text"
+                formControlName="contexto"
+                placeholder="Contexto del estado (ej: cotizacion, evento)"
+                maxlength="50"
+              />
+              @if (hasError('contexto', 'required')) {
+                <span class="error-message">El contexto es obligatorio para estados</span>
+              }
+              @if (hasError('contexto', 'maxlength')) {
+                <span class="error-message">El contexto no puede exceder 50 caracteres</span>
+              }
+            </div>
+          </div>
+        }
+
+        @if (showAbreviatura()) {
+          <div class="form-row full-width">
+            <div class="form-field">
+              <label for="abreviatura">Abreviatura</label>
+              <input
+                id="abreviatura"
+                type="text"
+                formControlName="abreviatura"
+                placeholder="Abreviatura (ej: kg, m, hr)"
+                maxlength="10"
+              />
+              @if (hasError('abreviatura', 'maxlength')) {
+                <span class="error-message">La abreviatura no puede exceder 10 caracteres</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="form-actions">
+        <app-animated-button
+          variant="secondary"
+          type="button"
+          ariaLabel="Cancelar"
+          (buttonClick)="cancel()">
+          Cancelar
+        </app-animated-button>
+        <app-animated-button
+          variant="primary"
+          type="submit"
+          [disabled]="form.invalid || saving()"
+          [loading]="saving()"
+          ariaLabel="Guardar registro de catálogo">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </app-animated-button>
+      </div>
+    </form>
+  }
+</div>

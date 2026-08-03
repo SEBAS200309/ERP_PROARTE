@@ -514,7 +514,7 @@ Arquitectura: Angular 18+ SPA → Spring Boot 3.3+ REST API → PostgreSQL 15+ (
   - `AlimentacionService` extending BaseCrudService
   - Routes: /eventos/:id/alimentacion
 
-- [ ] 6.16 Implement Catalogos feature (Requirement 13)
+- [x] 6.16 Implement Catalogos feature (Requirement 13)
   - `CatalogoListComponent` — DataTable generica para listar valores de un catalogo seleccionado
   - `CatalogoFormComponent` — crear/editar valor de catalogo (nombre, contexto para estados)
   - `CatalogoSelectorComponent` — componente shared dropdown que carga opciones desde /api/v1/catalogos/{tipo}

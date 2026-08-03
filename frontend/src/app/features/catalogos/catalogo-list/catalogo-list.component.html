@@ -1,0 +1,68 @@
+<div class="catalogo-list-container">
+  <header class="list-header">
+    <h1>{{ selectedTipoLabel() }}</h1>
+    <div class="header-actions">
+      @if (selectedTipo() && canCreate) {
+        <app-animated-button
+          variant="primary"
+          ariaLabel="Crear nuevo registro de catálogo"
+          (buttonClick)="createItem()">
+          + Nuevo Registro
+        </app-animated-button>
+      }
+    </div>
+  </header>
+
+  <!-- Selector de tipo de catálogo -->
+  <div class="tipo-selector-section">
+    <label for="tipo-catalogo" class="tipo-label">Tipo de Catálogo</label>
+    <select
+      id="tipo-catalogo"
+      class="tipo-select"
+      [value]="selectedTipo() || ''"
+      (change)="onTipoChange($event)">
+      <option value="" disabled>Seleccione un tipo de catálogo</option>
+      @for (tipo of tiposCatalogo; track tipo.tipo) {
+        <option [value]="tipo.tipo">{{ tipo.label }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- Error de eliminación -->
+  @if (deleteErrorMessage()) {
+    <div class="error-banner" role="alert">
+      <span class="error-icon">⚠️</span>
+      <span class="error-text">{{ deleteErrorMessage() }}</span>
+      <button class="error-dismiss" (click)="dismissError()" aria-label="Cerrar mensaje">×</button>
+    </div>
+  }
+
+  <!-- Tabla de datos -->
+  @if (selectedTipo()) {
+    <app-data-table
+      [columns]="columns()"
+      [data]="items()"
+      [permissions]="permissions"
+      [loading]="loading()"
+      [totalItems]="totalItems()"
+      [pageSize]="pageSize()"
+      [currentPage]="currentPage()"
+      emptyMessage="No se encontraron registros para este catálogo"
+      (viewAction)="onView($event)"
+      (editAction)="onEdit($event)"
+      (deleteAction)="onDelete($event)"
+    />
+  } @else {
+    <div class="empty-state">
+      <p>Seleccione un tipo de catálogo para ver sus valores</p>
+    </div>
+  }
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Eliminar Registro de Catálogo"
+    message="¿Está seguro que desea eliminar este registro? Si está en uso por otras entidades, no podrá ser eliminado."
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</div>
