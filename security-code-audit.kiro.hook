@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "name": "Security Code Audit",
   "description": "Audita automáticamente el código fuente (fuera de .kiro) cuando se editan archivos Java, TypeScript o configuración, buscando brechas de seguridad según las mejores prácticas de Spring Security, Angular y manejo seguro de APIs. Verifica: inyección SQL, XSS, CSRF, manejo de credenciales, validación de entrada, autenticación/autorización, y exposición de datos sensibles.",
   "version": "1",

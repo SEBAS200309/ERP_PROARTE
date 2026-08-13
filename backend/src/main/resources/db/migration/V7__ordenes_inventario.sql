@@ -5,11 +5,11 @@
 
 CREATE TABLE orden_compra (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    codigo VARCHAR(20) UNIQUE,
     solicitud_id UUID NOT NULL,
-    numero VARCHAR(20) UNIQUE,
-    fecha DATE DEFAULT CURRENT_DATE,
+    descripcion TEXT,
+    monto DECIMAL(14,2) DEFAULT 0,
     estado_id UUID NOT NULL,
-    total DECIMAL(14,2) DEFAULT 0,
     activo BOOLEAN DEFAULT TRUE NOT NULL,
     created_by UUID,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE orden_compra (
 CREATE INDEX idx_orden_compra_solicitud_id ON orden_compra(solicitud_id);
 CREATE INDEX idx_orden_compra_estado_id ON orden_compra(estado_id);
 CREATE INDEX idx_orden_compra_created_by ON orden_compra(created_by);
-CREATE INDEX idx_orden_compra_numero ON orden_compra(numero);
+CREATE INDEX idx_orden_compra_codigo ON orden_compra(codigo);
 
 COMMENT ON TABLE orden_compra IS 'Órdenes de compra generadas para solicitudes de servicio';
 
@@ -34,10 +34,12 @@ CREATE TABLE insumo (
     unidad_medida_id UUID,
     stock_actual DECIMAL(10,2) DEFAULT 0,
     activo BOOLEAN DEFAULT TRUE NOT NULL,
+    created_by UUID,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
 
-    CONSTRAINT fk_insumo_unidad_medida FOREIGN KEY (unidad_medida_id) REFERENCES unidad_medida(id)
+    CONSTRAINT fk_insumo_unidad_medida FOREIGN KEY (unidad_medida_id) REFERENCES unidad_medida(id),
+    CONSTRAINT fk_insumo_created_by FOREIGN KEY (created_by) REFERENCES usuario(id)
 );
 
 CREATE INDEX idx_insumo_unidad_medida_id ON insumo(unidad_medida_id);

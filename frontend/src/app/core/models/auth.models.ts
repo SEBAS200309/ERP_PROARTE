@@ -38,15 +38,16 @@ export interface ApiError {
 export interface LoginResponseData {
   accessToken: string;
   refreshToken: string;
-  usuario: {
-    id: string;
-    username: string;
-    rol: string;
-  };
+  userId: string;
+  username: string;
+  nombreCompleto: string;
+  rol: string;
+  permisos: Record<string, Record<string, boolean>>;
 }
 
 export interface RefreshResponseData {
   accessToken: string;
+  refreshToken: string;
 }
 
 export interface TablaPermisos {

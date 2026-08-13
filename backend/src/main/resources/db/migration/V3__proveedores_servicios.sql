@@ -71,6 +71,7 @@ CREATE TABLE solicitud_servicio (
     servicio_id UUID NOT NULL,
     evento_id UUID,
     estado_id UUID NOT NULL,
+    descripcion TEXT,
     activo BOOLEAN DEFAULT TRUE NOT NULL,
     created_by UUID,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,

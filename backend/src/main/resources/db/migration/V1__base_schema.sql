@@ -64,6 +64,7 @@ CREATE TABLE rol (
     nombre VARCHAR(50) NOT NULL,
     descripcion TEXT,
     activo BOOLEAN DEFAULT TRUE NOT NULL,
+    created_by UUID,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
@@ -76,6 +77,7 @@ CREATE TABLE permiso (
     rol_id UUID NOT NULL,
     configuracion JSONB NOT NULL DEFAULT '{}',
     activo BOOLEAN DEFAULT TRUE NOT NULL,
+    created_by UUID,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
 
@@ -95,6 +97,7 @@ CREATE TABLE usuario (
     email VARCHAR(100),
     rol_id UUID NOT NULL,
     activo BOOLEAN DEFAULT TRUE NOT NULL,
+    created_by UUID,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
 
@@ -106,3 +109,10 @@ CREATE INDEX idx_usuario_username ON usuario(username);
 
 COMMENT ON TABLE usuario IS 'Usuarios del sistema con credenciales y rol asignado';
 COMMENT ON COLUMN usuario.password_hash IS 'Hash BCrypt de la contraseña del usuario';
+
+
+-- ============================================================
+-- FKs de created_by (agregadas después de crear usuario)
+-- ============================================================
+ALTER TABLE rol ADD CONSTRAINT fk_rol_created_by FOREIGN KEY (created_by) REFERENCES usuario(id);
+ALTER TABLE permiso ADD CONSTRAINT fk_permiso_created_by FOREIGN KEY (created_by) REFERENCES usuario(id);

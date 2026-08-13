@@ -138,7 +138,7 @@ INSERT INTO usuario (id, username, password_hash, nombre_completo, email, rol_id
 (
     gen_random_uuid(),
     'admin',
-    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+    '$2a$12$TzXzAKe.3yamWbIpGTPygO5gKRWbbYv5k7wLpeU60uurDO7xMbiTK',
     'Administrador Sistema',
     'admin@proarte.com.co',
     'a0000000-0000-0000-0000-000000000001'

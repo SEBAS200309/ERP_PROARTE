@@ -26,9 +26,6 @@ public class Insumo extends BaseEntity {
     @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
 
-    @Column(name = "unidad_medida", length = 20)
-    private String unidadMedida;
-
     @Column(name = "unidad_medida_id")
     private UUID unidadMedidaId;
 
