@@ -36,7 +36,7 @@ public class LeadController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) UUID estadoId,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<LeadResponse> page = leadService.getAll(search, estadoId, pageable)
                 .map(LeadResponse::from);
@@ -46,7 +46,7 @@ public class LeadController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<LeadResponse>> getById(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Lead lead = leadService.getById(id);
         return ResponseEntity.ok(ApiResponse.success(LeadResponse.from(lead)));
@@ -82,7 +82,7 @@ public class LeadController {
 
     @GetMapping("/estadisticas")
     public ResponseEntity<ApiResponse<LeadEstadisticasResponse>> getEstadisticas() {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Map<String, Long> estadisticas = leadService.getEstadisticas();
         return ResponseEntity.ok(ApiResponse.success(new LeadEstadisticasResponse(estadisticas)));

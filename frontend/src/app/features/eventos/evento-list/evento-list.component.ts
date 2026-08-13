@@ -46,12 +46,12 @@ export class EventoListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('evento', 'ver_detalle'),
-    editar: this.permissionService.hasPermission('evento', 'editar'),
-    eliminar: this.permissionService.hasPermission('evento', 'eliminar'),
+    ver_detalle: this.permissionService.hasPermission('eventos', 'ver_detalle'),
+    editar: this.permissionService.hasPermission('eventos', 'editar'),
+    eliminar: this.permissionService.hasPermission('eventos', 'eliminar'),
   };
 
-  protected readonly canCreate = this.permissionService.hasPermission('evento', 'crear');
+  protected readonly canCreate = this.permissionService.hasPermission('eventos', 'crear');
 
   private currentParams: PageParams = { page: 0, size: 10 };
 

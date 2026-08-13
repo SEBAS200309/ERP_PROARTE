@@ -36,7 +36,7 @@ public class AlimentacionController {
             @PathVariable UUID eventoId,
             @RequestParam(required = false) String tipo,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<AlimentacionResponse> page = alimentacionService.getByEvento(eventoId, tipo, pageable)
                 .map(AlimentacionResponse::from);

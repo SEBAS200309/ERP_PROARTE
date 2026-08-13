@@ -38,7 +38,7 @@ public class EmpresaController {
             @RequestParam(required = false) String razonSocial,
             @RequestParam(required = false) String nit,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<EmpresaResponse> page = empresaService.getAll(razonSocial, nit, pageable)
                 .map(EmpresaResponse::from);
@@ -48,7 +48,7 @@ public class EmpresaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<EmpresaResponse>> getById(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Empresa empresa = empresaService.getById(id);
         return ResponseEntity.ok(ApiResponse.success(EmpresaResponse.from(empresa)));

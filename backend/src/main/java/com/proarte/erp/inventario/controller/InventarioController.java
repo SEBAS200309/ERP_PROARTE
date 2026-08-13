@@ -35,7 +35,7 @@ public class InventarioController {
     public ResponseEntity<ApiResponse<PageResponse<InsumoResponse>>> getAll(
             @RequestParam(required = false) String search,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<InsumoResponse> page = inventarioService.getAll(search, pageable)
                 .map(InsumoResponse::from);
@@ -45,7 +45,7 @@ public class InventarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<InsumoResponse>> getById(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Insumo insumo = inventarioService.getById(id);
         return ResponseEntity.ok(ApiResponse.success(InsumoResponse.from(insumo)));
@@ -86,7 +86,7 @@ public class InventarioController {
             @PathVariable UUID insumoId,
             @RequestParam(required = false) String tipo,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Page<MovimientoResponse> page = inventarioService.getMovimientos(insumoId, tipo, pageable)
                 .map(MovimientoResponse::from);

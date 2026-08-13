@@ -53,12 +53,12 @@ export class CotizacionListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('cotizacion', 'ver_detalle'),
-    editar: this.permissionService.hasPermission('cotizacion', 'editar'),
-    eliminar: this.permissionService.hasPermission('cotizacion', 'eliminar'),
+    ver_detalle: this.permissionService.hasPermission('cotizaciones', 'ver_detalle'),
+    editar: this.permissionService.hasPermission('cotizaciones', 'editar'),
+    eliminar: this.permissionService.hasPermission('cotizaciones', 'eliminar'),
   };
 
-  protected readonly canCreate = this.permissionService.hasPermission('cotizacion', 'crear');
+  protected readonly canCreate = this.permissionService.hasPermission('cotizaciones', 'crear');
 
   private currentParams: PageParams = { page: 0, size: 10 };
 

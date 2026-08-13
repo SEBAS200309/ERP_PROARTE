@@ -59,12 +59,12 @@ export class CatalogoListComponent implements OnInit {
   });
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('catalogo', 'ver_detalle'),
-    editar: this.permissionService.hasPermission('catalogo', 'editar'),
-    eliminar: this.permissionService.hasPermission('catalogo', 'eliminar'),
+    ver_detalle: this.permissionService.hasPermission('catalogos', 'ver_detalle'),
+    editar: this.permissionService.hasPermission('catalogos', 'editar'),
+    eliminar: this.permissionService.hasPermission('catalogos', 'eliminar'),
   };
 
-  protected readonly canCreate = this.permissionService.hasPermission('catalogo', 'crear');
+  protected readonly canCreate = this.permissionService.hasPermission('catalogos', 'crear');
 
   ngOnInit(): void {
     const tipoParam = this.route.snapshot.paramMap.get('tipo');

@@ -36,7 +36,7 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<UsuarioResponse>>> getAll(
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<UsuarioResponse> page = usuarioService.getAll(pageable)
                 .map(UsuarioResponse::from);
@@ -46,7 +46,7 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<UsuarioResponse>> getById(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Usuario usuario = usuarioService.getById(id);
         return ResponseEntity.ok(ApiResponse.success(UsuarioResponse.from(usuario)));
@@ -81,13 +81,13 @@ public class UsuarioController {
     }
 
     @GetMapping("/roles/{id}/permisos")
-    public ResponseEntity<ApiResponse<Map<String, Map<String, Boolean>>>> getPermisosByRol(
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getPermisosByRol(
             @PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         List<Permiso> permisos = usuarioService.getPermisosByRolId(id);
 
-        Map<String, Map<String, Boolean>> configuracion = permisos.stream()
+        Map<String, Map<String, Boolean>> tablas = permisos.stream()
                 .filter(p -> p.getConfiguracion() != null)
                 .flatMap(p -> p.getConfiguracion().entrySet().stream())
                 .collect(java.util.stream.Collectors.toMap(
@@ -96,7 +96,12 @@ public class UsuarioController {
                         (v1, v2) -> v2
                 ));
 
-        return ResponseEntity.ok(ApiResponse.success(configuracion));
+        Map<String, Object> response = Map.of(
+                "tablas", tablas,
+                "contexto", Map.of()
+        );
+
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @PutMapping("/roles/{id}/permisos")

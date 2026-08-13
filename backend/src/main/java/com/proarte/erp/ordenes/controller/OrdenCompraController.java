@@ -31,7 +31,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrdenCompraController {
 
-    private static final String MODULO = "ordenes-compra";
+    private static final String MODULO = "ordenes_compra";
     private static final String EXCEL_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     private final OrdenCompraService ordenCompraService;
@@ -44,7 +44,7 @@ public class OrdenCompraController {
             @RequestParam(required = false) UUID estadoId,
             @RequestParam(required = false) UUID solicitudId,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<OrdenCompraResponse> page = ordenCompraService.getAll(search, estadoId, solicitudId, pageable)
                 .map(OrdenCompraResponse::from);
@@ -54,7 +54,7 @@ public class OrdenCompraController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<OrdenCompraResponse>> getById(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         OrdenCompra orden = ordenCompraService.getById(id);
         return ResponseEntity.ok(ApiResponse.success(OrdenCompraResponse.from(orden)));
@@ -92,7 +92,7 @@ public class OrdenCompraController {
     public ResponseEntity<byte[]> descargarExcel(
             @RequestParam(required = false) UUID estadoId,
             @RequestParam(required = false) List<UUID> ids) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         List<OrdenCompra> ordenes;
         if (ids != null && !ids.isEmpty()) {

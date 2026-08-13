@@ -39,7 +39,7 @@ public class ProveedorController {
     public ResponseEntity<ApiResponse<PageResponse<ProveedorResponse>>> getAllProveedores(
             @RequestParam(required = false) String search,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<ProveedorResponse> page = proveedorService.getAllProveedores(search, pageable)
                 .map(ProveedorResponse::from);
@@ -49,7 +49,7 @@ public class ProveedorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ProveedorResponse>> getProveedorById(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Proveedor proveedor = proveedorService.getProveedorById(id);
         return ResponseEntity.ok(ApiResponse.success(ProveedorResponse.from(proveedor)));
@@ -87,7 +87,7 @@ public class ProveedorController {
 
     @GetMapping("/{id}/portafolio")
     public ResponseEntity<ApiResponse<List<PortafolioResponse>>> getPortafolio(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         List<PortafolioResponse> portafolio = proveedorService.getPortafolioByProveedor(id)
                 .stream()
@@ -132,7 +132,7 @@ public class ProveedorController {
     public ResponseEntity<ApiResponse<PageResponse<SolicitudResponse>>> getAllSolicitudes(
             @RequestParam(required = false) UUID estadoId,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<SolicitudResponse> page = proveedorService.getAllSolicitudes(estadoId, pageable)
                 .map(SolicitudResponse::from);
@@ -144,7 +144,7 @@ public class ProveedorController {
     public ResponseEntity<ApiResponse<PageResponse<SolicitudResponse>>> getSolicitudesByProveedor(
             @PathVariable UUID id,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Page<SolicitudResponse> page = proveedorService.getSolicitudesByProveedor(id, pageable)
                 .map(SolicitudResponse::from);

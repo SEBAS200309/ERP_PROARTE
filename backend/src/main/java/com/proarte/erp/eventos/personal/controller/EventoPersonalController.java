@@ -32,7 +32,7 @@ public class EventoPersonalController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<EventoPersonalResponse>>> getAll(@PathVariable UUID eventoId) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         List<EventoPersonalResponse> personal = eventoPersonalService.getByEventoId(eventoId).stream()
                 .map(EventoPersonalResponse::from)

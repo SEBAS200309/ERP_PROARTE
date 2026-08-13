@@ -42,7 +42,7 @@ public class CotizacionController {
             @RequestParam(required = false) UUID personaId,
             @RequestParam(required = false) UUID empresaId,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<CotizacionResponse> page = cotizacionService.getAll(search, estadoId, personaId, empresaId, pageable)
                 .map(CotizacionResponse::from);
@@ -52,7 +52,7 @@ public class CotizacionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CotizacionResponse>> getById(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Cotizacion cotizacion = cotizacionService.getById(id);
         return ResponseEntity.ok(ApiResponse.success(CotizacionResponse.from(cotizacion)));
@@ -99,7 +99,7 @@ public class CotizacionController {
     @GetMapping("/vencimientos")
     public ResponseEntity<ApiResponse<List<CotizacionResponse>>> getPorVencer(
             @RequestParam(required = false, defaultValue = "7") Integer dias) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         List<CotizacionResponse> cotizaciones = cotizacionService.getPorVencer(dias).stream()
                 .map(CotizacionResponse::from)
@@ -119,7 +119,7 @@ public class CotizacionController {
 
     @GetMapping("/{id}/pdf")
     public ResponseEntity<byte[]> generatePdf(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Cotizacion cotizacion = cotizacionService.getById(id);
         byte[] pdfBytes = cotizacionPdfService.generatePdf(cotizacion);

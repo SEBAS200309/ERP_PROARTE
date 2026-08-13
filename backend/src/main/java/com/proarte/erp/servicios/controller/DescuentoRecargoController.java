@@ -34,7 +34,7 @@ public class DescuentoRecargoController {
     public ResponseEntity<ApiResponse<PageResponse<DescuentoRecargoResponse>>> getAllDescuentosRecargos(
             @RequestParam(required = false) UUID tipoId,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<DescuentoRecargoResponse> page = descuentoRecargoService.getAllDescuentosRecargos(tipoId, pageable)
                 .map(DescuentoRecargoResponse::from);
@@ -44,7 +44,7 @@ public class DescuentoRecargoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<DescuentoRecargoResponse>> getDescuentoRecargoById(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         DescuentoRecargo descuentoRecargo = descuentoRecargoService.getDescuentoRecargoById(id);
         return ResponseEntity.ok(ApiResponse.success(DescuentoRecargoResponse.from(descuentoRecargo)));

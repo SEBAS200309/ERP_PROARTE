@@ -40,7 +40,7 @@ public class PresentacionController {
     public ResponseEntity<ApiResponse<PageResponse<PresentacionResponse>>> getAll(
             @RequestParam(required = false) String search,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<PresentacionResponse> page = presentacionService.getAll(search, pageable)
                 .map(PresentacionResponse::from);
@@ -50,7 +50,7 @@ public class PresentacionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<PresentacionResponse>> getById(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Presentacion presentacion = presentacionService.getById(id);
         return ResponseEntity.ok(ApiResponse.success(PresentacionResponse.from(presentacion)));
@@ -86,7 +86,7 @@ public class PresentacionController {
 
     @GetMapping("/{id}/pdf")
     public ResponseEntity<byte[]> generatePdf(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Presentacion presentacion = presentacionService.getById(id);
         byte[] pdfBytes = presentacionPdfService.generatePdf(presentacion);

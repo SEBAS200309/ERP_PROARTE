@@ -20,11 +20,14 @@ export class UsuarioService extends BaseCrudService<Usuario> {
 
   /**
    * Obtiene la configuración de permisos para un rol.
+   * El backend devuelve { tablas: {...}, contexto: {...} }; se extrae "tablas".
    */
   getPermisosByRol(rolId: string): Observable<Record<string, Record<string, boolean>>> {
     return this.http
-      .get<ApiResponse<Record<string, Record<string, boolean>>>>(`${this.baseUrl}/roles/${rolId}/permisos`)
-      .pipe(map((response) => response.success ? response.data : {}));
+      .get<ApiResponse<{ tablas: Record<string, Record<string, boolean>>; contexto: Record<string, string[]> }>>(
+        `${this.baseUrl}/roles/${rolId}/permisos`
+      )
+      .pipe(map((response) => (response.success ? response.data.tablas : {})));
   }
 
   /**

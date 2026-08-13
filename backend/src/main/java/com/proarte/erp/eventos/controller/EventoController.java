@@ -38,7 +38,7 @@ public class EventoController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) UUID estadoId,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<EventoResponse> page = eventoService.getAll(search, estadoId, pageable)
                 .map(EventoResponse::from);
@@ -48,7 +48,7 @@ public class EventoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<EventoResponse>> getById(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Evento evento = eventoService.getById(id);
         return ResponseEntity.ok(ApiResponse.success(EventoResponse.from(evento)));
@@ -96,7 +96,7 @@ public class EventoController {
 
     @GetMapping("/{id}/personas")
     public ResponseEntity<ApiResponse<List<EventoContactoResponse>>> getContactos(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         List<EventoContactoResponse> contactos = eventoService.getContactos(id).stream()
                 .map(EventoContactoResponse::from)
@@ -130,7 +130,7 @@ public class EventoController {
 
     @GetMapping("/{id}/proveedores")
     public ResponseEntity<ApiResponse<List<EventoProveedorResponse>>> getProveedores(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         List<EventoProveedorResponse> proveedores = eventoService.getProveedores(id).stream()
                 .map(EventoProveedorResponse::from)
@@ -164,7 +164,7 @@ public class EventoController {
 
     @GetMapping("/{id}/observaciones")
     public ResponseEntity<ApiResponse<List<ObservacionResponse>>> getObservaciones(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         List<ObservacionResponse> observaciones = eventoService.getObservaciones(id).stream()
                 .map(ObservacionResponse::from)
@@ -199,7 +199,7 @@ public class EventoController {
 
     @GetMapping("/{id}/insumos")
     public ResponseEntity<ApiResponse<List<EventoInsumoResponse>>> getInsumos(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         List<EventoInsumoResponse> insumos = eventoService.getInsumos(id).stream()
                 .map(EventoInsumoResponse::from)

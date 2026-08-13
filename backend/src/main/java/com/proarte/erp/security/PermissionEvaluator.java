@@ -16,7 +16,7 @@ public class PermissionEvaluator {
      * Lee los permisos desde el JSONB cargado en el UserDetails al momento del login.
      *
      * @param modulo Nombre del módulo (ej: "usuarios", "eventos")
-     * @param accion Acción a verificar (ej: "crear", "leer", "editar", "eliminar")
+     * @param accion Acción a verificar (ej: "ver_listado", "ver_detalle", "crear", "editar", "eliminar", "ejecutar")
      * @return true si el usuario tiene permiso, false en caso contrario
      */
     public boolean hasPermission(String modulo, String accion) {

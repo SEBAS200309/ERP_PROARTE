@@ -38,7 +38,7 @@ public class PersonaController {
             @RequestParam(required = false) String documento,
             @RequestParam(required = false) String email,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<PersonaResponse> page = personaService.getAll(nombre, documento, email, pageable)
                 .map(PersonaResponse::from);
@@ -48,7 +48,7 @@ public class PersonaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<PersonaResponse>> getById(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Persona persona = personaService.getById(id);
         return ResponseEntity.ok(ApiResponse.success(PersonaResponse.from(persona)));

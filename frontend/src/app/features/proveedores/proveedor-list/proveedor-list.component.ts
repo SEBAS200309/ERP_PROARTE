@@ -41,12 +41,12 @@ export class ProveedorListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('proveedor', 'ver_detalle'),
-    editar: this.permissionService.hasPermission('proveedor', 'editar'),
-    eliminar: this.permissionService.hasPermission('proveedor', 'eliminar'),
+    ver_detalle: this.permissionService.hasPermission('proveedores', 'ver_detalle'),
+    editar: this.permissionService.hasPermission('proveedores', 'editar'),
+    eliminar: this.permissionService.hasPermission('proveedores', 'eliminar'),
   };
 
-  protected readonly canCreate = this.permissionService.hasPermission('proveedor', 'crear');
+  protected readonly canCreate = this.permissionService.hasPermission('proveedores', 'crear');
 
   private currentParams: PageParams = { page: 0, size: 10 };
 

@@ -39,14 +39,14 @@ export class DashboardComponent implements OnInit {
   protected readonly cards = signal<SummaryCard[]>([]);
 
   protected readonly allLinks: QuickLink[] = [
-    { icon: '🎯', label: 'Leads', route: '/leads', tabla: 'lead' },
-    { icon: '👤', label: 'Personas', route: '/personas', tabla: 'persona' },
-    { icon: '🏢', label: 'Empresas', route: '/empresas', tabla: 'empresa' },
-    { icon: '🚚', label: 'Proveedores', route: '/proveedores', tabla: 'proveedor' },
-    { icon: '🎭', label: 'Servicios', route: '/servicios', tabla: 'servicio' },
-    { icon: '📋', label: 'Cotizaciones', route: '/cotizaciones', tabla: 'cotizacion' },
-    { icon: '📅', label: 'Eventos', route: '/eventos', tabla: 'evento' },
-    { icon: '📦', label: 'Inventario', route: '/inventario', tabla: 'insumo' },
+    { icon: '🎯', label: 'Leads', route: '/leads', tabla: 'leads' },
+    { icon: '👤', label: 'Personas', route: '/personas', tabla: 'personas' },
+    { icon: '🏢', label: 'Empresas', route: '/empresas', tabla: 'empresas' },
+    { icon: '🚚', label: 'Proveedores', route: '/proveedores', tabla: 'proveedores' },
+    { icon: '🎭', label: 'Servicios', route: '/servicios', tabla: 'servicios' },
+    { icon: '📋', label: 'Cotizaciones', route: '/cotizaciones', tabla: 'cotizaciones' },
+    { icon: '📅', label: 'Eventos', route: '/eventos', tabla: 'eventos' },
+    { icon: '📦', label: 'Inventario', route: '/inventario', tabla: 'inventario' },
   ];
 
   protected get visibleLinks(): QuickLink[] {

@@ -36,7 +36,7 @@ public class MensajeController {
     public ResponseEntity<ApiResponse<PageResponse<MensajeResponse>>> getAll(
             @RequestParam(required = false) String search,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<MensajeResponse> page = mensajeService.getAll(search, pageable)
                 .map(MensajeResponse::from);
@@ -46,7 +46,7 @@ public class MensajeController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<MensajeResponse>> getById(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Mensaje mensaje = mensajeService.getById(id);
         return ResponseEntity.ok(ApiResponse.success(MensajeResponse.from(mensaje)));

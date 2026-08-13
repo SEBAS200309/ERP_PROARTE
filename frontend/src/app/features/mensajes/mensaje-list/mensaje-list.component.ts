@@ -38,12 +38,12 @@ export class MensajeListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('mensaje', 'ver_detalle'),
-    editar: this.permissionService.hasPermission('mensaje', 'editar'),
-    eliminar: this.permissionService.hasPermission('mensaje', 'eliminar'),
+    ver_detalle: this.permissionService.hasPermission('mensajes', 'ver_detalle'),
+    editar: this.permissionService.hasPermission('mensajes', 'editar'),
+    eliminar: this.permissionService.hasPermission('mensajes', 'eliminar'),
   };
 
-  protected readonly canCreate = this.permissionService.hasPermission('mensaje', 'crear');
+  protected readonly canCreate = this.permissionService.hasPermission('mensajes', 'crear');
 
   private currentParams: PageParams = { page: 0, size: 10 };
 

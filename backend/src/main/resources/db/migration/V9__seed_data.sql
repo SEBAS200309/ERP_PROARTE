@@ -39,23 +39,22 @@ INSERT INTO rol (id, nombre, descripcion) VALUES
 -- ============================================================
 INSERT INTO permiso (rol_id, configuracion) VALUES
 ('a0000000-0000-0000-0000-000000000001', '{
-    "usuarios": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "roles": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "personas": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "empresas": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "leads": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "servicios": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "proveedores": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "cotizaciones": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "eventos": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "personal": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "ordenes": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "inventario": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "alimentacion": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "presentaciones": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "mensajes": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "observaciones": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "reportes": {"crear": true, "leer": true, "editar": true, "eliminar": true}
+    "usuarios": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "personas": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "empresas": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "leads": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "catalogos": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "servicios": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "descuentos_recargos": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "proveedores": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "cotizaciones": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "eventos": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "evento_personal": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true, "ejecutar": true},
+    "ordenes_compra": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "inventario": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "alimentacion": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "presentaciones": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "mensajes": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true}
 }'::jsonb);
 
 -- ============================================================
@@ -63,23 +62,22 @@ INSERT INTO permiso (rol_id, configuracion) VALUES
 -- ============================================================
 INSERT INTO permiso (rol_id, configuracion) VALUES
 ('a0000000-0000-0000-0000-000000000002', '{
-    "usuarios": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "roles": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "personas": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "empresas": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "leads": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "servicios": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "proveedores": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "cotizaciones": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "eventos": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "personal": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "ordenes": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "inventario": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "alimentacion": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "presentaciones": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "mensajes": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "observaciones": {"crear": true, "leer": true, "editar": false, "eliminar": false},
-    "reportes": {"crear": false, "leer": true, "editar": false, "eliminar": false}
+    "usuarios": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "personas": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "empresas": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "leads": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "catalogos": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "servicios": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "descuentos_recargos": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": false},
+    "proveedores": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "cotizaciones": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "eventos": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "evento_personal": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false, "ejecutar": false},
+    "ordenes_compra": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "inventario": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "alimentacion": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "presentaciones": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "mensajes": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true}
 }'::jsonb);
 
 -- ============================================================
@@ -87,23 +85,22 @@ INSERT INTO permiso (rol_id, configuracion) VALUES
 -- ============================================================
 INSERT INTO permiso (rol_id, configuracion) VALUES
 ('a0000000-0000-0000-0000-000000000003', '{
-    "usuarios": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "roles": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "personas": {"crear": true, "leer": true, "editar": true, "eliminar": false},
-    "empresas": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "leads": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "servicios": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "proveedores": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "cotizaciones": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "eventos": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "personal": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "ordenes": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "inventario": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "alimentacion": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "presentaciones": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "mensajes": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "observaciones": {"crear": true, "leer": true, "editar": true, "eliminar": false},
-    "reportes": {"crear": false, "leer": true, "editar": false, "eliminar": false}
+    "usuarios": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "personas": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": false},
+    "empresas": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "leads": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "catalogos": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "servicios": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "descuentos_recargos": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "proveedores": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "cotizaciones": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "eventos": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "evento_personal": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true, "ejecutar": true},
+    "ordenes_compra": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "inventario": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "alimentacion": {"ver_listado": true, "ver_detalle": true, "crear": true, "editar": true, "eliminar": true},
+    "presentaciones": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "mensajes": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false}
 }'::jsonb);
 
 -- ============================================================
@@ -111,23 +108,22 @@ INSERT INTO permiso (rol_id, configuracion) VALUES
 -- ============================================================
 INSERT INTO permiso (rol_id, configuracion) VALUES
 ('a0000000-0000-0000-0000-000000000004', '{
-    "usuarios": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "roles": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "personas": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "empresas": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "leads": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "servicios": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "proveedores": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "cotizaciones": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "eventos": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "personal": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "ordenes": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "inventario": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "alimentacion": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "presentaciones": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "mensajes": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "observaciones": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "reportes": {"crear": false, "leer": false, "editar": false, "eliminar": false}
+    "usuarios": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "personas": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "empresas": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "leads": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "catalogos": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "servicios": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "descuentos_recargos": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "proveedores": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "cotizaciones": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "eventos": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false},
+    "evento_personal": {"ver_listado": true, "ver_detalle": true, "crear": false, "editar": false, "eliminar": false, "ejecutar": false},
+    "ordenes_compra": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "inventario": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "alimentacion": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "presentaciones": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false},
+    "mensajes": {"ver_listado": false, "ver_detalle": false, "crear": false, "editar": false, "eliminar": false}
 }'::jsonb);
 
 -- ============================================================

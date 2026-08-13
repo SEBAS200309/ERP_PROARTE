@@ -36,7 +36,7 @@ public class ServicioController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) UUID categoriaId,
             @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
+        validatePermission("ver_listado");
 
         Page<ServicioResponse> page = servicioService.getAllServicios(search, categoriaId, pageable)
                 .map(ServicioResponse::from);
@@ -46,7 +46,7 @@ public class ServicioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ServicioResponse>> getServicioById(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         Servicio servicio = servicioService.getServicioById(id);
         return ResponseEntity.ok(ApiResponse.success(ServicioResponse.from(servicio)));
@@ -82,7 +82,7 @@ public class ServicioController {
 
     @GetMapping("/{id}/subservicios")
     public ResponseEntity<ApiResponse<List<ServicioResponse>>> getSubservicios(@PathVariable UUID id) {
-        validatePermission("leer");
+        validatePermission("ver_detalle");
 
         List<ServicioResponse> subservicios = servicioService.getSubservicios(id)
                 .stream()

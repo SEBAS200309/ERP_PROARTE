@@ -14,12 +14,12 @@ describe('PermissionService', () => {
 
   const mockPermisos: PermisosConfig = {
     tablas: {
-      lead: { ver_listado: true, ver_detalle: true, crear: true, editar: true, eliminar: false },
-      persona: { ver_listado: true, ver_detalle: true, crear: false, editar: false, eliminar: false },
+      leads: { ver_listado: true, ver_detalle: true, crear: true, editar: true, eliminar: false },
+      personas: { ver_listado: true, ver_detalle: true, crear: false, editar: false, eliminar: false },
     },
     contexto: {
-      lead: ['persona', 'empresa'],
-      cotizacion: ['persona', 'empresa', 'cotizacion_item', 'servicio'],
+      leads: ['personas', 'empresas'],
+      cotizaciones: ['personas', 'empresas', 'cotizacion_item', 'servicios'],
     },
   };
 
@@ -47,30 +47,30 @@ describe('PermissionService', () => {
   describe('hasPermission', () => {
     it('should return true when user has the permission', () => {
       service.setPermisos(mockPermisos);
-      expect(service.hasPermission('lead', 'ver_listado')).toBe(true);
-      expect(service.hasPermission('lead', 'crear')).toBe(true);
+      expect(service.hasPermission('leads', 'ver_listado')).toBe(true);
+      expect(service.hasPermission('leads', 'crear')).toBe(true);
     });
 
     it('should return false when user does not have the permission', () => {
       service.setPermisos(mockPermisos);
-      expect(service.hasPermission('lead', 'eliminar')).toBe(false);
-      expect(service.hasPermission('persona', 'crear')).toBe(false);
+      expect(service.hasPermission('leads', 'eliminar')).toBe(false);
+      expect(service.hasPermission('personas', 'crear')).toBe(false);
     });
 
     it('should return false for unknown tables', () => {
       service.setPermisos(mockPermisos);
-      expect(service.hasPermission('evento', 'ver_listado')).toBe(false);
+      expect(service.hasPermission('eventos', 'ver_listado')).toBe(false);
     });
 
     it('should return false when no permissions loaded', () => {
-      expect(service.hasPermission('lead', 'ver_listado')).toBe(false);
+      expect(service.hasPermission('leads', 'ver_listado')).toBe(false);
     });
   });
 
   describe('getContexto', () => {
     it('should return related tables for a given table', () => {
       service.setPermisos(mockPermisos);
-      expect(service.getContexto('lead')).toEqual(['persona', 'empresa']);
+      expect(service.getContexto('leads')).toEqual(['personas', 'empresas']);
     });
 
     it('should return empty array for unknown table', () => {
@@ -79,7 +79,7 @@ describe('PermissionService', () => {
     });
 
     it('should return empty array when no permissions loaded', () => {
-      expect(service.getContexto('lead')).toEqual([]);
+      expect(service.getContexto('leads')).toEqual([]);
     });
   });
 

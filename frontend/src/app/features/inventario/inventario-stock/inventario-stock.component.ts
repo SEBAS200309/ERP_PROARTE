@@ -35,13 +35,13 @@ export class InventarioStockComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('insumo', 'ver_detalle'),
+    ver_detalle: this.permissionService.hasPermission('inventario', 'ver_detalle'),
     editar: false,
     eliminar: false,
   };
 
-  protected readonly canCreateIngreso = this.permissionService.hasPermission('insumo', 'crear');
-  protected readonly canCreateRetiro = this.permissionService.hasPermission('insumo', 'crear');
+  protected readonly canCreateIngreso = this.permissionService.hasPermission('inventario', 'crear');
+  protected readonly canCreateRetiro = this.permissionService.hasPermission('inventario', 'crear');
 
   private currentParams: PageParams = { page: 0, size: 10 };
 
