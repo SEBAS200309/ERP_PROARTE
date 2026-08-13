@@ -5,7 +5,6 @@
 
 -- ============================================================
 -- Función: fn_recalcular_total_cotizacion
--- Descripción: Recalcula el total de una cotización sumando subtotales
 -- ============================================================
 CREATE OR REPLACE FUNCTION fn_recalcular_total_cotizacion(p_cotizacion_id UUID)
 RETURNS DECIMAL
@@ -32,7 +31,6 @@ COMMENT ON FUNCTION fn_recalcular_total_cotizacion(UUID) IS 'Recalcula el total 
 
 -- ============================================================
 -- Función: fn_crear_evento_desde_cotizacion
--- Descripción: Crea un evento a partir de una cotización aprobada
 -- ============================================================
 CREATE OR REPLACE FUNCTION fn_crear_evento_desde_cotizacion(p_cotizacion_id UUID)
 RETURNS UUID
@@ -41,20 +39,21 @@ AS $$
 DECLARE
     v_cotizacion RECORD;
     v_evento_id UUID;
+    v_estado_nombre VARCHAR;
 BEGIN
-    -- Verificar que la cotización esté aprobada
-    SELECT id, codigo, estado
+    SELECT c.id, c.codigo, e.nombre AS estado_nombre
     INTO v_cotizacion
-    FROM cotizacion
-    WHERE id = p_cotizacion_id;
+    FROM cotizacion c
+    JOIN estado e ON e.id = c.estado_id
+    WHERE c.id = p_cotizacion_id;
 
-    IF v_cotizacion.estado != 'aprobada' THEN
-        RAISE EXCEPTION 'La cotización debe estar aprobada para crear un evento. Estado actual: %', v_cotizacion.estado;
+    IF v_cotizacion.estado_nombre != 'aprobada' THEN
+        RAISE EXCEPTION 'La cotización debe estar aprobada para crear un evento. Estado actual: %', v_cotizacion.estado_nombre;
     END IF;
 
-    -- Crear el evento
-    INSERT INTO evento (cotizacion_id, nombre)
-    VALUES (p_cotizacion_id, 'Evento - ' || v_cotizacion.codigo)
+    INSERT INTO evento (cotizacion_id, nombre, estado_id)
+    VALUES (p_cotizacion_id, 'Evento - ' || v_cotizacion.codigo,
+            (SELECT id FROM estado WHERE nombre = 'planificacion' AND contexto = 'evento'))
     RETURNING id INTO v_evento_id;
 
     RETURN v_evento_id;
@@ -65,7 +64,6 @@ COMMENT ON FUNCTION fn_crear_evento_desde_cotizacion(UUID) IS 'Crea un evento nu
 
 -- ============================================================
 -- Función: fn_calcular_valor_turno
--- Descripción: Calcula el valor del turno desde el portafolio del proveedor
 -- ============================================================
 CREATE OR REPLACE FUNCTION fn_calcular_valor_turno(p_evento_personal_id UUID)
 RETURNS DECIMAL
@@ -75,13 +73,11 @@ DECLARE
     v_personal RECORD;
     v_precio DECIMAL(12,2);
 BEGIN
-    -- Obtener datos del personal del evento
     SELECT proveedor_id, servicio_id
     INTO v_personal
     FROM evento_personal
     WHERE id = p_evento_personal_id;
 
-    -- Buscar precio en portafolio
     SELECT precio_unitario
     INTO v_precio
     FROM portafolio
@@ -89,12 +85,10 @@ BEGIN
       AND servicio_id = v_personal.servicio_id
       AND activo = TRUE;
 
-    -- Si no se encuentra, dejar en 0
     IF v_precio IS NULL THEN
         v_precio := 0;
     END IF;
 
-    -- Actualizar valor del turno
     UPDATE evento_personal
     SET valor_turno = v_precio
     WHERE id = p_evento_personal_id;
@@ -107,7 +101,6 @@ COMMENT ON FUNCTION fn_calcular_valor_turno(UUID) IS 'Calcula el valor del turno
 
 -- ============================================================
 -- Función: fn_estadisticas_leads
--- Descripción: Retorna estadísticas de leads agrupados por estado
 -- ============================================================
 CREATE OR REPLACE FUNCTION fn_estadisticas_leads()
 RETURNS TABLE(estado VARCHAR, cantidad BIGINT)
@@ -115,10 +108,11 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY
-    SELECT l.estado::VARCHAR, COUNT(*)::BIGINT AS cantidad
+    SELECT e.nombre::VARCHAR AS estado, COUNT(*)::BIGINT AS cantidad
     FROM lead l
+    JOIN estado e ON e.id = l.estado_id
     WHERE l.activo = TRUE
-    GROUP BY l.estado
+    GROUP BY e.nombre
     ORDER BY cantidad DESC;
 END;
 $$;
@@ -127,7 +121,6 @@ COMMENT ON FUNCTION fn_estadisticas_leads() IS 'Retorna conteo de leads agrupado
 
 -- ============================================================
 -- Función: fn_cotizaciones_por_vencer
--- Descripción: Retorna cotizaciones próximas a vencer en N días
 -- ============================================================
 CREATE OR REPLACE FUNCTION fn_cotizaciones_por_vencer(p_dias INTEGER DEFAULT 7)
 RETURNS SETOF cotizacion
@@ -137,8 +130,9 @@ BEGIN
     RETURN QUERY
     SELECT c.*
     FROM cotizacion c
+    JOIN estado e ON e.id = c.estado_id
     WHERE c.fecha_vencimiento BETWEEN CURRENT_DATE AND CURRENT_DATE + p_dias
-      AND c.estado NOT IN ('aprobada', 'rechazada', 'vencida')
+      AND e.nombre NOT IN ('aprobada', 'rechazada', 'vencida')
       AND c.activo = TRUE
     ORDER BY c.fecha_vencimiento ASC;
 END;
@@ -148,7 +142,6 @@ COMMENT ON FUNCTION fn_cotizaciones_por_vencer(INTEGER) IS 'Retorna cotizaciones
 
 -- ============================================================
 -- Trigger Function: trg_fn_actualizar_stock
--- Descripción: Actualiza stock_actual del insumo al registrar movimiento
 -- ============================================================
 CREATE OR REPLACE FUNCTION trg_fn_actualizar_stock()
 RETURNS TRIGGER
@@ -157,26 +150,22 @@ AS $$
 DECLARE
     v_stock_actual DECIMAL(10,2);
 BEGIN
-    -- Obtener stock actual del insumo
     SELECT stock_actual
     INTO v_stock_actual
     FROM insumo
     WHERE id = NEW.insumo_id;
 
     IF NEW.tipo_movimiento = 'ingreso' THEN
-        -- Sumar al stock
         UPDATE insumo
         SET stock_actual = stock_actual + NEW.cantidad,
             updated_at = NOW()
         WHERE id = NEW.insumo_id;
 
     ELSIF NEW.tipo_movimiento = 'retiro' THEN
-        -- Verificar que hay suficiente stock
         IF v_stock_actual - NEW.cantidad < 0 THEN
             RAISE EXCEPTION 'No hay suficiente stock para este retiro. Stock actual: %, cantidad solicitada: %', v_stock_actual, NEW.cantidad;
         END IF;
 
-        -- Restar del stock
         UPDATE insumo
         SET stock_actual = stock_actual - NEW.cantidad,
             updated_at = NOW()
@@ -187,7 +176,6 @@ BEGIN
 END;
 $$;
 
--- Crear trigger en insumo_movimiento
 CREATE TRIGGER trg_actualizar_stock
     AFTER INSERT ON insumo_movimiento
     FOR EACH ROW
@@ -197,7 +185,6 @@ COMMENT ON FUNCTION trg_fn_actualizar_stock() IS 'Trigger que actualiza el stock
 
 -- ============================================================
 -- Trigger Function: trg_fn_calcular_subtotal_item
--- Descripción: Calcula el subtotal de un ítem aplicando descuento/recargo
 -- ============================================================
 CREATE OR REPLACE FUNCTION trg_fn_calcular_subtotal_item()
 RETURNS TRIGGER
@@ -208,10 +195,8 @@ DECLARE
     v_tipo_nombre VARCHAR(50);
     v_porcentaje DECIMAL(5,2);
 BEGIN
-    -- Calcular subtotal base
     v_subtotal := NEW.cantidad * NEW.precio_unitario;
 
-    -- Aplicar descuento o recargo si existe
     IF NEW.descuento_recargo_id IS NOT NULL THEN
         SELECT dr.valor, tdr.nombre
         INTO v_porcentaje, v_tipo_nombre
@@ -231,7 +216,6 @@ BEGIN
 END;
 $$;
 
--- Crear trigger en cotizacion_item
 CREATE TRIGGER trg_calcular_subtotal_item
     BEFORE INSERT OR UPDATE ON cotizacion_item
     FOR EACH ROW
@@ -241,7 +225,6 @@ COMMENT ON FUNCTION trg_fn_calcular_subtotal_item() IS 'Trigger que calcula el s
 
 -- ============================================================
 -- Trigger Function: trg_fn_recalcular_total_cotizacion
--- Descripción: Recalcula el total de la cotización al modificar ítems
 -- ============================================================
 CREATE OR REPLACE FUNCTION trg_fn_recalcular_total_cotizacion()
 RETURNS TRIGGER
@@ -250,14 +233,12 @@ AS $$
 DECLARE
     v_cotizacion_id UUID;
 BEGIN
-    -- Determinar la cotización afectada
     IF TG_OP = 'DELETE' THEN
         v_cotizacion_id := OLD.cotizacion_id;
     ELSE
         v_cotizacion_id := NEW.cotizacion_id;
     END IF;
 
-    -- Recalcular total
     PERFORM fn_recalcular_total_cotizacion(v_cotizacion_id);
 
     IF TG_OP = 'DELETE' THEN
@@ -267,7 +248,6 @@ BEGIN
 END;
 $$;
 
--- Crear trigger en cotizacion_item
 CREATE TRIGGER trg_recalcular_total
     AFTER INSERT OR UPDATE OR DELETE ON cotizacion_item
     FOR EACH ROW

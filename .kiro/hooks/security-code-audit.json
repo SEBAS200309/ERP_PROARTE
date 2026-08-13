@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Security Code Audit",
+      "description": "Audita automáticamente el código fuente (fuera de .kiro) cuando se editan archivos Java, TypeScript o configuración, buscando brechas de seguridad según las mejores prácticas de Spring Security, Angular y manejo seguro de APIs. Verifica: inyección SQL, XSS, CSRF, manejo de credenciales, validación de entrada, autenticación/autorización, y exposición de datos sensibles.",
+      "trigger": "PostFileSave",
+      "matcher": "(backend/.*[^/]*\\.java$|frontend/.*[^/]*\\.ts$|frontend/.*[^/]*\\.html$|[^/]*\\.yml$|[^/]*\\.yaml$|[^/]*\\.properties$|[^/]*\\.json$)",
+      "action": {
+        "type": "agent",
+        "prompt": "Realiza una auditoría de seguridad del archivo editado. Consulta la documentación oficial de Spring Boot Security y las mejores prácticas de Angular para verificar:\n\n1. **Inyección SQL**: ¿Se usan consultas parametrizadas? ¿Hay concatenación de strings en queries? ¿Los nombres de funciones/tablas están validados contra whitelist?\n2. **Autenticación y Autorización**: ¿Los endpoints están protegidos? ¿Se validan permisos correctamente? ¿Los JWT se manejan de forma segura?\n3. **Validación de entrada**: ¿Se usa @Valid en DTOs? ¿Se sanitizan inputs? ¿Hay riesgo de XSS?\n4. **Manejo de credenciales**: ¿Se exponen passwords, tokens o secretos en código? ¿Se usan variables de entorno para secretos?\n5. **CORS y CSRF**: ¿La configuración es apropiada para el entorno?\n6. **APIs expuestas**: ¿Los endpoints exponen datos sensibles? ¿Se aplica el principio de menor privilegio?\n7. **Dependencias**: ¿Se usan versiones con vulnerabilidades conocidas?\n8. **Logging**: ¿Se loggean datos sensibles (passwords, tokens, PII)?\n\nIMPORTANTE: Ignora archivos dentro de la carpeta .kiro. Solo audita código fuente del proyecto.\n\nSi encuentras vulnerabilidades, reporta:\n- Severidad (CRÍTICA, ALTA, MEDIA, BAJA)\n- Ubicación exacta (archivo y línea)\n- Descripción del problema\n- Recomendación de corrección con ejemplo de código\n\nSi no encuentras problemas, indica brevemente que el archivo pasa la auditoría."
+      },
+      "enabled": true
+    }
+  ]
+}

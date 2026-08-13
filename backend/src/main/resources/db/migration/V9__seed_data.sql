@@ -1,10 +1,32 @@
 -- ============================================================
--- V9: Datos semilla — Roles, permisos y usuario administrador
+-- V9: Datos semilla — Lookups, Roles, Permisos y Admin
 -- ERP Pro Arte - PostgreSQL 15+
 -- ============================================================
 
 -- ============================================================
--- Insertar roles del sistema
+-- Datos de tablas Lookup
+-- ============================================================
+
+INSERT INTO tipo_documento (nombre) VALUES ('CC'), ('CE'), ('NIT'), ('PA'), ('TI'), ('RC');
+
+INSERT INTO rol_entidad (nombre) VALUES ('contacto'), ('cliente'), ('proveedor'), ('aliado'), ('artista');
+
+INSERT INTO estado (nombre, contexto) VALUES
+  ('nuevo', 'lead'), ('contactado', 'lead'), ('cotizado', 'lead'), ('ganado', 'lead'), ('perdido', 'lead'),
+  ('borrador', 'cotizacion'), ('enviada', 'cotizacion'), ('aprobada', 'cotizacion'), ('rechazada', 'cotizacion'), ('vencida', 'cotizacion'),
+  ('planificacion', 'evento'), ('en_curso', 'evento'), ('finalizado', 'evento'), ('cancelado', 'evento'),
+  ('pendiente', 'solicitud_servicio'), ('aceptada', 'solicitud_servicio'), ('rechazada', 'solicitud_servicio'), ('completada', 'solicitud_servicio'),
+  ('pendiente', 'orden_compra'), ('aprobada', 'orden_compra'), ('enviada', 'orden_compra'), ('recibida', 'orden_compra'), ('cancelada', 'orden_compra');
+
+INSERT INTO categoria_servicio (nombre) VALUES ('Propio'), ('Tercero');
+
+INSERT INTO unidad_medida (nombre, abreviatura) VALUES
+  ('Unidad', 'ud'), ('Kilogramo', 'kg'), ('Litro', 'lt'), ('Metro', 'm'), ('Caja', 'cj');
+
+INSERT INTO rol_evento (nombre) VALUES ('organizador'), ('responsable'), ('asistente'), ('promotor'), ('coordinador'), ('personal');
+
+-- ============================================================
+-- Roles del sistema
 -- ============================================================
 INSERT INTO rol (id, nombre, descripcion) VALUES
     ('a0000000-0000-0000-0000-000000000001', 'Administrador', 'Acceso total al sistema'),

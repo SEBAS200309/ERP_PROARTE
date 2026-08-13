@@ -3,18 +3,215 @@
 **Total estimado de casos de prueba:** ~180
 
 **Fecha de creación:** 2025  
-**Última actualización:** Pendiente  
+**Última actualización:** Agosto 2026  
 **Responsable de ejecución:** QA / Desarrollo  
 **Estado:** Pendiente de ejecución
 
 ---
 
-## 1. Prerequisitos
+## 0. Guía de Arranque del Entorno de Desarrollo (Paso a Paso)
+
+Esta sección describe cómo levantar el proyecto completo desde cero. Se asume que ya se tienen instalados los siguientes requisitos previos:
+
+### Requisitos del sistema
+
+| Herramienta | Versión mínima | Verificar con |
+|---|---|---|
+| Docker Desktop | 24+ | `docker --version` |
+| Java (Temurin) | 21 | `java --version` |
+| Maven | 3.9+ | `mvn --version` |
+| Node.js | 22+ | `node --version` |
+| npm | 10+ | `npm --version` |
+
+> Si `JAVA_HOME` o `MAVEN_HOME` no están configurados, agregar a variables de entorno del usuario:
+> - `JAVA_HOME` = `C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot`
+> - `MAVEN_HOME` = `C:\tools\apache-maven-3.9.16`
+> - Agregar `%JAVA_HOME%\bin` y `%MAVEN_HOME%\bin` al `PATH`
+
+---
+
+### Paso 1: Configurar variables de entorno
+
+Verificar que exista el archivo `.env` en la raíz del proyecto. Si no existe, copiarlo desde el ejemplo:
+
+```powershell
+# Desde la raíz del proyecto
+Copy-Item .env.example .env
+```
+
+El archivo `.env` debe contener (valores por defecto para desarrollo):
+
+```env
+POSTGRES_DB=erp_proarte
+POSTGRES_USER=proarte_app
+POSTGRES_PASSWORD=proarte_dev_2024
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=erp_proarte
+DB_USERNAME=proarte_app
+DB_PASSWORD=proarte_dev_2024
+JWT_SECRET=devOnlySecretKeyThatMustBeAtLeast256BitsLongForHmacSha
+CORS_ORIGINS=http://localhost:4200
+```
+
+---
+
+### Paso 2: Levantar PostgreSQL con Docker
+
+```powershell
+# Desde la raíz del proyecto
+docker compose up -d
+```
+
+Verificar que el contenedor esté activo y saludable:
+
+```powershell
+docker ps
+# Debe mostrar: proarte-postgres con STATUS "Up ... (healthy)"
+
+# Verificar conectividad (opcional)
+docker exec proarte-postgres pg_isready -U proarte_app -d erp_proarte
+```
+
+Para ver los logs del contenedor:
+
+```powershell
+docker logs proarte-postgres
+```
+
+---
+
+### Paso 3: Compilar y arrancar el Backend (Spring Boot)
+
+```powershell
+# Desde la raíz del proyecto
+mvn clean compile -DskipTests -f backend/pom.xml
+```
+
+Si la compilación es exitosa (BUILD SUCCESS), arrancar la aplicación:
+
+```powershell
+mvn spring-boot:run -Dspring-boot.run.profiles=dev -f backend/pom.xml
+```
+
+**¿Qué ocurre al arrancar?**
+- Spring Boot se conecta a PostgreSQL en `localhost:5432`
+- Flyway ejecuta automáticamente las migraciones pendientes (V1 a V10)
+- Los datos semilla (V9) se cargan: usuario admin, catálogos base, roles
+- La aplicación queda disponible en `http://localhost:8080`
+
+**Verificar que arrancó correctamente:**
+
+```powershell
+# En otra terminal, verificar el endpoint de salud
+curl http://localhost:8080/actuator/health
+
+# O verificar con Swagger UI en el navegador:
+# http://localhost:8080/swagger-ui.html
+```
+
+**Migraciones Flyway incluidas:**
+
+| Migración | Descripción |
+|---|---|
+| V1 | Esquema base (usuarios, roles, permisos, auditoría) |
+| V2 | Personas y empresas |
+| V3 | Proveedores y servicios |
+| V4 | Descuentos y recargos |
+| V5 | Cotizaciones |
+| V6 | Eventos |
+| V7 | Órdenes de compra e inventario |
+| V8 | Functions y triggers de PostgreSQL |
+| V9 | Datos semilla (admin, catálogos, roles) |
+| V10 | Normalización de lookup tables |
+
+> Las migraciones se aplican automáticamente. No se requiere intervención manual.
+
+---
+
+### Paso 4: Instalar dependencias y arrancar el Frontend (Angular)
+
+```powershell
+# Ir al directorio del frontend
+cd frontend
+
+# Instalar dependencias (solo la primera vez o cuando cambie package.json)
+npm install
+
+# Arrancar el servidor de desarrollo
+ng serve --open
+```
+
+La aplicación Angular queda disponible en `http://localhost:4200`.
+
+El proxy configurado en `proxy.conf.json` redirige automáticamente las llamadas `/api` al backend en `http://localhost:8080`.
+
+---
+
+### Paso 5: Verificación final
+
+Una vez todo esté corriendo, verificar:
+
+| Servicio | URL | Esperado |
+|---|---|---|
+| PostgreSQL | `localhost:5432` | Container healthy |
+| Backend API | `http://localhost:8080` | Responde (Swagger disponible) |
+| Frontend | `http://localhost:4200` | Página de login visible |
+
+**Login con usuario admin por defecto:** `admin / [contraseña en datos semilla V9]`
+
+---
+
+### Comandos útiles de referencia
+
+```powershell
+# === Docker (Base de datos) ===
+docker compose up -d           # Levantar PostgreSQL
+docker compose down            # Detener PostgreSQL (datos persisten en volumen)
+docker compose down -v         # Detener Y eliminar datos (reset completo de DB)
+docker logs proarte-postgres   # Ver logs de la base de datos
+
+# === Backend ===
+mvn clean compile -DskipTests -f backend/pom.xml    # Solo compilar
+mvn spring-boot:run -Dspring-boot.run.profiles=dev -f backend/pom.xml  # Arrancar
+mvn test -f backend/pom.xml                          # Correr tests
+
+# === Frontend ===
+cd frontend
+npm install          # Instalar dependencias
+ng serve --open      # Arrancar dev server
+ng test              # Correr tests
+ng build             # Build de producción
+
+# === Reset completo del entorno ===
+docker compose down -v                              # Eliminar DB y datos
+docker compose up -d                                # Recrear DB limpia
+mvn spring-boot:run -Dspring-boot.run.profiles=dev -f backend/pom.xml  # Flyway re-aplica todo
+```
+
+---
+
+### Troubleshooting
+
+| Problema | Causa probable | Solución |
+|---|---|---|
+| `mvn` no se reconoce | PATH no actualizado | Abrir nueva terminal o reiniciar IDE |
+| `java` no se reconoce | JAVA_HOME no configurado | Verificar variable de entorno y PATH |
+| Backend no conecta a DB | PostgreSQL no está corriendo | `docker compose up -d` y esperar healthy |
+| Puerto 5432 en uso | Otro PostgreSQL local corriendo | Detener el servicio local o cambiar puerto en `.env` |
+| Puerto 8080 en uso | Otra app usando el puerto | Detener la otra app o cambiar `server.port` |
+| Frontend no conecta al backend | Backend no arrancó | Verificar logs del backend, asegurar que corre en 8080 |
+| Flyway falla | DB corrupta o migración manual previa | `docker compose down -v` y reiniciar |
+| `ng` no se reconoce | Angular CLI no global | Usar `npx ng serve` en su lugar |
+
+---
+
+## 1. Prerequisitos (Checklist de verificación)
 
 Antes de ejecutar las pruebas, verificar que el entorno esté correctamente configurado:
 
-- [ ] Docker ejecutándose con contenedor PostgreSQL activo
-- [ ] Base de datos con migraciones Flyway aplicadas (V1 a V10)
+- [ ] Docker ejecutándose con contenedor PostgreSQL activo (`docker ps` muestra `proarte-postgres` healthy)
+- [ ] Base de datos con migraciones Flyway aplicadas (V1 a V10) — verificar en logs del backend al arrancar
 - [ ] Backend Spring Boot corriendo en `http://localhost:8080`
 - [ ] Frontend Angular corriendo en `http://localhost:4200`
 - [ ] Datos semilla cargados (usuario admin, catálogos base, roles)
