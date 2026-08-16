@@ -23,7 +23,7 @@ public record UsuarioResponse(
                 usuario.getNombreCompleto(),
                 usuario.getEmail(),
                 usuario.getRolId(),
-                usuario.getRol() != null ? usuario.getRol().getNombre() : null,
+                usuario.getRol != null ? usuario.getRol().getNombre() : null,
                 usuario.getActivo(),
                 usuario.getCreatedAt()
         );

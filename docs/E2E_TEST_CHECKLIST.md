@@ -91,7 +91,7 @@ mvn clean compile -DskipTests -f backend/pom.xml
 Si la compilación es exitosa (BUILD SUCCESS), arrancar la aplicación:
 
 ```powershell
-mvn spring-boot:run -Dspring-boot.run.profiles=dev -f backend/pom.xml
+$env:DB_PASSWORD = "proarte_dev_2024"; mvn spring-boot:run "-Dspring-boot.run.profiles=dev" "-DskipTests"
 ```
 
 **¿Qué ocurre al arrancar?**
@@ -107,7 +107,7 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev -f backend/pom.xml
 curl http://localhost:8080/actuator/health
 
 # O verificar con Swagger UI en el navegador:
-# http://localhost:8080/swagger-ui.html
+# http://localhost:8080/swagger-ui/index.html#/
 ```
 
 **Migraciones Flyway incluidas:**
