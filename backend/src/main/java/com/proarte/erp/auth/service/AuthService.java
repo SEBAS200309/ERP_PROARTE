@@ -32,7 +32,7 @@ public class AuthService {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
             String accessToken = jwtTokenProvider.generateAccessToken(
-                    userDetails.getId(), userDetails.getUsername(), userDetails.getRolNombre());
+                    userDetails.getId(), userDetails.getRolId(), userDetails.getUsername(), userDetails.getRolNombre());
             String refreshToken = jwtTokenProvider.generateRefreshToken(
                     userDetails.getId(), userDetails.getUsername());
 
@@ -42,6 +42,7 @@ public class AuthService {
                     accessToken,
                     refreshToken,
                     userDetails.getId(),
+                    userDetails.getRolId(),
                     userDetails.getUsername(),
                     userDetails.getNombreCompleto(),
                     userDetails.getRolNombre(),

@@ -25,8 +25,8 @@ public class JwtTokenProvider {
         this.jwtProperties = jwtProperties;
         this.secretKey = Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8));
     }
-
-    public String generateAccessToken(UUID userId, String username, String rol) {
+    //Genracion del token de inicio de sesion (propio de springboot)
+    public String generateAccessToken(UUID userId, UUID rol_id, String username, String rol) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + jwtProperties.accessTokenExpiration());
 
@@ -34,6 +34,7 @@ public class JwtTokenProvider {
                 .subject(username)
                 .claims(Map.of(
                         "userId", userId.toString(),
+                        "rolId", rolId.toString,
                         "rol", rol,
                         "type", "access"
                 ))
@@ -42,7 +43,7 @@ public class JwtTokenProvider {
                 .signWith(secretKey)
                 .compact();
     }
-
+    // Refrescar el token para que no se cierre la sesion
     public String generateRefreshToken(UUID userId, String username) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + jwtProperties.refreshTokenExpiration());
@@ -58,7 +59,9 @@ public class JwtTokenProvider {
                 .signWith(secretKey)
                 .compact();
     }
-
+    
+    // Validacion del token (de la firma y expiracion del JWT)
+    
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
@@ -71,6 +74,8 @@ public class JwtTokenProvider {
             return false;
         }
     }
+    
+//Getters de los datos dentro del token
 
     public String getUsername(String token) {
         return getClaims(token).getSubject();
@@ -78,6 +83,12 @@ public class JwtTokenProvider {
 
     public UUID getUserId(String token) {
         return UUID.fromString(getClaims(token).get("userId", String.class));
+    }
+
+    public UUID getRolId(String token) {
+        return UUID.fromString(
+                getClaims(token).get("rolId", String.class)
+        );
     }
 
     public String getRol(String token) {

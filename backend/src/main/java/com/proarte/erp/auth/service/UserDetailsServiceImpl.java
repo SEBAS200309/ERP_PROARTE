@@ -48,6 +48,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 usuario.getUsername(),
                 usuario.getPasswordHash(),
                 usuario.getNombreCompleto(),
+                rol.getId(),
                 rol.getNombre(),
                 permisosMap,
                 Boolean.TRUE.equals(usuario.getActivo())
