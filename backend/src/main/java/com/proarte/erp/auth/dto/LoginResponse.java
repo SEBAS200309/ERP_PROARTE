@@ -7,6 +7,7 @@ public record LoginResponse(
         String accessToken,
         String refreshToken,
         UUID userId,
+        UUID rolId,
         String username,
         String nombreCompleto,
         String rol,

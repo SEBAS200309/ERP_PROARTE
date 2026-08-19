@@ -28,10 +28,9 @@ class PermissionEvaluatorTest {
 
     private void setAuthenticatedUser(Map<String, Map<String, Boolean>> permisos) {
         CustomUserDetails userDetails = new CustomUserDetails(
-                UUID.randomUUID(), "admin", "pass", "Admin", "Administrador", permisos, true
-        );
-        UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UUID.randomUUID(), UUID.randomUUID(), "admin", "pass", "Admin", "Administrador", permisos, true);
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
@@ -39,8 +38,7 @@ class PermissionEvaluatorTest {
     @DisplayName("hasPermission retorna true cuando usuario tiene permiso para modulo y accion")
     void shouldReturnTrue_whenUserHasPermission() {
         Map<String, Map<String, Boolean>> permisos = Map.of(
-                "usuarios", Map.of("leer", true, "crear", true, "editar", false)
-        );
+                "usuarios", Map.of("leer", true, "crear", true, "editar", false));
         setAuthenticatedUser(permisos);
 
         assertThat(permissionEvaluator.hasPermission("usuarios", "leer")).isTrue();
@@ -51,8 +49,7 @@ class PermissionEvaluatorTest {
     @DisplayName("hasPermission retorna false cuando accion esta en false")
     void shouldReturnFalse_whenActionIsFalse() {
         Map<String, Map<String, Boolean>> permisos = Map.of(
-                "usuarios", Map.of("leer", true, "editar", false)
-        );
+                "usuarios", Map.of("leer", true, "editar", false));
         setAuthenticatedUser(permisos);
 
         assertThat(permissionEvaluator.hasPermission("usuarios", "editar")).isFalse();
@@ -62,8 +59,7 @@ class PermissionEvaluatorTest {
     @DisplayName("hasPermission retorna false cuando modulo no existe en permisos")
     void shouldReturnFalse_whenModuloDoesNotExist() {
         Map<String, Map<String, Boolean>> permisos = Map.of(
-                "usuarios", Map.of("leer", true)
-        );
+                "usuarios", Map.of("leer", true));
         setAuthenticatedUser(permisos);
 
         assertThat(permissionEvaluator.hasPermission("eventos", "leer")).isFalse();
@@ -81,10 +77,9 @@ class PermissionEvaluatorTest {
     @DisplayName("hasPermission retorna false cuando permisos es null")
     void shouldReturnFalse_whenPermisosIsNull() {
         CustomUserDetails userDetails = new CustomUserDetails(
-                UUID.randomUUID(), "admin", "pass", "Admin", "Administrador", null, true
-        );
-        UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UUID.randomUUID(), UUID.randomUUID(), "admin", "pass", "Admin", "Administrador", null, true);
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         assertThat(permissionEvaluator.hasPermission("usuarios", "leer")).isFalse();
@@ -93,8 +88,7 @@ class PermissionEvaluatorTest {
     @Test
     @DisplayName("hasPermission retorna false cuando principal no es CustomUserDetails")
     void shouldReturnFalse_whenPrincipalIsNotCustomUserDetails() {
-        UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken("simpleUser", null);
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("simpleUser", null);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         assertThat(permissionEvaluator.hasPermission("usuarios", "leer")).isFalse();

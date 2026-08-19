@@ -26,10 +26,11 @@ class JwtTokenProviderTest {
     @DisplayName("generateAccessToken genera un token valido con claims correctos")
     void shouldGenerateAccessToken_withCorrectClaims() {
         UUID userId = UUID.randomUUID();
+        UUID rolId = UUID.randomUUID();
         String username = "admin";
         String rol = "Administrador";
 
-        String token = jwtTokenProvider.generateAccessToken(userId, username, rol);
+        String token = jwtTokenProvider.generateAccessToken(userId, rolId, username, rol);
 
         assertThat(token).isNotBlank();
         assertThat(jwtTokenProvider.validateToken(token)).isTrue();
@@ -78,7 +79,7 @@ class JwtTokenProviderTest {
         JwtProperties expiredProps = new JwtProperties(TEST_SECRET, -1000L, -1000L);
         JwtTokenProvider expiredProvider = new JwtTokenProvider(expiredProps);
 
-        String token = expiredProvider.generateAccessToken(UUID.randomUUID(), "user", "rol");
+        String token = expiredProvider.generateAccessToken(UUID.randomUUID(), UUID.randomUUID(), "user", "rol");
 
         assertThat(jwtTokenProvider.validateToken(token)).isFalse();
     }
@@ -90,7 +91,7 @@ class JwtTokenProviderTest {
         JwtProperties otherProps = new JwtProperties(otherSecret, ACCESS_EXPIRATION, REFRESH_EXPIRATION);
         JwtTokenProvider otherProvider = new JwtTokenProvider(otherProps);
 
-        String token = otherProvider.generateAccessToken(UUID.randomUUID(), "user", "rol");
+        String token = otherProvider.generateAccessToken(UUID.randomUUID(), UUID.randomUUID(), "user", "rol");
 
         assertThat(jwtTokenProvider.validateToken(token)).isFalse();
     }
@@ -108,7 +109,8 @@ class JwtTokenProviderTest {
     @DisplayName("access y refresh tokens tienen tipos diferentes")
     void shouldGenerateDifferentTokenTypes() {
         UUID userId = UUID.randomUUID();
-        String accessToken = jwtTokenProvider.generateAccessToken(userId, "user", "rol");
+        UUID rolId = UUID.randomUUID();
+        String accessToken = jwtTokenProvider.generateAccessToken(userId, rolId, "user", "rol");
         String refreshToken = jwtTokenProvider.generateRefreshToken(userId, "user");
 
         assertThat(jwtTokenProvider.getTokenType(accessToken)).isEqualTo("access");

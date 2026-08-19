@@ -45,6 +45,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return new CustomUserDetails(
                 usuario.getId(),
+                usuario.getRolId(),
                 usuario.getUsername(),
                 usuario.getPasswordHash(),
                 usuario.getNombreCompleto(),
