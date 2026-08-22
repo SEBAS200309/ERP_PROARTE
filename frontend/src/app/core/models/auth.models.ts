@@ -60,5 +60,4 @@ export interface TablaPermisos {
 
 export interface PermisosConfig {
   tablas: Record<string, TablaPermisos>;
-  contexto: Record<string, string[]>;
 }
