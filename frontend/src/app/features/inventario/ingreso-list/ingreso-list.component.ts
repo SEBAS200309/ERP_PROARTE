@@ -38,12 +38,13 @@ export class IngresoListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: false,
-    editar: false,
-    eliminar: false,
+    leer: this.permissionService.hasPermission('insumo', 'leer'),
+    editar: this.permissionService.hasPermission('insumo', 'editar'),
+    eliminar: this.permissionService.hasPermission('insumo', 'eliminar'),
   };
 
   protected readonly canCreate = this.permissionService.hasPermission('insumo', 'crear');
+
 
   private currentParams: PageParams = { page: 0, size: 10 };
 

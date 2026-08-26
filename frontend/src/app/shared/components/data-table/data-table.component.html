@@ -2,22 +2,12 @@
   <!-- Search bar -->
   <div class="data-table-toolbar">
     <div class="search-wrapper">
-      <input
-        type="text"
-        class="search-input"
-        placeholder="Buscar..."
-        [ngModel]="searchTerm()"
-        (ngModelChange)="onSearch($event)"
-        aria-label="Buscar en la tabla"
-      />
+      <input type="text" class="search-input" placeholder="Buscar..." [ngModel]="searchTerm()"
+        (ngModelChange)="onSearch($event)" aria-label="Buscar en la tabla" />
       @if (searchTerm()) {
-        <button
-          class="search-clear"
-          (click)="onSearch('')"
-          aria-label="Limpiar búsqueda"
-        >
-          ✕
-        </button>
+      <button class="search-clear" (click)="onSearch('')" aria-label="Limpiar búsqueda">
+        ✕
+      </button>
       }
     </div>
   </div>
@@ -28,94 +18,77 @@
       <thead>
         <tr>
           @for (col of columns(); track col.key) {
-            <th
-              [class.sortable]="col.sortable"
-              [attr.aria-sort]="sortColumn() === col.key ? sortDirection() === 'asc' ? 'ascending' : 'descending' : null"
-              (click)="onSort(col)"
-            >
-              <span class="th-content">
-                {{ col.label }}
-                @if (col.sortable) {
-                  <span class="sort-icon">{{ getSortIcon(col) }}</span>
-                }
-              </span>
-            </th>
+          <th [class.sortable]="col.sortable"
+            [attr.aria-sort]="sortColumn() === col.key ? sortDirection() === 'asc' ? 'ascending' : 'descending' : null"
+            (click)="onSort(col)">
+            <span class="th-content">
+              {{ col.label }}
+              @if (col.sortable) {
+              <span class="sort-icon">{{ getSortIcon(col) }}</span>
+              }
+            </span>
+          </th>
           }
           @if (hasActions()) {
-            <th class="actions-header">Acciones</th>
+          <th class="actions-header">Acciones</th>
           }
         </tr>
       </thead>
       <tbody>
         <!-- Loading skeleton -->
         @if (loading()) {
-          @for (row of skeletonRows(); track row) {
-            <tr class="skeleton-row">
-              @for (col of columns(); track col.key) {
-                <td>
-                  <div class="skeleton-cell"></div>
-                </td>
-              }
-              @if (hasActions()) {
-                <td>
-                  <div class="skeleton-cell skeleton-actions"></div>
-                </td>
-              }
-            </tr>
+        @for (row of skeletonRows(); track row) {
+        <tr class="skeleton-row">
+          @for (col of columns(); track col.key) {
+          <td>
+            <div class="skeleton-cell"></div>
+          </td>
           }
+          @if (hasActions()) {
+          <td>
+            <div class="skeleton-cell skeleton-actions"></div>
+          </td>
+          }
+        </tr>
+        }
         } @else if (data().length === 0) {
-          <!-- Empty state -->
-          <tr class="empty-row">
-            <td [attr.colspan]="hasActions() ? columns().length + 1 : columns().length">
-              <div class="empty-state">
-                <span class="empty-icon">📋</span>
-                <p class="empty-message">{{ emptyMessage() }}</p>
-              </div>
-            </td>
-          </tr>
+        <!-- Empty state -->
+        <tr class="empty-row">
+          <td [attr.colspan]="hasActions() ? columns().length + 1 : columns().length">
+            <div class="empty-state">
+              <span class="empty-icon">📋</span>
+              <p class="empty-message">{{ emptyMessage() }}</p>
+            </div>
+          </td>
+        </tr>
         } @else {
-          <!-- Data rows -->
-          @for (row of data(); track $index) {
-            <tr>
-              @for (col of columns(); track col.key) {
-                <td>{{ getCellValue(row, col) }}</td>
-              }
-              @if (hasActions()) {
-                <td class="actions-cell">
-                  @if (permissions().ver_detalle) {
-                    <button
-                      class="action-btn action-view"
-                      (click)="onView(row)"
-                      title="Ver detalle"
-                      aria-label="Ver detalle"
-                    >
-                      👁
-                    </button>
-                  }
-                  @if (permissions().editar) {
-                    <button
-                      class="action-btn action-edit"
-                      (click)="onEdit(row)"
-                      title="Editar"
-                      aria-label="Editar"
-                    >
-                      ✏
-                    </button>
-                  }
-                  @if (permissions().eliminar) {
-                    <button
-                      class="action-btn action-delete"
-                      (click)="onDelete(row)"
-                      title="Eliminar"
-                      aria-label="Eliminar"
-                    >
-                      ✕
-                    </button>
-                  }
-                </td>
-              }
-            </tr>
+        <!-- Data rows -->
+        @for (row of data(); track $index) {
+        <tr>
+          @for (col of columns(); track col.key) {
+          <td>{{ getCellValue(row, col) }}</td>
           }
+          @if (hasActions()) {
+          <td class="actions-cell">
+            @if (permissions().leer) {
+            <button class="action-btn action-view" (click)="onView(row)" title="Ver detalle" aria-label="Ver detalle">
+              👁
+            </button>
+            }
+            @if (permissions().editar) {
+            <button class="action-btn action-edit" (click)="onEdit(row)" title="Editar" aria-label="Editar">
+              ✏
+            </button>
+            }
+            @if (permissions().eliminar) {
+            <button class="action-btn action-delete" (click)="onDelete(row)" title="Eliminar" aria-label="Eliminar">
+              ✕
+            </button>
+            }
+          </td>
+          }
+        </tr>
+        }
         }
       </tbody>
     </table>
@@ -123,24 +96,15 @@
 
   <!-- Pagination -->
   @if (!loading() && totalPages() > 0) {
-    <div class="pagination">
-      <button
-        class="pagination-btn"
-        [disabled]="!hasPreviousPage()"
-        (click)="onPreviousPage()"
-        aria-label="Página anterior"
-      >
-        Anterior
-      </button>
-      <span class="page-indicator">{{ pageDisplay() }}</span>
-      <button
-        class="pagination-btn"
-        [disabled]="!hasNextPage()"
-        (click)="onNextPage()"
-        aria-label="Página siguiente"
-      >
-        Siguiente
-      </button>
-    </div>
+  <div class="pagination">
+    <button class="pagination-btn" [disabled]="!hasPreviousPage()" (click)="onPreviousPage()"
+      aria-label="Página anterior">
+      Anterior
+    </button>
+    <span class="page-indicator">{{ pageDisplay() }}</span>
+    <button class="pagination-btn" [disabled]="!hasNextPage()" (click)="onNextPage()" aria-label="Página siguiente">
+      Siguiente
+    </button>
+  </div>
   }
 </div>

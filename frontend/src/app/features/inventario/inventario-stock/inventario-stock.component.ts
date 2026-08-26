@@ -35,7 +35,7 @@ export class InventarioStockComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('insumo', 'ver_detalle'),
+    leer: this.permissionService.hasPermission('insumo', 'leer'),
     editar: false,
     eliminar: false,
   };

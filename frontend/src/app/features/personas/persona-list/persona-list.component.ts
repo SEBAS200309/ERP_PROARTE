@@ -58,12 +58,12 @@ export class PersonaListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('persona', 'ver_detalle'),
-    editar: this.permissionService.hasPermission('persona', 'editar'),
-    eliminar: this.permissionService.hasPermission('persona', 'eliminar'),
+    leer: this.permissionService.hasPermission('personas', 'leer'),
+    editar: this.permissionService.hasPermission('personas', 'editar'),
+    eliminar: this.permissionService.hasPermission('personas', 'eliminar'),
   };
 
-  protected readonly canCreate = this.permissionService.hasPermission('persona', 'crear');
+  protected readonly canCreate = this.permissionService.hasPermission('personas', 'crear');
 
   private currentParams: PageParams = { page: 0, size: 10 };
   private rolesMap = new Map<string, string>();

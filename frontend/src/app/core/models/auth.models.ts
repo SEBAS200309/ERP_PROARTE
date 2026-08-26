@@ -51,8 +51,7 @@ export interface RefreshResponseData {
 }
 
 export interface TablaPermisos {
-  ver_listado: boolean;
-  ver_detalle: boolean;
+  leer: boolean;
   crear: boolean;
   editar: boolean;
   eliminar: boolean;

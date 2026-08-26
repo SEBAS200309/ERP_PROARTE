@@ -45,7 +45,7 @@ export class SolicitudListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: false,
+    leer: this.permissionService.hasPermission('proveedor', 'leer'),
     editar: this.permissionService.hasPermission('proveedor', 'editar'),
     eliminar: this.permissionService.hasPermission('proveedor', 'eliminar'),
   };

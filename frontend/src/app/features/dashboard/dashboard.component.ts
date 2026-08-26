@@ -51,7 +51,7 @@ export class DashboardComponent implements OnInit {
 
   protected get visibleLinks(): QuickLink[] {
     return this.allLinks.filter((link) =>
-      this.permissionService.hasPermission(link.tabla, 'ver_listado')
+      this.permissionService.hasPermission(link.tabla, 'leer')
     );
   }
 

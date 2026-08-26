@@ -41,7 +41,7 @@ export class PorcentajeListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('descuentos_recargos', 'ver_detalle'),
+    leer: this.permissionService.hasPermission('descuentos_recargos', 'leer'),
     editar: this.permissionService.hasPermission('descuentos_recargos', 'editar'),
     eliminar: this.permissionService.hasPermission('descuentos_recargos', 'eliminar'),
   };
