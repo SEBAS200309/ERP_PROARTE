@@ -30,22 +30,34 @@ public class CotizacionService {
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional(readOnly = true)
-    public Page<Cotizacion> getAll(String search, UUID estadoId, UUID personaId, UUID empresaId, Pageable pageable) {
+    public Page<CotizacionResponse> getAll(String search, UUID estadoId, UUID personaId, UUID empresaId,
+            Pageable pageable) {
+        Page<Cotizacion> pageCotizaciones;
         if (search != null && !search.isBlank()) {
-            return cotizacionRepository.searchByCodigo(search, pageable);
+            pageCotizaciones = cotizacionRepository.searchByCodigo(search, pageable);
+        } else if (estadoId != null) {
+            pageCotizaciones = cotizacionRepository.findByEstadoId(estadoId, pageable);
+        } else if (personaId != null) {
+            pageCotizaciones = cotizacionRepository.findByPersonaId(personaId, pageable);
+        } else if (empresaId != null) {
+            pageCotizaciones = cotizacionRepository.findByEmpresaId(empresaId, pageable);
+        } else {
+            pageCotizaciones = cotizacionRepository.findAll(pageable);
         }
-        if (estadoId != null) {
-            return cotizacionRepository.findByEstadoId(estadoId, pageable);
-        }
-        if (personaId != null) {
-            return cotizacionRepository.findByPersonaId(personaId, pageable);
-        }
-        if (empresaId != null) {
-            return cotizacionRepository.findByEmpresaId(empresaId, pageable);
-        }
-        return cotizacionRepository.findAll(pageable);
+
+        // El mapeo ocurre aquí adentro mientras la sesión de Hibernate sigue abierta
+        return pageCotizaciones.map(CotizacionResponse::from);
     }
 
+    @Transactional(readOnly = true)
+    public CotizacionResponse getByIdDto(UUID id) {
+        Cotizacion cotizacion = cotizacionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cotizacion", "id", id));
+        return CotizacionResponse.from(cotizacion);
+    }
+
+    // Mantén tu método getById original por si lo usas internamente en otras
+    // operaciones del backend
     @Transactional(readOnly = true)
     public Cotizacion getById(UUID id) {
         return cotizacionRepository.findById(id)
@@ -145,8 +157,7 @@ public class CotizacionService {
         BigDecimal total = jdbcTemplate.queryForObject(
                 "SELECT fn_recalcular_total_cotizacion(?)",
                 BigDecimal.class,
-                cotizacionId
-        );
+                cotizacionId);
         log.info("Total recalculado para cotizacion {}: {}", cotizacionId, total);
         return total;
     }

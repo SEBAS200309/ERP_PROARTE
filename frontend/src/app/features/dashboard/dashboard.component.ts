@@ -40,8 +40,6 @@ export class DashboardComponent implements OnInit {
 
   protected readonly cards = signal<SummaryCard[]>([]);
 
-
-
   protected readonly allLinks: QuickLink[] = [
     { icon: '🎯', label: 'Leads', route: '/leads', tabla: 'leads' },
     { icon: '👤', label: 'Personas', route: '/personas', tabla: 'personas' },

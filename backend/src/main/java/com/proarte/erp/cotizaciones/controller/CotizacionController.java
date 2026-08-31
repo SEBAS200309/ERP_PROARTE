@@ -36,18 +36,14 @@ public class CotizacionController {
     private final PermissionEvaluator permissionEvaluator;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<CotizacionResponse>>> getAll(
+    public ResponseEntity<ApiResponse<Page<CotizacionResponse>>> getAll(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) UUID estadoId,
             @RequestParam(required = false) UUID personaId,
             @RequestParam(required = false) UUID empresaId,
-            @PageableDefault(size = 20) Pageable pageable) {
-        validatePermission("leer");
-
-        Page<CotizacionResponse> page = cotizacionService.getAll(search, estadoId, personaId, empresaId, pageable)
-                .map(CotizacionResponse::from);
-
-        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(page)));
+            Pageable pageable) {
+        Page<CotizacionResponse> response = cotizacionService.getAll(search, estadoId, personaId, empresaId, pageable);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping("/{id}")
@@ -75,7 +71,8 @@ public class CotizacionController {
         validatePermission("editar");
 
         Cotizacion cotizacion = cotizacionService.update(id, request);
-        return ResponseEntity.ok(ApiResponse.success(CotizacionResponse.from(cotizacion), "Cotización actualizada exitosamente"));
+        return ResponseEntity
+                .ok(ApiResponse.success(CotizacionResponse.from(cotizacion), "Cotización actualizada exitosamente"));
     }
 
     @DeleteMapping("/{id}")
@@ -93,7 +90,8 @@ public class CotizacionController {
         validatePermission("editar");
 
         Cotizacion cotizacion = cotizacionService.cambiarEstado(id, request);
-        return ResponseEntity.ok(ApiResponse.success(CotizacionResponse.from(cotizacion), "Estado actualizado exitosamente"));
+        return ResponseEntity
+                .ok(ApiResponse.success(CotizacionResponse.from(cotizacion), "Estado actualizado exitosamente"));
     }
 
     @GetMapping("/vencimientos")
@@ -114,7 +112,8 @@ public class CotizacionController {
 
         cotizacionService.recalcularTotal(id);
         Cotizacion cotizacion = cotizacionService.getById(id);
-        return ResponseEntity.ok(ApiResponse.success(CotizacionResponse.from(cotizacion), "Total recalculado exitosamente"));
+        return ResponseEntity
+                .ok(ApiResponse.success(CotizacionResponse.from(cotizacion), "Total recalculado exitosamente"));
     }
 
     @GetMapping("/{id}/pdf")
