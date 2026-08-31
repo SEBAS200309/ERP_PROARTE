@@ -17,27 +17,24 @@ export class DashboardService {
 
   /**
    * Obtiene el resumen del dashboard consultando los endpoints existentes.
-   * Usa page=0&size=1 para obtener solo el totalElements de cada recurso.
-   *
-   * TODO: Cuando el backend tenga un endpoint /api/v1/dashboard/resumen,
-   * reemplazar estas múltiples llamadas por una sola.
+   * Utiliza el endpoint optimizado de conteo para leads y paginación mínima para los demás.
    */
   getResumen(): Observable<DashboardResumen> {
     const params = new HttpParams().set('page', '0').set('size', '1');
 
+    // Consulta directa y optimizada que retorna únicamente el número entero
     const leads$ = this.http
-      .get<ApiResponse<PageResponse<any>>>('/api/v1/leads', { params })
+      .get<ApiResponse<number>>('/api/v1/leads/count')
       .pipe(
-        map((res) => (res.success ? res.data.totalElements : 0)),
+        map((res) => (res.success ? res.data : 0)),
         catchError(() => of(0))
       );
 
+    // Consulta de cuenta de cotizacion en estado Activo que no tienen un evento asignado
     const cotizaciones$ = this.http
-      .get<ApiResponse<PageResponse<any>>>('/api/v1/cotizaciones', {
-        params: params.set('estado', 'PENDIENTE'),
-      })
+      .get<ApiResponse<number>>('/api/v1/cotizaciones/count')
       .pipe(
-        map((res) => (res.success ? res.data.totalElements : 0)),
+        map((res) => (res.success ? res.data : 0)),
         catchError(() => of(0))
       );
 
@@ -48,6 +45,10 @@ export class DashboardService {
         catchError(() => of(0))
       );
 
-    return forkJoin({ totalLeads: leads$, cotizacionesPendientes: cotizaciones$, eventosProximos: eventos$ });
+    return forkJoin({
+      totalLeads: leads$,
+      cotizacionesPendientes: cotizaciones$,
+      eventosProximos: eventos$
+    });
   }
 }

@@ -13,16 +13,14 @@ INSERT INTO tipo_documento (id, nombre) VALUES
 ('f48fbdca-e385-47c7-b2a9-819d6014de92', 'NIT'), 
 ('665cc4a5-04e9-4070-9ab2-d3545a5acbf8', 'PA'), 
 ('6d912ab5-3e7c-4d91-b845-0827b671fa6e', 'TI'), 
-('4cf37979-3cdb-466b-967e-51db9b7b34df', 'RC')
-ON CONFLICT (id) DO NOTHING;
+('4cf37979-3cdb-466b-967e-51db9b7b34df', 'RC');
 
 INSERT INTO rol_entidad (id, nombre) VALUES 
 ('6ace5bc2-34af-4e5f-ab76-920b00aaf675', 'contacto'), 
 ('c5a95280-36e3-442f-b320-dcac56414918', 'cliente'), 
 ('41d13d3f-db42-485c-a22a-f334727b755c', 'proveedor'), 
 ('5d852183-3909-444f-9867-c69ed098f052', 'aliado'), 
-('5b76af84-1b04-47b5-98dc-f594de9d40e9', 'artista')
-ON CONFLICT (id) DO NOTHING;
+('5b76af84-1b04-47b5-98dc-f594de9d40e9', 'artista');
 
 INSERT INTO estado (id, nombre, contexto) VALUES
 ('c831fa82-3868-477a-8bec-b6b2061baa9e', 'nuevo', 'lead'), 
@@ -47,21 +45,18 @@ INSERT INTO estado (id, nombre, contexto) VALUES
 ('39bdefc4-7b42-41a9-952a-40484cf0245c', 'aprobada', 'orden_compra'), 
 ('5eae8e14-7ab9-4d9d-bb36-82af7915c4f9', 'enviada', 'orden_compra'), 
 ('b0be3baa-2759-419e-aa02-9fa619542a73', 'recibida', 'orden_compra'), 
-('769fa829-04ec-4bce-9c08-c4ede4de63e0', 'cancelada', 'orden_compra')
-ON CONFLICT (id) DO NOTHING;
+('769fa829-04ec-4bce-9c08-c4ede4de63e0', 'cancelada', 'orden_compra');
 
 INSERT INTO categoria_servicio (id, nombre) VALUES 
 ('8a916266-756b-4c39-a993-2b6c8e0ba2f6', 'Propio'), 
-('4656c5f2-1196-436b-ad8c-c40347f05fcd', 'Tercero')
-ON CONFLICT (id) DO NOTHING;
+('4656c5f2-1196-436b-ad8c-c40347f05fcd', 'Tercero');
 
 INSERT INTO unidad_medida (id, nombre, abreviatura) VALUES
 ('31a725d1-a906-4ee5-896f-c9520a2b6c31', 'Unidad', 'ud'), 
 ('17bb2ade-18c2-4c3d-b83a-f5785c7f7fb8', 'Kilogramo', 'kg'), 
 ('afe3c6b8-56be-46f2-b522-d10b38f57d49', 'Litro', 'lt'), 
 ('c465e299-cd1f-4622-ae96-8c0aad2c6b31', 'Metro', 'm'), 
-('5e9ca00c-1abe-49be-9af8-4e9307c85bc9', 'Caja', 'cj')
-ON CONFLICT (id) DO NOTHING;
+('5e9ca00c-1abe-49be-9af8-4e9307c85bc9', 'Caja', 'cj');
 
 INSERT INTO rol_evento (id, nombre) VALUES 
 ('664fcec5-d36b-4f0c-b46e-1c6a318f5959', 'organizador'), 
@@ -69,8 +64,7 @@ INSERT INTO rol_evento (id, nombre) VALUES
 ('4ec2fac5-5cd3-4a32-af76-b0b9c717c874', 'asistente'), 
 ('df087e03-9890-4b5a-891e-5c88e5e0bdbd', 'promotor'), 
 ('0c8cc5a7-d500-47ce-b1d7-8409df18625b', 'coordinador'), 
-('6609c118-2e10-4335-9492-80767417ced3', 'personal')
-ON CONFLICT (id) DO NOTHING;
+('6609c118-2e10-4335-9492-80767417ced3', 'personal');
 
 -- ============================================================
 -- 2. Roles del sistema
@@ -79,14 +73,13 @@ INSERT INTO rol (id, nombre, descripcion) VALUES
     ('a0000000-0000-0000-0000-000000000001', 'Administrador', 'Acceso total al sistema'),
     ('a0000000-0000-0000-0000-000000000002', 'Comercial', 'Gestión comercial'),
     ('a0000000-0000-0000-0000-000000000003', 'Operativo', 'Gestión operativa de eventos'),
-    ('a0000000-0000-0000-0000-000000000004', 'Coordinador', 'Consulta de eventos asignados')
-ON CONFLICT (id) DO NOTHING;
+    ('a0000000-0000-0000-0000-000000000004', 'Coordinador', 'Consulta de eventos asignados');
 
 -- ============================================================
 -- 3. Permisos de roles
 -- ============================================================
-INSERT INTO permiso (rol_id, configuracion) VALUES
-('a0000000-0000-0000-0000-000000000001', '{
+INSERT INTO permiso (id, rol_id, configuracion, activo) VALUES
+('5adc9029-365a-455c-bc18-41bce6016e81', 'a0000000-0000-0000-0000-000000000001', '{
     "usuarios": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "roles": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "personas": {"crear": true, "leer": true, "editar": true, "eliminar": true},
@@ -98,6 +91,8 @@ INSERT INTO permiso (rol_id, configuracion) VALUES
     "eventos": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "personal": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "ordenes": {"crear": true, "leer": true, "editar": true, "eliminar": true},
+    "solicitudes": {"crear": true, "leer": true, "editar": true, "eliminar": true},
+    "portafolio": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "inventario": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "alimentacion": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "presentaciones": {"crear": true, "leer": true, "editar": true, "eliminar": true},
@@ -105,64 +100,7 @@ INSERT INTO permiso (rol_id, configuracion) VALUES
     "observaciones": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "reportes": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "catalogos": {"crear": true, "leer": true, "editar": true, "eliminar": true}
-}'::jsonb),
-('a0000000-0000-0000-0000-000000000002', '{
-    "usuarios": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "roles": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "personas": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "empresas": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "leads": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "servicios": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "proveedores": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "cotizaciones": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "eventos": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "personal": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "ordenes": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "inventario": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "alimentacion": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "presentaciones": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "mensajes": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "observaciones": {"crear": true, "leer": true, "editar": false, "eliminar": false},
-    "reportes": {"crear": false, "leer": true, "editar": false, "eliminar": false}
-}'::jsonb),
-('a0000000-0000-0000-0000-000000000003', '{
-    "usuarios": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "roles": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "personas": {"crear": true, "leer": true, "editar": true, "eliminar": false},
-    "empresas": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "leads": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "servicios": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "proveedores": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "cotizaciones": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "eventos": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "personal": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "ordenes": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "inventario": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "alimentacion": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "presentaciones": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "mensajes": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "observaciones": {"crear": true, "leer": true, "editar": true, "eliminar": false},
-    "reportes": {"crear": false, "leer": true, "editar": false, "eliminar": false}
-}'::jsonb),
-('a0000000-0000-0000-0000-000000000004', '{
-    "usuarios": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "roles": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "personas": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "empresas": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "leads": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "servicios": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "proveedores": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "cotizaciones": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "eventos": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "personal": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "ordenes": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "inventario": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "alimentacion": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "presentaciones": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "mensajes": {"crear": false, "leer": false, "editar": false, "eliminar": false},
-    "observaciones": {"crear": false, "leer": true, "editar": false, "eliminar": false},
-    "reportes": {"crear": false, "leer": false, "editar": false, "eliminar": false}
-}'::jsonb);
+}'::jsonb, true);
 
 -- ============================================================
 -- 4. Usuario administrador por defecto
@@ -175,8 +113,7 @@ INSERT INTO usuario (id, username, password_hash, nombre_completo, email, rol_id
     'Administrador Sistema',
     'admin@proarte.com.co',
     'a0000000-0000-0000-0000-000000000001'
-)
-ON CONFLICT (id) DO NOTHING;
+);
 
 -- =======================================================================
 -- 5. CREACIÓN DE DEPENDENCIAS (Persona y Empresa de prueba)
@@ -197,8 +134,7 @@ INSERT INTO public.persona (
     'c5a95280-36e3-442f-b320-dcac56414918', 
     true, 
     '3588db99-bb49-4dc3-a196-d1303df7e6c0'
-)
-ON CONFLICT (id) DO NOTHING;
+);
 
 INSERT INTO public.empresa (
     id, razon_social, nit, direccion, telefono, 
@@ -213,8 +149,7 @@ INSERT INTO public.empresa (
     'c5a95280-36e3-442f-b320-dcac56414918', 
     true, 
     '3588db99-bb49-4dc3-a196-d1303df7e6c0'
-)
-ON CONFLICT (id) DO NOTHING;
+);
 
 -- =======================================================================
 -- 6. CREACIÓN DEL LEAD
@@ -230,13 +165,13 @@ INSERT INTO public.lead (
     'e390f1ee-6c54-4b01-90e6-d701748f0852', 
     true, 
     '3588db99-bb49-4dc3-a196-d1303df7e6c0'
-)
-ON CONFLICT (id) DO NOTHING;
+);
 
 -- =======================================================================
--- 7. CREACIÓN DE LA COTIZACIÓN
+-- 7. CREACIÓN DE COTIZACIONES
 -- =======================================================================
 
+-- Cotización 1 (Con evento asociado)
 INSERT INTO public.cotizacion (
     id, codigo, estado_id, fecha_vencimiento, total, 
     persona_id, empresa_id, activo, created_by
@@ -250,11 +185,26 @@ INSERT INTO public.cotizacion (
     'e390f1ee-6c54-4b01-90e6-d701748f0852', 
     true, 
     '3588db99-bb49-4dc3-a196-d1303df7e6c0'
-)
-ON CONFLICT (id) DO NOTHING;
+);
+
+-- Cotización 2 (SIN evento asociado, cumpliendo el requerimiento de cotización sin evento)
+INSERT INTO public.cotizacion (
+    id, codigo, estado_id, fecha_vencimiento, total, 
+    persona_id, empresa_id, activo, created_by
+) VALUES (
+    'c790f1ee-6c54-4b01-90e6-d701748f0899', 
+    'COT-2026-002', 
+    '280ca2f4-706e-4ba1-96e5-9875beac41b6', 
+    '2026-10-15', 
+    8200000.00, 
+    'd290f1ee-6c54-4b01-90e6-d701748f0851', 
+    'e390f1ee-6c54-4b01-90e6-d701748f0852', 
+    true, 
+    '3588db99-bb49-4dc3-a196-d1303df7e6c0'
+);
 
 -- =======================================================================
--- 8. CREACIÓN DEL EVENTO
+-- 8. CREACIÓN DEL EVENTO (Únicamente para la primera cotización)
 -- =======================================================================
 
 INSERT INTO public.evento (
@@ -270,5 +220,4 @@ INSERT INTO public.evento (
     '3a84bef0-3044-4710-b78e-51d9edc26a28', 
     true, 
     '3588db99-bb49-4dc3-a196-d1303df7e6c0'
-)
-ON CONFLICT (id) DO NOTHING;
+);

@@ -46,6 +46,13 @@ public class CotizacionController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<ApiResponse<Long>> getCount() {
+        validatePermission("leer");
+        long total = cotizacionService.getTotalCotizacionesPendientes();
+        return ResponseEntity.ok(ApiResponse.success(total));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CotizacionResponse>> getById(@PathVariable UUID id) {
         validatePermission("leer");

@@ -182,4 +182,9 @@ public class CotizacionService {
         int nextSeq = (maxSeq != null ? maxSeq : 0) + 1;
         return String.format("COT-%d-%03d", year, nextSeq);
     }
+
+    @Transactional(readOnly = true)
+    public long getTotalCotizacionesPendientes() {
+        return cotizacionRepository.countCotizacionesPendientes();
+    }
 }

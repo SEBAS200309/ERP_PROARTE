@@ -21,8 +21,12 @@ public interface LeadRepository extends SoftDeleteRepository<Lead> {
     Page<Lead> searchByDescripcion(@Param("search") String search, Pageable pageable);
 
     @Query("SELECT l FROM Lead l WHERE LOWER(l.descripcion) LIKE LOWER(CONCAT('%', :search, '%')) AND l.estadoId = :estadoId")
-    Page<Lead> searchByDescripcionAndEstadoId(@Param("search") String search, @Param("estadoId") UUID estadoId, Pageable pageable);
+    Page<Lead> searchByDescripcionAndEstadoId(@Param("search") String search, @Param("estadoId") UUID estadoId,
+            Pageable pageable);
 
     @Query(value = "SELECT e.nombre, COUNT(l.id) FROM lead l JOIN estado e ON e.id = l.estado_id WHERE l.activo = true GROUP BY e.nombre", nativeQuery = true)
     List<Object[]> countByEstado();
+
+    @Query(value = "SELECT COUNT(l.id) FROM lead l WHERE l.activo = true", nativeQuery = true)
+    Long countActiveLeads();
 }
