@@ -6,72 +6,58 @@
 
   <!-- Loading state -->
   @if (loading()) {
-    <div class="dashboard__loading">
-      <div class="dashboard__spinner"></div>
-      <p>Cargando datos...</p>
-    </div>
+  <div class="dashboard__loading">
+    <div class="dashboard__spinner"></div>
+    <p>Cargando datos...</p>
+  </div>
   }
 
   <!-- Error state -->
   @if (error() && !loading()) {
-    <div class="dashboard__error">
-      <span class="dashboard__error-icon">⚠️</span>
-      <p>Error al cargar los datos. Intente nuevamente.</p>
-      <button
-        class="dashboard__retry-btn"
-        (click)="retry()"
-        [@buttonHover]="getHoverState('retry')"
-        (mouseenter)="onHover('retry', true)"
-        (mouseleave)="onHover('retry', false)"
-      >
-        Reintentar
-      </button>
-    </div>
+  <div class="dashboard__error">
+    <span class="dashboard__error-icon">⚠️</span>
+    <p>Error al cargar los datos. Intente nuevamente.</p>
+    <button class="dashboard__retry-btn" (click)="retry()" [@buttonHover]="getHoverState('retry')"
+      (mouseenter)="onHover('retry', true)" (mouseleave)="onHover('retry', false)">
+      Reintentar
+    </button>
+  </div>
   }
 
   <!-- Summary cards -->
   @if (!loading() && !error()) {
-    <section class="dashboard__cards">
-      @for (card of cards(); track card.title) {
-        <a
-          class="dashboard__card"
-          [routerLink]="card.route"
-          [@buttonHover]="getHoverState(card.title)"
-          (mouseenter)="onHover(card.title, true)"
-          (mouseleave)="onHover(card.title, false)"
-        >
-          <span class="dashboard__card-icon">{{ card.icon }}</span>
-          <div class="dashboard__card-content">
-            <span class="dashboard__card-value">{{ card.value }}</span>
-            <span class="dashboard__card-title">{{ card.title }}</span>
-          </div>
-        </a>
-      }
-    </section>
-
-    <!-- Quick access links -->
-    <section class="dashboard__quick-access">
-      <h2 class="dashboard__section-title">Acceso Rápido</h2>
-      <div class="dashboard__links">
-        @for (link of visibleLinks; track link.route) {
-          <a
-            class="dashboard__link"
-            [routerLink]="link.route"
-            [@buttonHover]="getHoverState(link.label)"
-            (mouseenter)="onHover(link.label, true)"
-            (mouseleave)="onHover(link.label, false)"
-          >
-            <span class="dashboard__link-icon">{{ link.icon }}</span>
-            <span class="dashboard__link-label">{{ link.label }}</span>
-          </a>
-        }
-
-        @if (visibleLinks.length === 0) {
-          <p class="dashboard__no-links">
-            No tiene módulos asignados. Contacte al administrador.
-          </p>
-        }
+  <section class="dashboard__cards">
+    @for (card of cards(); track card.title) {
+    <a class="dashboard__card" [routerLink]="card.route" [@buttonHover]="getHoverState(card.title)"
+      (mouseenter)="onHover(card.title, true)" (mouseleave)="onHover(card.title, false)">
+      <span class="dashboard__card-icon">{{ card.icon }}</span>
+      <div class="dashboard__card-content">
+        <span class="dashboard__card-value">{{ card.value }}</span>
+        <span class="dashboard__card-title">{{ card.title }}</span>
       </div>
-    </section>
+    </a>
+    }
+  </section>
+
+  <!-- Quick access links -->
+  <section class="dashboard__quick-access">
+    <h2 class="dashboard__section-title">Acceso Rápido</h2>
+    <div class="dashboard__links">
+      @for (link of visibleLinks; track link.route) {
+      <a class="dashboard__link" [routerLink]="link.route" [@buttonHover]="getHoverState(link.label)"
+        (mouseenter)="onHover(link.label, true)" (mouseleave)="onHover(link.label, false)">
+        <span class="dashboard__link-icon">{{ link.icon }}</span>
+        <span class="dashboard__link-label">{{ link.label }}</span>
+      </a>
+      }
+
+      @if (visibleLinks.length === 0) {
+      <p class="dashboard__no-links">
+        No tiene módulos asignados. Contacte al administrador.
+        Modulos del usuario: {{ visibleLinks.length }}
+      </p>
+      }
+    </div>
+  </section>
   }
 </div>
