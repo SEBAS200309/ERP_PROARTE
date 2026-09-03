@@ -20,7 +20,6 @@ export class DashboardService {
    * Utiliza el endpoint optimizado de conteo para leads y paginación mínima para los demás.
    */
   getResumen(): Observable<DashboardResumen> {
-    const params = new HttpParams().set('page', '0').set('size', '1');
 
     // Consulta directa y optimizada que retorna únicamente el número entero
     const leads$ = this.http
@@ -39,9 +38,9 @@ export class DashboardService {
       );
 
     const eventos$ = this.http
-      .get<ApiResponse<PageResponse<any>>>('/api/v1/eventos', { params })
+      .get<ApiResponse<number>>('/api/v1/eventos/count')
       .pipe(
-        map((res) => (res.success ? res.data.totalElements : 0)),
+        map((res) => (res.success ? res.data : 0)),
         catchError(() => of(0))
       );
 

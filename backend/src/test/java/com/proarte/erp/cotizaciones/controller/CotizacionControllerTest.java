@@ -4,6 +4,7 @@ import com.proarte.erp.controller.BaseControllerTest;
 import com.proarte.erp.controller.TestSecurityConfig;
 import com.proarte.erp.cotizaciones.dto.CambiarEstadoRequest;
 import com.proarte.erp.cotizaciones.dto.CreateCotizacionRequest;
+import com.proarte.erp.cotizaciones.dto.CotizacionResponse;
 import com.proarte.erp.cotizaciones.entity.Cotizacion;
 import com.proarte.erp.cotizaciones.service.CotizacionPdfService;
 import com.proarte.erp.cotizaciones.service.CotizacionService;
@@ -33,232 +34,236 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(value = CotizacionController.class, excludeFilters = @ComponentScan.Filter(
-        type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class))
-@Import({TestSecurityConfig.class, GlobalExceptionHandler.class})
+@WebMvcTest(value = CotizacionController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class))
+@Import({ TestSecurityConfig.class, GlobalExceptionHandler.class })
 class CotizacionControllerTest extends BaseControllerTest {
 
-    @MockBean
-    private CotizacionService cotizacionService;
+        @MockBean
+        private CotizacionService cotizacionService;
 
-    @MockBean
-    private CotizacionPdfService cotizacionPdfService;
+        @MockBean
+        private CotizacionPdfService cotizacionPdfService;
 
-    @MockBean
-    private PermissionEvaluator permissionEvaluator;
+        @MockBean
+        private PermissionEvaluator permissionEvaluator;
 
-    private static final UUID COTIZACION_ID = UUID.randomUUID();
-    private static final UUID ESTADO_ID = UUID.randomUUID();
+        private static final UUID COTIZACION_ID = UUID.randomUUID();
+        private static final UUID ESTADO_ID = UUID.randomUUID();
 
-    // ==================== Authentication Tests ====================
+        // ==================== Authentication Tests ====================
 
-    @Test
-    void getAll_withoutAuth_returns401() throws Exception {
-        mockMvc.perform(get("/api/v1/cotizaciones"))
-                .andExpect(status().isUnauthorized());
-    }
+        @Test
+        void getAll_withoutAuth_returns401() throws Exception {
+                mockMvc.perform(get("/api/v1/cotizaciones"))
+                                .andExpect(status().isUnauthorized());
+        }
 
-    @Test
-    void create_withoutAuth_returns401() throws Exception {
-        CreateCotizacionRequest request = new CreateCotizacionRequest(
-                "COT-001", ESTADO_ID, LocalDate.now().plusDays(30), null, null, null);
+        @Test
+        void create_withoutAuth_returns401() throws Exception {
+                CreateCotizacionRequest request = new CreateCotizacionRequest(
+                                "COT-001", ESTADO_ID, LocalDate.now().plusDays(30), null, null, null);
 
-        mockMvc.perform(post("/api/v1/cotizaciones")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isUnauthorized());
-    }
+                mockMvc.perform(post("/api/v1/cotizaciones")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isUnauthorized());
+        }
 
-    // ==================== Authorization Tests ====================
+        // ==================== Authorization Tests ====================
 
-    @Test
-    void getAll_withoutPermission_returnsUnauthorized() throws Exception {
-        when(permissionEvaluator.hasPermission("cotizaciones", "leer")).thenReturn(false);
+        @Test
+        void getAll_withoutPermission_returnsUnauthorized() throws Exception {
+                when(permissionEvaluator.hasPermission("cotizaciones", "leer")).thenReturn(false);
 
-        mockMvc.perform(get("/api/v1/cotizaciones")
-                        .with(withNoPermission()))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.error.code").value("ERR_AUTH"));
-    }
+                mockMvc.perform(get("/api/v1/cotizaciones")
+                                .with(withNoPermission()))
+                                .andExpect(status().isUnauthorized())
+                                .andExpect(jsonPath("$.success").value(false))
+                                .andExpect(jsonPath("$.error.code").value("ERR_AUTH"));
+        }
 
-    // ==================== Success Tests ====================
+        // ==================== Success Tests ====================
 
-    @Test
-    void getAll_withPermission_returns200WithPagination() throws Exception {
-        when(permissionEvaluator.hasPermission("cotizaciones", "leer")).thenReturn(true);
+        @Test
+        void getAll_withPermission_returns200WithPagination() throws Exception {
+                when(permissionEvaluator.hasPermission("cotizaciones", "leer")).thenReturn(true);
 
-        Cotizacion cotizacion = createTestCotizacion();
-        Page<Cotizacion> page = new PageImpl<>(List.of(cotizacion));
-        when(cotizacionService.getAll(any(), any(), any(), any(), any(Pageable.class))).thenReturn(page);
+                Cotizacion cotizacion = createTestCotizacion();
+                // CORREGIDO: Mapeamos la entidad a DTO para construir la página esperada por
+                // Mockito
+                CotizacionResponse responseDto = CotizacionResponse.from(cotizacion);
+                Page<CotizacionResponse> page = new PageImpl<>(List.of(responseDto));
 
-        mockMvc.perform(get("/api/v1/cotizaciones")
-                        .with(withPermission("cotizaciones"))
-                        .param("page", "0")
-                        .param("size", "10"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.content").isArray())
-                .andExpect(jsonPath("$.data.totalElements").value(1))
-                .andExpect(jsonPath("$.data.page").value(0));
-    }
+                when(cotizacionService.getAll(any(), any(), any(), any(), any(Pageable.class))).thenReturn(page);
 
-    @Test
-    void getById_withPermission_returns200() throws Exception {
-        when(permissionEvaluator.hasPermission("cotizaciones", "leer")).thenReturn(true);
+                mockMvc.perform(get("/api/v1/cotizaciones")
+                                .with(withPermission("cotizaciones"))
+                                .param("page", "0")
+                                .param("size", "10"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data.content").isArray())
+                                .andExpect(jsonPath("$.data.totalElements").value(1))
+                                .andExpect(jsonPath("$.data.page").value(0));
+        }
 
-        Cotizacion cotizacion = createTestCotizacion();
-        when(cotizacionService.getById(COTIZACION_ID)).thenReturn(cotizacion);
+        @Test
+        void getById_withPermission_returns200() throws Exception {
+                when(permissionEvaluator.hasPermission("cotizaciones", "leer")).thenReturn(true);
 
-        mockMvc.perform(get("/api/v1/cotizaciones/" + COTIZACION_ID)
-                        .with(withPermission("cotizaciones")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.id").value(COTIZACION_ID.toString()))
-                .andExpect(jsonPath("$.data.codigo").value("COT-001"));
-    }
+                Cotizacion cotizacion = createTestCotizacion();
+                when(cotizacionService.getById(COTIZACION_ID)).thenReturn(cotizacion);
 
-    @Test
-    void create_withValidData_returns201() throws Exception {
-        when(permissionEvaluator.hasPermission("cotizaciones", "crear")).thenReturn(true);
+                mockMvc.perform(get("/api/v1/cotizaciones/" + COTIZACION_ID)
+                                .with(withPermission("cotizaciones")))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data.id").value(COTIZACION_ID.toString()))
+                                .andExpect(jsonPath("$.data.codigo").value("COT-001"));
+        }
 
-        Cotizacion cotizacion = createTestCotizacion();
-        when(cotizacionService.create(any(CreateCotizacionRequest.class))).thenReturn(cotizacion);
+        @Test
+        void create_withValidData_returns201() throws Exception {
+                when(permissionEvaluator.hasPermission("cotizaciones", "crear")).thenReturn(true);
 
-        CreateCotizacionRequest request = new CreateCotizacionRequest(
-                "COT-001", ESTADO_ID, LocalDate.now().plusDays(30), null, null, null);
+                Cotizacion cotizacion = createTestCotizacion();
+                when(cotizacionService.create(any(CreateCotizacionRequest.class))).thenReturn(cotizacion);
 
-        mockMvc.perform(post("/api/v1/cotizaciones")
-                        .with(withPermission("cotizaciones"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Cotización creada exitosamente"));
-    }
+                CreateCotizacionRequest request = new CreateCotizacionRequest(
+                                "COT-001", ESTADO_ID, LocalDate.now().plusDays(30), null, null, null);
 
-    @Test
-    void delete_withPermission_returns200() throws Exception {
-        when(permissionEvaluator.hasPermission("cotizaciones", "eliminar")).thenReturn(true);
+                mockMvc.perform(post("/api/v1/cotizaciones")
+                                .with(withPermission("cotizaciones"))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isCreated())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.message").value("Cotización creada exitosamente"));
+        }
 
-        mockMvc.perform(delete("/api/v1/cotizaciones/" + COTIZACION_ID)
-                        .with(withPermission("cotizaciones")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Cotización eliminada exitosamente"));
-    }
+        @Test
+        void delete_withPermission_returns200() throws Exception {
+                when(permissionEvaluator.hasPermission("cotizaciones", "eliminar")).thenReturn(true);
 
-    // ==================== Special Endpoints ====================
+                mockMvc.perform(delete("/api/v1/cotizaciones/" + COTIZACION_ID)
+                                .with(withPermission("cotizaciones")))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.message").value("Cotización eliminada exitosamente"));
+        }
 
-    @Test
-    void cambiarEstado_withPermission_returns200() throws Exception {
-        when(permissionEvaluator.hasPermission("cotizaciones", "editar")).thenReturn(true);
+        // ==================== Special Endpoints ====================
 
-        Cotizacion cotizacion = createTestCotizacion();
-        when(cotizacionService.cambiarEstado(eq(COTIZACION_ID), any(CambiarEstadoRequest.class))).thenReturn(cotizacion);
+        @Test
+        void cambiarEstado_withPermission_returns200() throws Exception {
+                when(permissionEvaluator.hasPermission("cotizaciones", "editar")).thenReturn(true);
 
-        CambiarEstadoRequest request = new CambiarEstadoRequest(UUID.randomUUID());
+                Cotizacion cotizacion = createTestCotizacion();
+                when(cotizacionService.cambiarEstado(eq(COTIZACION_ID), any(CambiarEstadoRequest.class)))
+                                .thenReturn(cotizacion);
 
-        mockMvc.perform(patch("/api/v1/cotizaciones/" + COTIZACION_ID + "/estado")
-                        .with(withPermission("cotizaciones"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Estado actualizado exitosamente"));
-    }
+                CambiarEstadoRequest request = new CambiarEstadoRequest(UUID.randomUUID());
 
-    @Test
-    void getPorVencer_withPermission_returns200() throws Exception {
-        when(permissionEvaluator.hasPermission("cotizaciones", "leer")).thenReturn(true);
+                mockMvc.perform(patch("/api/v1/cotizaciones/" + COTIZACION_ID + "/estado")
+                                .with(withPermission("cotizaciones"))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.message").value("Estado actualizado exitosamente"));
+        }
 
-        Cotizacion cotizacion = createTestCotizacion();
-        when(cotizacionService.getPorVencer(7)).thenReturn(List.of(cotizacion));
+        @Test
+        void getPorVencer_withPermission_returns200() throws Exception {
+                when(permissionEvaluator.hasPermission("cotizaciones", "leer")).thenReturn(true);
 
-        mockMvc.perform(get("/api/v1/cotizaciones/vencimientos")
-                        .with(withPermission("cotizaciones"))
-                        .param("dias", "7"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data[0].codigo").value("COT-001"));
-    }
+                Cotizacion cotizacion = createTestCotizacion();
+                when(cotizacionService.getPorVencer(7)).thenReturn(List.of(cotizacion));
 
-    @Test
-    void recalcularTotal_withPermission_returns200() throws Exception {
-        when(permissionEvaluator.hasPermission("cotizaciones", "editar")).thenReturn(true);
+                mockMvc.perform(get("/api/v1/cotizaciones/vencimientos")
+                                .with(withPermission("cotizaciones"))
+                                .param("dias", "7"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data").isArray())
+                                .andExpect(jsonPath("$.data[0].codigo").value("COT-001"));
+        }
 
-        Cotizacion cotizacion = createTestCotizacion();
-        when(cotizacionService.getById(COTIZACION_ID)).thenReturn(cotizacion);
+        @Test
+        void recalcularTotal_withPermission_returns200() throws Exception {
+                when(permissionEvaluator.hasPermission("cotizaciones", "editar")).thenReturn(true);
 
-        mockMvc.perform(post("/api/v1/cotizaciones/" + COTIZACION_ID + "/recalcular")
-                        .with(withPermission("cotizaciones")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Total recalculado exitosamente"));
-    }
+                Cotizacion cotizacion = createTestCotizacion();
+                when(cotizacionService.getById(COTIZACION_ID)).thenReturn(cotizacion);
 
-    @Test
-    void generatePdf_withPermission_returnsPdf() throws Exception {
-        when(permissionEvaluator.hasPermission("cotizaciones", "leer")).thenReturn(true);
+                mockMvc.perform(post("/api/v1/cotizaciones/" + COTIZACION_ID + "/recalcular")
+                                .with(withPermission("cotizaciones")))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.message").value("Total recalculado exitosamente"));
+        }
 
-        Cotizacion cotizacion = createTestCotizacion();
-        when(cotizacionService.getById(COTIZACION_ID)).thenReturn(cotizacion);
-        when(cotizacionPdfService.generatePdf(cotizacion)).thenReturn(new byte[]{1, 2, 3, 4});
+        @Test
+        void generatePdf_withPermission_returnsPdf() throws Exception {
+                when(permissionEvaluator.hasPermission("cotizaciones", "leer")).thenReturn(true);
 
-        mockMvc.perform(get("/api/v1/cotizaciones/" + COTIZACION_ID + "/pdf")
-                        .with(withPermission("cotizaciones")))
-                .andExpect(status().isOk())
-                .andExpect(header().string("Content-Type", "application/pdf"));
-    }
+                Cotizacion cotizacion = createTestCotizacion();
+                when(cotizacionService.getById(COTIZACION_ID)).thenReturn(cotizacion);
+                when(cotizacionPdfService.generatePdf(cotizacion)).thenReturn(new byte[] { 1, 2, 3, 4 });
 
-    // ==================== Validation Tests ====================
+                mockMvc.perform(get("/api/v1/cotizaciones/" + COTIZACION_ID + "/pdf")
+                                .with(withPermission("cotizaciones")))
+                                .andExpect(status().isOk())
+                                .andExpect(header().string("Content-Type", "application/pdf"));
+        }
 
-    @Test
-    void create_withNullEstadoId_returns400() throws Exception {
-        when(permissionEvaluator.hasPermission("cotizaciones", "crear")).thenReturn(true);
+        // ==================== Validation Tests ====================
 
-        String invalidJson = """
-                {"codigo": "COT-001", "estadoId": null}
-                """;
+        @Test
+        void create_withNullEstadoId_returns400() throws Exception {
+                when(permissionEvaluator.hasPermission("cotizaciones", "crear")).thenReturn(true);
 
-        mockMvc.perform(post("/api/v1/cotizaciones")
-                        .with(withPermission("cotizaciones"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidJson))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.error.code").value("ERR_VALIDATION"));
-    }
+                String invalidJson = """
+                                {"codigo": "COT-001", "estadoId": null}
+                                """;
 
-    // ==================== Not Found Tests ====================
+                mockMvc.perform(post("/api/v1/cotizaciones")
+                                .with(withPermission("cotizaciones"))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(invalidJson))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(jsonPath("$.success").value(false))
+                                .andExpect(jsonPath("$.error.code").value("ERR_VALIDATION"));
+        }
 
-    @Test
-    void getById_notFound_returns404() throws Exception {
-        when(permissionEvaluator.hasPermission("cotizaciones", "leer")).thenReturn(true);
+        // ==================== Not Found Tests ====================
 
-        UUID nonExistentId = UUID.randomUUID();
-        when(cotizacionService.getById(nonExistentId))
-                .thenThrow(new ResourceNotFoundException("Cotización no encontrada"));
+        @Test
+        void getById_notFound_returns404() throws Exception {
+                when(permissionEvaluator.hasPermission("cotizaciones", "leer")).thenReturn(true);
 
-        mockMvc.perform(get("/api/v1/cotizaciones/" + nonExistentId)
-                        .with(withPermission("cotizaciones")))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.error.code").value("ERR_NOT_FOUND"));
-    }
+                UUID nonExistentId = UUID.randomUUID();
+                when(cotizacionService.getById(nonExistentId))
+                                .thenThrow(new ResourceNotFoundException("Cotización no encontrada"));
 
-    // ==================== Helpers ====================
+                mockMvc.perform(get("/api/v1/cotizaciones/" + nonExistentId)
+                                .with(withPermission("cotizaciones")))
+                                .andExpect(status().isNotFound())
+                                .andExpect(jsonPath("$.success").value(false))
+                                .andExpect(jsonPath("$.error.code").value("ERR_NOT_FOUND"));
+        }
 
-    private Cotizacion createTestCotizacion() {
-        Cotizacion cotizacion = new Cotizacion();
-        cotizacion.setId(COTIZACION_ID);
-        cotizacion.setCodigo("COT-001");
-        cotizacion.setEstadoId(ESTADO_ID);
-        cotizacion.setFechaVencimiento(LocalDate.now().plusDays(30));
-        cotizacion.setTotal(BigDecimal.valueOf(1000));
-        cotizacion.setItems(List.of());
-        cotizacion.setCreatedAt(OffsetDateTime.now());
-        return cotizacion;
-    }
+        // ==================== Helpers ====================
+
+        private Cotizacion createTestCotizacion() {
+                Cotizacion cotizacion = new Cotizacion();
+                cotizacion.setId(COTIZACION_ID);
+                cotizacion.setCodigo("COT-001");
+                cotizacion.setEstadoId(ESTADO_ID);
+                cotizacion.setFechaVencimiento(LocalDate.now().plusDays(30));
+                cotizacion.setTotal(BigDecimal.valueOf(1000));
+                cotizacion.setItems(List.of());
+                cotizacion.setCreatedAt(OffsetDateTime.now());
+                return cotizacion;
+        }
 }

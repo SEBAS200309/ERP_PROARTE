@@ -99,7 +99,8 @@ INSERT INTO permiso (id, rol_id, configuracion, activo) VALUES
     "mensajes": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "observaciones": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "reportes": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "catalogos": {"crear": true, "leer": true, "editar": true, "eliminar": true}
+    "catalogos": {"crear": true, "leer": true, "editar": true, "eliminar": true},
+    "descuentos_recargos": {"crear": true, "leer": true, "editar": true, "eliminar": true}
 }'::jsonb, true);
 
 -- ============================================================

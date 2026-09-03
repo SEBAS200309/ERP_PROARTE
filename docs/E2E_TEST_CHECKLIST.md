@@ -91,7 +91,7 @@ mvn clean compile -DskipTests -f backend/pom.xml
 Si la compilación es exitosa (BUILD SUCCESS), arrancar la aplicación:
 
 ```powershell
-$env:DB_PASSWORD = "proarte_dev_2024"; mvn spring-boot:run "-Dspring-boot.run.profiles=dev" "-DskipTests"
+$env:DB_PASSWORD = [PASSWORD]; mvn spring-boot:run "-Dspring-boot.run.profiles=dev" "-DskipTests"
 ```
 
 **¿Qué ocurre al arrancar?**

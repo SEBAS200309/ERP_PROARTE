@@ -17,5 +17,9 @@ public interface EventoRepository extends SoftDeleteRepository<Evento> {
     Page<Evento> searchByNombre(@Param("search") String search, Pageable pageable);
 
     @Query("SELECT e FROM Evento e WHERE e.estadoId = :estadoId AND LOWER(e.nombre) LIKE LOWER(CONCAT('%', :search, '%'))")
-    Page<Evento> searchByNombreAndEstadoId(@Param("search") String search, @Param("estadoId") UUID estadoId, Pageable pageable);
+    Page<Evento> searchByNombreAndEstadoId(@Param("search") String search, @Param("estadoId") UUID estadoId,
+            Pageable pageable);
+
+    @Query(value = "SELECT COUNT(c.id) AS cotizaciones_sin_evento FROM cotizacion c WHERE NOT EXISTS ( SELECT 1 FROM evento e WHERE e.cotizacion_id = c.id ) AND c.activo = TRUE;", nativeQuery = true)
+    Integer eventosProximos();
 }
