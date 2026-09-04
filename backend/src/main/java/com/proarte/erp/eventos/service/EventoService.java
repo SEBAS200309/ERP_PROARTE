@@ -109,8 +109,7 @@ public class EventoService {
             UUID eventoId = jdbcTemplate.queryForObject(
                     "SELECT fn_crear_evento_desde_cotizacion(?)",
                     UUID.class,
-                    cotizacionId
-            );
+                    cotizacionId);
             log.info("Evento creado desde cotización: cotizacionId={}, eventoId={}", cotizacionId, eventoId);
             return eventoRepository.findById(eventoId)
                     .orElseThrow(() -> new BusinessException("Error al recuperar el evento creado"));
@@ -274,5 +273,10 @@ public class EventoService {
             throw new ResourceNotFoundException("Evento", "id", eventoId);
         }
         return eventoInsumoRepository.findByEventoId(eventoId);
+    }
+
+    @Transactional(readOnly = true)
+    public long eventosProximos() {
+        return eventoRepository.eventosProximos();
     }
 }

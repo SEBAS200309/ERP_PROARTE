@@ -89,7 +89,7 @@ INSERT INTO permiso (id, rol_id, configuracion, activo) VALUES
     "proveedores": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "cotizaciones": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "eventos": {"crear": true, "leer": true, "editar": true, "eliminar": true},
-    "personal": {"crear": true, "leer": true, "editar": true, "eliminar": true},
+    "evento_personal": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "ordenes": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "solicitudes": {"crear": true, "leer": true, "editar": true, "eliminar": true},
     "portafolio": {"crear": true, "leer": true, "editar": true, "eliminar": true},

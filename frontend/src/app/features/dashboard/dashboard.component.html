@@ -1,10 +1,40 @@
 <div class="dashboard">
   <header class="dashboard__header">
-    <h1 class="dashboard__title">Panel de Control</h1>
-    <p class="dashboard__subtitle">Resumen general de Pro Arte</p>
+    <div class="dashboard__header-titles">
+      <h1 class="dashboard__title">Panel de Control</h1>
+      <p class="dashboard__subtitle">Resumen general de Pro Arte</p>
+    </div>
+
+    <!-- SECCIÓN DEL MENÚ DESPLEGABLE DE USUARIO -->
+    <div class="dashboard__user-menu">
+      <button class="action-btn" (click)="toggleDropdown()" [@buttonHover]="getHoverState('perfil')"
+        (mouseenter)="onHover('perfil', true)" (mouseleave)="onHover('perfil', false)">
+        <i class="eva eva-person-outline"></i>
+        <span>{{ authService.currentUser()?.username || 'Mi Perfil' }}</span>
+        <i class="eva eva-chevron-down-outline"></i>
+      </button>
+
+      @if (dropdownOpen()) {
+      <div class="user-dropdown">
+        <div class="user-dropdown__info">
+          <span class="user-dropdown__label">Usuario:</span>
+          <span class="user-dropdown__value">{{ authService.currentUser()?.username }}</span>
+        </div>
+        <div class="user-dropdown__info">
+          <span class="user-dropdown__label">Rol:</span>
+          <span class="user-dropdown__value">{{ authService.currentUser()?.rol }}</span>
+        </div>
+        <div class="user-dropdown__divider"></div>
+        <button class="user-dropdown__logout" (click)="cerrarSesion()">
+          <i class="eva eva-log-out-outline"></i>
+          <span>Cerrar Sesión</span>
+        </button>
+      </div>
+      }
+    </div>
   </header>
 
-  <!-- Loading state -->
+  <!-- Resto de tu código HTML del dashboard (loading, error, cards, quick-access) -->
   @if (loading()) {
   <div class="dashboard__loading">
     <div class="dashboard__spinner"></div>
@@ -12,25 +42,21 @@
   </div>
   }
 
-  <!-- Error state -->
   @if (error() && !loading()) {
   <div class="dashboard__error">
     <span class="dashboard__error-icon">⚠️</span>
     <p>Error al cargar los datos. Intente nuevamente.</p>
-    <button class="dashboard__retry-btn" (click)="retry()" [@buttonHover]="getHoverState('retry')"
-      (mouseenter)="onHover('retry', true)" (mouseleave)="onHover('retry', false)">
-      Reintentar
-    </button>
+    <button class="dashboard__retry-btn" (click)="retry()">Reintentar</button>
   </div>
   }
 
-  <!-- Summary cards -->
   @if (!loading() && !error()) {
   <section class="dashboard__cards">
     @for (card of cards(); track card.title) {
-    <a class="dashboard__card" [routerLink]="card.route" [@buttonHover]="getHoverState(card.title)"
-      (mouseenter)="onHover(card.title, true)" (mouseleave)="onHover(card.title, false)">
-      <span class="dashboard__card-icon">{{ card.icon }}</span>
+    <a class="dashboard__card" [routerLink]="card.route">
+      <span class="dashboard__card-icon">
+        <i class="eva eva-{{ card.icon }}"></i>
+      </span>
       <div class="dashboard__card-content">
         <span class="dashboard__card-value">{{ card.value }}</span>
         <span class="dashboard__card-title">{{ card.title }}</span>
@@ -39,23 +65,16 @@
     }
   </section>
 
-  <!-- Quick access links -->
   <section class="dashboard__quick-access">
     <h2 class="dashboard__section-title">Acceso Rápido</h2>
     <div class="dashboard__links">
       @for (link of visibleLinks; track link.route) {
-      <a class="dashboard__link" [routerLink]="link.route" [@buttonHover]="getHoverState(link.label)"
-        (mouseenter)="onHover(link.label, true)" (mouseleave)="onHover(link.label, false)">
-        <span class="dashboard__link-icon">{{ link.icon }}</span>
+      <a class="dashboard__link" [routerLink]="link.route">
+        <span class="dashboard__link-icon">
+          <i class="eva eva-{{ link.icon }}"></i>
+        </span>
         <span class="dashboard__link-label">{{ link.label }}</span>
       </a>
-      }
-
-      @if (visibleLinks.length === 0) {
-      <p class="dashboard__no-links">
-        No tiene módulos asignados. Contacte al administrador.
-        Modulos del usuario: {{ visibleLinks.length }}
-      </p>
       }
     </div>
   </section>
