@@ -46,11 +46,18 @@ if ($LASTEXITCODE -eq 0) {
             $frontendIniciado = $true
             Write-Host "`n=======================================================" -ForegroundColor Green
             Write-Host " Backend iniciado correctamente!" -ForegroundColor Green
-            Write-Host " Abriendo nueva terminal para el Frontend..." -ForegroundColor Green
-            Write-Host "=======================================================`n" -ForegroundColor Green
 
-# Iniciar el servidor frontend de Angular
-            Start-Process powershell.exe -ArgumentList "-NoExit", "-Command", "Set-Location '$frontendDir'; Write-Host 'Iniciando servidor de desarrollo Frontend...' -ForegroundColor Cyan; npx ng serve --open"
+            # Verificar si el Frontend ya está ejecutándose en el puerto 4200
+            $frontendCorriendo = Get-NetTCPConnection -LocalPort 4200 -State Listen -ErrorAction SilentlyContinue
+            if ($frontendCorriendo) {
+                Write-Host " El Frontend ya se encuentra en ejecución (puerto 4200). No se abrirá otra terminal." -ForegroundColor Yellow
+            }
+            else {
+                Write-Host " Abriendo nueva terminal para el Frontend..." -ForegroundColor Green
+                # Iniciar el servidor frontend de Angular
+                Start-Process powershell.exe -ArgumentList "-NoExit", "-Command", "Set-Location '$frontendDir'; Write-Host 'Iniciando servidor de desarrollo Frontend...' -ForegroundColor Cyan; npx ng serve --open"
+            }
+            Write-Host "=======================================================`n" -ForegroundColor Green
         }
     }
 }
