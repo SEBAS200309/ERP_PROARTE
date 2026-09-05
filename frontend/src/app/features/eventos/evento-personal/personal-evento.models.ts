@@ -1,11 +1,11 @@
 /**
  * Modelos para Personal de Evento.
+ * El personal son Proveedores de tipo Persona (vinculados mediante proveedor.persona_id).
  */
 
 export interface EventoPersonal {
   id: string;
   eventoId: string;
-  personaId: string;
   proveedorId: string;
   servicioId: string | null;
   valorTurno: number | null;
@@ -17,7 +17,6 @@ export interface EventoPersonal {
 }
 
 export interface CreateEventoPersonalRequest {
-  personaId: string;
   proveedorId: string;
   servicioId?: string | null;
   tieneArl?: boolean;

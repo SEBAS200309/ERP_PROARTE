@@ -332,7 +332,6 @@ entity "evento_personal" as evento_personal EVENTOS_COLOR {
     * id : UUID <<PK>>
     --
     * evento_id : UUID <<FK>>
-    * persona_id : UUID <<FK>>
     * proveedor_id : UUID <<FK>>
     servicio_id : UUID <<FK>>
     valor_turno : DECIMAL(12,2)
@@ -523,7 +522,6 @@ evento ||--o{ evento_proveedor : "evento_id"
 proveedor ||--o{ evento_proveedor : "proveedor_id"
 servicio ||--o{ evento_proveedor : "servicio_id"
 evento ||--o{ evento_personal : "evento_id"
-persona ||--o{ evento_personal : "persona_id"
 proveedor ||--o{ evento_personal : "proveedor_id"
 servicio ||--o{ evento_personal : "servicio_id"
 evento ||--o{ evento_observacion : "evento_id"

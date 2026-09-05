@@ -24,6 +24,16 @@ import {
 export class ProveedorService extends BaseCrudService<Proveedor> {
   protected baseUrl = '/api/v1/proveedores';
 
+  /** Obtiene proveedores vinculados a personas (rol proveedor en personas naturales) */
+  getAllPersonas(params?: PageParams): Observable<PageResponse<Proveedor>> {
+    return this.getAll({ ...params, tipo: 'persona' });
+  }
+
+  /** Obtiene proveedores vinculados a empresas */
+  getAllEmpresas(params?: PageParams): Observable<PageResponse<Proveedor>> {
+    return this.getAll({ ...params, tipo: 'empresa' });
+  }
+
   // ===================== PORTAFOLIO =====================
 
   getPortafolio(proveedorId: string): Observable<PortafolioItem[]> {

@@ -66,7 +66,6 @@ COMMENT ON TABLE evento_proveedor IS 'Proveedores asignados para prestar servici
 CREATE TABLE evento_personal (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     evento_id UUID NOT NULL,
-    persona_id UUID NOT NULL,
     proveedor_id UUID NOT NULL,
     servicio_id UUID,
     valor_turno DECIMAL(12,2) DEFAULT 0,
@@ -75,13 +74,11 @@ CREATE TABLE evento_personal (
     observaciones TEXT,
 
     CONSTRAINT fk_evento_personal_evento FOREIGN KEY (evento_id) REFERENCES evento(id),
-    CONSTRAINT fk_evento_personal_persona FOREIGN KEY (persona_id) REFERENCES persona(id),
     CONSTRAINT fk_evento_personal_proveedor FOREIGN KEY (proveedor_id) REFERENCES proveedor(id),
     CONSTRAINT fk_evento_personal_servicio FOREIGN KEY (servicio_id) REFERENCES servicio(id)
 );
 
 CREATE INDEX idx_evento_personal_evento_id ON evento_personal(evento_id);
-CREATE INDEX idx_evento_personal_persona_id ON evento_personal(persona_id);
 CREATE INDEX idx_evento_personal_proveedor_id ON evento_personal(proveedor_id);
 CREATE INDEX idx_evento_personal_servicio_id ON evento_personal(servicio_id);
 

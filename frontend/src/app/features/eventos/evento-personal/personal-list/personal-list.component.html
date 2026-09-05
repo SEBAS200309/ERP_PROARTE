@@ -7,13 +7,12 @@
         (buttonClick)="goBack()">
         ← Volver
       </app-animated-button>
-      <h2>Personal del Evento</h2>
+      <h2>Proveedores del Evento (Personal)</h2>
     </div>
   </header>
 
   <!-- Formulario de creación / edición -->
   <app-personal-form
-    [personasOptions]="personasOptions()"
     [proveedoresOptions]="proveedoresOptions()"
     [serviciosOptions]="serviciosOptions()"
     [editingPersonal]="editingPersonal()"
@@ -29,8 +28,7 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>Persona</th>
-          <th>Proveedor</th>
+          <th>Proveedor (Personal)</th>
           <th>Servicio</th>
           <th>Valor Turno</th>
           <th>ARL</th>
@@ -42,7 +40,6 @@
       <tbody>
         @for (item of personal(); track item.id) {
           <tr>
-            <td>{{ getPersonaNombre(item.personaId) }}</td>
             <td>{{ getProveedorNombre(item.proveedorId) }}</td>
             <td>{{ getServicioNombre(item.servicioId) }}</td>
             <td>{{ item.valorTurno != null ? ('$' + item.valorTurno) : '—' }}</td>

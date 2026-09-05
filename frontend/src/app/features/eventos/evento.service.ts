@@ -174,10 +174,11 @@ export class EventoService extends BaseCrudService<Evento> {
       }));
   }
 
+  /** Obtiene proveedores vinculados a una Persona (para asignación en evento_personal) */
   getProveedoresOptions(): Observable<ProveedorOption[]> {
     return this.http
       .get<ApiResponse<any>>('/api/v1/proveedores', {
-        params: new HttpParams().set('size', '500'),
+        params: new HttpParams().set('size', '500').set('tipo', 'persona'),
       })
       .pipe(map((response) => {
         if (!response.success) return [];

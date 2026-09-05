@@ -144,7 +144,7 @@ export class ProveedorListComponent implements OnInit {
 
   private loadProveedores(): void {
     this.loading.set(true);
-    this.proveedorService.getAll(this.currentParams).subscribe({
+    this.proveedorService.getAllEmpresas(this.currentParams).subscribe({
       next: (response) => {
         const enriched = response.content.map((proveedor) => ({
           ...proveedor,
