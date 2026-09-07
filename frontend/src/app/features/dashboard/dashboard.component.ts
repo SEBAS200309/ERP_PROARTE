@@ -48,7 +48,7 @@ export class DashboardComponent implements OnInit {
     { icon: 'cast-outline', label: 'Leads', route: '/leads', tabla: 'leads' },
     { icon: 'person-outline', label: 'Personas', route: '/personas', tabla: 'personas' },
     { icon: 'briefcase-outline', label: 'Empresas', route: '/empresas', tabla: 'empresas' },
-    { icon: 'car-outline', label: 'Proveedores', route: '/proveedores', tabla: 'proveedores' },
+    { icon: 'car-outline', label: 'Proveedores Empresas', route: '/proveedores', tabla: 'proveedores' },
     { icon: 'car-outline', label: 'Proveedores Personas', route: '/proveedores-personas', tabla: 'proveedores-personas' },
     { icon: 'layers-outline', label: 'Servicios', route: '/servicios', tabla: 'servicios' },
     { icon: 'file-text-outline', label: 'Cotizaciones', route: '/cotizaciones', tabla: 'cotizaciones' },

@@ -1,63 +1,140 @@
-@use 'assets/styles/variables' as *;
-@use 'assets/styles/themes';
+/* ==========================================================
+   PRO ARTE ERP - ESTILOS GLOBALES Y GLASSMORPHISM
+   ========================================================== */
 
-// === Reset y base global ===
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* --- 1. PALETA CORPORATIVA Y VARIABLES --- */
+:root {
+  --logo-purple: #6B3FA0;
+  --logo-yellow: #FFC107;
+  --logo-red: #E53935;
+  --bg-soft: #EFE8F8;
+
+  /* Transparencia al 65% para el tema general */
+  --color-bg-surface: rgba(255, 255, 255, 0.65) !important;
+  --color-bg-body: transparent !important;
+  --color-bg-primary: transparent !important;
 }
 
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
+/* --- 2. TRANSPARENCIA EN CONTENEDORES CONTENEDORES PADRE --- */
+html,
+body,
+app-root,
+main,
+router-outlet+*,
+.app-container,
+.main-layout,
+.layout-content,
+.page-wrapper,
+.content-wrapper,
+.dashboard,
+.dashboard-container,
+.content,
+.page-container {
+  background: transparent !important;
 }
 
+/* --- 3. PATRÓN DE CÍRCULOS VIVOS Y SUPERPUESTOS --- */
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-primary);
-  line-height: 1.6;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: var(--bg-soft) !important;
+
+  /* Círculos grandes, vivos y espaciados del logo */
+  background-image:
+    /* Grupo Morado - Amarillo */
+    radial-gradient(circle at 20% 25%, rgba(107, 63, 160, 0.85) 0 120px, transparent 122px),
+    radial-gradient(circle at 28% 35%, rgba(255, 193, 7, 0.9) 0 80px, transparent 82px),
+
+    /* Grupo Rojo - Blanco */
+    radial-gradient(circle at 75% 65%, rgba(229, 57, 53, 0.85) 0 140px, transparent 142px),
+    radial-gradient(circle at 82% 55%, rgba(255, 255, 255, 0.95) 0 90px, transparent 92px),
+
+    /* Intersección Morado - Rojo */
+    radial-gradient(circle at 80% 15%, rgba(107, 63, 160, 0.8) 0 95px, transparent 97px),
+    radial-gradient(circle at 88% 22%, rgba(229, 57, 53, 0.85) 0 60px, transparent 62px),
+
+    /* Grupo Amarillo - Blanco */
+    radial-gradient(circle at 15% 80%, rgba(255, 193, 7, 0.85) 0 110px, transparent 112px),
+    radial-gradient(circle at 10% 70%, rgba(255, 255, 255, 0.9) 0 65px, transparent 67px) !important;
+
+  background-repeat: repeat !important;
+  background-size: 800px 800px !important;
+  background-attachment: fixed !important;
 }
 
-// === Scrollbar custom ===
-::-webkit-scrollbar {
-  width: 8px;
+/* --- 4. GLASSMORPHISM (65% OPACIDAD) --- */
+.dashboard__card,
+.dashboard__link,
+.dashboard__quick-access,
+.proveedor-list-container,
+.proveedor-form-container,
+.solicitud-list-container,
+.solicitud-form-container,
+.portafolio-container,
+.data-table-container,
+.user-dropdown,
+.card,
+.panel,
+.glass-panel {
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  border-radius: 8px !important;
+  /* Esquinas sutiles para eliminar cortes */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.2s ease;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--color-bg-secondary);
+/* Estado Hover para elementos interactivos */
+.dashboard__card:hover,
+.dashboard__link:hover {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: var(--logo-purple) !important;
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 4px;
+/* --- 5. DIMENSIONES Y PADDING (OPTIMIZADO Y SIN CORTES) --- */
+
+/* A. CONTENEDOR PRINCIPAL DEL DASHBOARD */
+.dashboard {
+  padding: 2rem !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
+/* B. CONTENEDOR GENERAL DE ACCESO RÁPIDO */
+.dashboard__quick-access {
+  padding: 2rem !important;
+  /* Margen interno para que las tarjetas respiren */
+  border-radius: 12px !important;
+  /* Esquinas suaves coordinadas */
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  /* Recorta cualquier elemento interno que sobrepase el borde */
+  margin-bottom: 2rem !important;
+  /* Espacio inferior de seguridad */
 }
 
-// === Links ===
-a {
-  color: var(--color-primary);
-  text-decoration: none;
-
-  &:hover {
-    color: var(--color-primary-hover);
-  }
+/* C. GRILLA Y BOTONES INTERNOS */
+.dashboard__links {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important;
+  /* Distribución fluida */
+  gap: 1.25rem !important;
+  /* Espaciado perfecto entre tarjetas */
+  width: 100% !important;
 }
 
-// === Reduced motion ===
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+.dashboard__link {
+  aspect-ratio: 1 / 1 !important;
+  /* Garantiza que cada botón sea cuadrado perfecto */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 1rem !important;
+  box-sizing: border-box !important;
 }
