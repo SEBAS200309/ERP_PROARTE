@@ -6,18 +6,18 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
 import { AnimatedButtonComponent } from '../../../shared/components/animated-button/animated-button.component';
 import { PermissionService } from '../../../core/services/permission.service';
 import { PageParams } from '../../../core/models/pagination.model';
-import { ProveedorService } from '../proveedor.service';
-import { Proveedor } from '../proveedor.models';
+import { ProveedorService } from '../../proveedores/proveedor.service';
+import { Proveedor } from '../../proveedores/proveedor.models';
 
 @Component({
-  selector: 'app-proveedor-list',
+  selector: 'app-proveedor-persona-list',
   standalone: true,
   imports: [DataTableComponent, ConfirmDialogComponent, AnimatedButtonComponent],
-  templateUrl: './proveedor-list.component.html',
-  styleUrl: './proveedor-list.component.scss',
+  templateUrl: './proveedor-persona-list.component.html',
+  styleUrl: './proveedor-persona-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProveedorListComponent implements OnInit {
+export class ProveedorPersonaListComponent implements OnInit {
   private readonly proveedorService = inject(ProveedorService);
   private readonly permissionService = inject(PermissionService);
   private readonly router = inject(Router);
@@ -31,11 +31,11 @@ export class ProveedorListComponent implements OnInit {
   protected readonly showDeleteDialog = signal(false);
   private proveedorToDelete: Proveedor | null = null;
 
-  private empresasMap = new Map<string, string>();
+  private personasMap = new Map<string, string>();
 
   protected readonly columns: DataTableColumn[] = [
     { key: 'especialidad', label: 'Especialidad', sortable: true },
-    { key: 'vinculacion', label: 'Empresa', sortable: false },
+    { key: 'vinculacion', label: 'Persona Natural', sortable: false },
     { key: 'estadoText', label: 'Estado', sortable: false },
   ];
 
@@ -76,11 +76,11 @@ export class ProveedorListComponent implements OnInit {
   }
 
   protected onView(proveedor: any): void {
-    this.router.navigate(['/proveedores', proveedor.id, 'portafolio']);
+    this.router.navigate(['/proveedores-personas', proveedor.id, 'portafolio']);
   }
 
   protected onEdit(proveedor: any): void {
-    this.router.navigate(['/proveedores', proveedor.id, 'editar']);
+    this.router.navigate(['/proveedores-personas', proveedor.id, 'editar']);
   }
 
   protected onDelete(proveedor: any): void {
@@ -110,22 +110,22 @@ export class ProveedorListComponent implements OnInit {
   }
 
   protected createProveedor(): void {
-    this.router.navigate(['/proveedores', 'nuevo']);
+    this.router.navigate(['/proveedores-personas', 'nuevo']);
   }
 
   protected goToPortafolio(proveedor: any): void {
-    this.router.navigate(['/proveedores', proveedor.id, 'portafolio']);
+    this.router.navigate(['/proveedores-personas', proveedor.id, 'portafolio']);
   }
 
   protected goToSolicitudes(): void {
-    this.router.navigate(['/proveedores', 'solicitudes']);
+    this.router.navigate(['/proveedores-personas', 'solicitudes']);
   }
 
   private loadCatalogos(): void {
-    this.proveedorService.getEmpresas().subscribe({
-      next: (empresas) => {
-        this.empresasMap.clear();
-        empresas.forEach((e) => this.empresasMap.set(e.id, e.razonSocial));
+    this.proveedorService.getPersonas().subscribe({
+      next: (personas) => {
+        this.personasMap.clear();
+        personas.forEach((p) => this.personasMap.set(p.id, `${p.nombres} ${p.apellidos}`));
         this.loadProveedores();
       },
     });
@@ -133,7 +133,7 @@ export class ProveedorListComponent implements OnInit {
 
   private loadProveedores(): void {
     this.loading.set(true);
-    this.proveedorService.getAllEmpresas(this.currentParams).subscribe({
+    this.proveedorService.getAllPersonas(this.currentParams).subscribe({
       next: (response) => {
         const enriched = response.content.map((proveedor) => ({
           ...proveedor,
@@ -151,8 +151,8 @@ export class ProveedorListComponent implements OnInit {
   }
 
   private getVinculacion(proveedor: Proveedor): string {
-    if (proveedor.empresaId) {
-      const nombre = this.empresasMap.get(proveedor.empresaId);
+    if (proveedor.personaId) {
+      const nombre = this.personasMap.get(proveedor.personaId);
       return nombre ? `${nombre}` : '—';
     }
     return '—';
