@@ -9,7 +9,6 @@ import {
   ServicioOption,
   EventoOption,
   CatalogoOption,
-  PersonaOption,
   EmpresaOption,
 } from '../proveedor.models';
 
@@ -46,7 +45,6 @@ export class SolicitudFormComponent implements OnInit {
   protected form!: FormGroup;
   private solicitudId: string | null = null;
 
-  private personasMap = new Map<string, string>();
   private empresasMap = new Map<string, string>();
 
   ngOnInit(): void {
@@ -120,14 +118,8 @@ export class SolicitudFormComponent implements OnInit {
   }
 
   private loadCatalogos(): void {
-    // Load personas & empresas first, then build proveedor display names
-    this.proveedorService.getPersonas().subscribe({
-      next: (personas) => {
-        this.personasMap.clear();
-        personas.forEach((p) => this.personasMap.set(p.id, `${p.nombres} ${p.apellidos}`));
-        this.loadProveedorEmpresas();
-      },
-    });
+    // Carga de empresas únicamente
+    this.loadProveedorEmpresas();
 
     this.proveedorService.getServicios().subscribe({
       next: (servicios) => this.servicios.set(servicios),
@@ -153,7 +145,8 @@ export class SolicitudFormComponent implements OnInit {
   }
 
   private loadProveedores(): void {
-    this.proveedorService.getAll({ page: 0, size: 200 }).subscribe({
+    // Filtro exclusivo por Empresas Proveedoras
+    this.proveedorService.getAllEmpresas({ page: 0, size: 200 }).subscribe({
       next: (response) => {
         const options: ProveedorOption[] = response.content.map((p) => ({
           id: p.id,
@@ -165,21 +158,15 @@ export class SolicitudFormComponent implements OnInit {
   }
 
   private getProveedorNombre(proveedor: Proveedor): string {
-    if (proveedor.personaId) {
-      const nombre = this.personasMap.get(proveedor.personaId);
-      return nombre ?? (proveedor.especialidad || 'Proveedor');
-    }
     if (proveedor.empresaId) {
       const nombre = this.empresasMap.get(proveedor.empresaId);
-      return nombre ?? (proveedor.especialidad || 'Proveedor');
+      return nombre ?? (proveedor.especialidad || 'Empresa Proveedora');
     }
-    return proveedor.especialidad || 'Proveedor';
+    return proveedor.especialidad || 'Empresa Proveedora';
   }
 
   private loadSolicitud(id: string): void {
     this.loading.set(true);
-    // We need to get the solicitud data — use getSolicitudes with search
-    // Since there's no getSolicitudById, we'll search from the list
     this.proveedorService.getSolicitudes({ page: 0, size: 1000 }).subscribe({
       next: (response) => {
         const solicitud = response.content.find((s) => s.id === id);

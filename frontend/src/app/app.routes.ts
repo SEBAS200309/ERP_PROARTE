@@ -66,6 +66,13 @@ export const routes: Routes = [
           import('./features/proveedores/proveedores.routes').then((m) => m.default),
       },
       {
+        path: 'proveedores-personas',
+        canActivate: [permissionGuard],
+        data: { tabla: 'proveedores-personas', accion: 'leer' },
+        loadChildren: () =>
+          import('./features/proovedores-personas/proovedores-personas.route').then((m) => m.default),
+      },
+      {
         path: 'servicios',
         canActivate: [permissionGuard],
         data: { tabla: 'servicios', accion: 'leer' },
