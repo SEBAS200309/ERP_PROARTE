@@ -9,8 +9,8 @@
   --logo-red: #E53935;
   --bg-soft: #EFE8F8;
 
-  /* Transparencia al 65% para el tema general */
-  --color-bg-surface: rgba(255, 255, 255, 0.65) !important;
+  /* Transparencia al 75% para el tema general */
+  --color-bg-surface: rgba(255, 255, 255, 0.75) !important;
   --color-bg-body: transparent !important;
   --color-bg-primary: transparent !important;
 }
@@ -64,6 +64,8 @@ body {
 }
 
 /* --- 4. GLASSMORPHISM (65% OPACIDAD) --- */
+.dashboard__header-card,
+/* <-- Agregado aquí */
 .dashboard__card,
 .dashboard__link,
 .dashboard__quick-access,
@@ -82,7 +84,6 @@ body {
   -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid rgba(255, 255, 255, 0.7) !important;
   border-radius: 8px !important;
-  /* Esquinas sutiles para eliminar cortes */
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05) !important;
   transition: all 0.2s ease;
 }
@@ -92,6 +93,13 @@ body {
 .dashboard__link:hover {
   background: rgba(255, 255, 255, 0.85) !important;
   border-color: var(--logo-purple) !important;
+}
+
+/* Padding e integración del encabezado como Card */
+.dashboard__header-card {
+  padding: 1.5rem 2rem !important;
+  margin-bottom: 2rem !important;
+  align-items: center !important;
 }
 
 /* --- 5. DIMENSIONES Y PADDING (OPTIMIZADO Y SIN CORTES) --- */
