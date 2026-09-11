@@ -20,6 +20,6 @@ public interface EventoRepository extends SoftDeleteRepository<Evento> {
     Page<Evento> searchByNombreAndEstadoId(@Param("search") String search, @Param("estadoId") UUID estadoId,
             Pageable pageable);
 
-    @Query(value = "SELECT COUNT(e.id) FROM evento e WHERE e.fecha_inicio >= DATE_TRUNC('week', CURRENT_DATE) AND e.fecha_inicio < DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '7 days';", nativeQuery = true)
+    @Query(value = "SELECT public.cuenta_eventos();", nativeQuery = true)
     Integer eventosProximos();
 }
