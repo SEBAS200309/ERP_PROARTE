@@ -43,7 +43,6 @@ public class EventoPersonalService {
 
         EventoPersonal personal = EventoPersonal.builder()
                 .eventoId(eventoId)
-                .personaId(request.personaId())
                 .proveedorId(request.proveedorId())
                 .servicioId(request.servicioId())
                 .tieneArl(request.tieneArl() != null ? request.tieneArl() : false)
@@ -53,7 +52,7 @@ public class EventoPersonalService {
                 .build();
 
         EventoPersonal saved = eventoPersonalRepository.save(personal);
-        log.info("Personal agregado al evento: eventoId={}, personaId={}", eventoId, request.personaId());
+        log.info("Personal (proveedor) agregado al evento: eventoId={}, proveedorId={}", eventoId, request.proveedorId());
         return saved;
     }
 

@@ -7,7 +7,7 @@ import { AnimatedButtonComponent } from '../../../shared/components/animated-but
 import { PermissionService } from '../../../core/services/permission.service';
 import { PageParams } from '../../../core/models/pagination.model';
 import { ProveedorService } from '../proveedor.service';
-import { Proveedor, PersonaOption, EmpresaOption } from '../proveedor.models';
+import { Proveedor } from '../proveedor.models';
 
 @Component({
   selector: 'app-proveedor-list',
@@ -31,22 +31,21 @@ export class ProveedorListComponent implements OnInit {
   protected readonly showDeleteDialog = signal(false);
   private proveedorToDelete: Proveedor | null = null;
 
-  private personasMap = new Map<string, string>();
   private empresasMap = new Map<string, string>();
 
   protected readonly columns: DataTableColumn[] = [
     { key: 'especialidad', label: 'Especialidad', sortable: true },
-    { key: 'vinculacion', label: 'Vinculación', sortable: false },
+    { key: 'vinculacion', label: 'Empresa', sortable: false },
     { key: 'estadoText', label: 'Estado', sortable: false },
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('proveedor', 'ver_detalle'),
-    editar: this.permissionService.hasPermission('proveedor', 'editar'),
-    eliminar: this.permissionService.hasPermission('proveedor', 'eliminar'),
+    leer: this.permissionService.hasPermission('proveedores', 'leer'),
+    editar: this.permissionService.hasPermission('proveedores', 'editar'),
+    eliminar: this.permissionService.hasPermission('proveedores', 'eliminar'),
   };
 
-  protected readonly canCreate = this.permissionService.hasPermission('proveedor', 'crear');
+  protected readonly canCreate = this.permissionService.hasPermission('proveedores', 'crear');
 
   private currentParams: PageParams = { page: 0, size: 10 };
 
@@ -123,16 +122,6 @@ export class ProveedorListComponent implements OnInit {
   }
 
   private loadCatalogos(): void {
-    this.proveedorService.getPersonas().subscribe({
-      next: (personas) => {
-        this.personasMap.clear();
-        personas.forEach((p) => this.personasMap.set(p.id, `${p.nombres} ${p.apellidos}`));
-        this.loadEmpresas();
-      },
-    });
-  }
-
-  private loadEmpresas(): void {
     this.proveedorService.getEmpresas().subscribe({
       next: (empresas) => {
         this.empresasMap.clear();
@@ -144,7 +133,7 @@ export class ProveedorListComponent implements OnInit {
 
   private loadProveedores(): void {
     this.loading.set(true);
-    this.proveedorService.getAll(this.currentParams).subscribe({
+    this.proveedorService.getAllEmpresas(this.currentParams).subscribe({
       next: (response) => {
         const enriched = response.content.map((proveedor) => ({
           ...proveedor,
@@ -162,13 +151,9 @@ export class ProveedorListComponent implements OnInit {
   }
 
   private getVinculacion(proveedor: Proveedor): string {
-    if (proveedor.personaId) {
-      const nombre = this.personasMap.get(proveedor.personaId);
-      return nombre ? `Persona: ${nombre}` : 'Persona: —';
-    }
     if (proveedor.empresaId) {
       const nombre = this.empresasMap.get(proveedor.empresaId);
-      return nombre ? `Empresa: ${nombre}` : 'Empresa: —';
+      return nombre ? `${nombre}` : '—';
     }
     return '—';
   }

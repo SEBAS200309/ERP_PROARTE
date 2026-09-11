@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 
 import { AnimatedButtonComponent } from '../../../../shared/components/animated-button/animated-button.component';
 import { EventoPersonal, CreateEventoPersonalRequest, UpdateEventoPersonalRequest } from '../personal-evento.models';
-import { PersonaOption, ProveedorOption, ServicioOption } from '../../evento.models';
+import { ProveedorOption, ServicioOption } from '../../evento.models';
 
 @Component({
   selector: 'app-personal-form',
@@ -14,8 +14,7 @@ import { PersonaOption, ProveedorOption, ServicioOption } from '../../evento.mod
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PersonalFormComponent {
-  /** Opciones de catálogo */
-  readonly personasOptions = input.required<PersonaOption[]>();
+  /** Opciones de catálogo: solo Proveedores de tipo Persona */
   readonly proveedoresOptions = input.required<ProveedorOption[]>();
   readonly serviciosOptions = input.required<ServicioOption[]>();
 
@@ -27,7 +26,6 @@ export class PersonalFormComponent {
   readonly cancelled = output<void>();
 
   // Form fields
-  protected personaId = '';
   protected proveedorId = '';
   protected servicioId = '';
   protected tieneArl = false;
@@ -40,7 +38,6 @@ export class PersonalFormComponent {
     const personal = this.editingPersonal();
     if (personal) {
       this.isEditing.set(true);
-      this.personaId = personal.personaId;
       this.proveedorId = personal.proveedorId;
       this.servicioId = personal.servicioId || '';
       this.tieneArl = personal.tieneArl ?? false;
@@ -62,9 +59,8 @@ export class PersonalFormComponent {
       };
       this.submitted.emit(request);
     } else {
-      if (!this.personaId || !this.proveedorId) return;
+      if (!this.proveedorId) return;
       const request: CreateEventoPersonalRequest = {
-        personaId: this.personaId,
         proveedorId: this.proveedorId,
         servicioId: this.servicioId || null,
         tieneArl: this.tieneArl,
@@ -81,7 +77,6 @@ export class PersonalFormComponent {
   }
 
   private resetForm(): void {
-    this.personaId = '';
     this.proveedorId = '';
     this.servicioId = '';
     this.tieneArl = false;

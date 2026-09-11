@@ -38,8 +38,9 @@ export class CotizacionVencimientoComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('cotizacion', 'ver_detalle'),
-    editar: this.permissionService.hasPermission('cotizacion', 'editar'),
+    leer: this.permissionService.hasPermission('cotizaciones', 'leer'),
+    crear: this.permissionService.hasPermission('cotizaciones', 'crear'),
+    editar: this.permissionService.hasPermission('cotizaciones', 'editar'),
     eliminar: false,
   };
 

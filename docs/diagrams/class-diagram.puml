@@ -4,7 +4,7 @@ skinparam classAttributeIconSize 0
 skinparam nodesep 60
 skinparam ranksep 50
 
-title Diagrama de Clases UML - Backend Spring Boot - ERP Pro Arte
+title Diagrama de Clases UML - Backend Spring Boot - ERP Pro Arte (v2, congruente con el ERD)
 
 package "common" #F0F0F0 {
   class ApiResponse<T> {
@@ -25,6 +25,43 @@ package "common" #F0F0F0 {
     + handleNotFound(ex) : ApiResponse
     + handleBusiness(ex) : ApiResponse
     + handleValidation(ex) : ApiResponse
+  }
+}
+
+' =========================================================
+' NUEVO: catálogos (equivalente OO de las tablas lookup del ERD)
+' =========================================================
+package "catalogo" #FFFDE7 {
+  class TipoDocumento <<@Entity>> {
+    - id : UUID
+    - nombre : String
+  }
+
+  class RolEntidad <<@Entity>> {
+    - id : UUID
+    - nombre : String
+  }
+
+  class Estado <<@Entity>> {
+    - id : UUID
+    - nombre : String
+    - contexto : String
+  }
+
+  class CategoriaServicio <<@Entity>> {
+    - id : UUID
+    - nombre : String
+  }
+
+  class UnidadMedida <<@Entity>> {
+    - id : UUID
+    - nombre : String
+    - abreviatura : String
+  }
+
+  class RolEvento <<@Entity>> {
+    - id : UUID
+    - nombre : String
   }
 }
 
@@ -95,6 +132,10 @@ package "usuario" #E6E6FF {
     + findAllByActivoTrue(pageable) : Page<Usuario>
   }
 
+  interface PermisoRepository <<@Repository>> {
+    + findByRolId(rolId) : List<Permiso>
+  }
+
   Rol "1" *-- "*" Permiso
   Rol "1" -- "*" Usuario
   UsuarioController --> UsuarioService
@@ -106,13 +147,24 @@ package "persona" #FFF5E6 {
     - id : UUID
     - nombres : String
     - apellidos : String
-    - tipoDocumento : String
+    - tipoDocumento : TipoDocumento
     - documento : String
     - telefono : String
     - email : String
-    - rolPersona : String
+    - rolEntidad : RolEntidad
     - activo : boolean
     - createdBy : UUID
+  }
+
+  ' NUEVO: clase de asociación explícita.
+  ' A diferencia de las tablas puente de descuento/recargo,
+  ' persona_empresa SÍ tiene un atributo propio ("cargo"),
+  ' por eso se modela como entidad y no como asociación N:M simple.
+  class PersonaEmpresa <<@Entity>> {
+    - id : UUID
+    - persona : Persona
+    - empresa : Empresa
+    - cargo : String
   }
 
   class PersonaController <<@RestController>> {
@@ -130,7 +182,7 @@ package "persona" #FFF5E6 {
     + crear(dto) : Persona
     + actualizar(id, dto) : Persona
     + eliminar(id) : void
-    + asociarEmpresa(personaId, empresaId, cargo) : void
+    + asociarEmpresa(personaId, empresaId, cargo) : PersonaEmpresa
     + asignarRol(id, rol) : void
   }
 
@@ -138,6 +190,7 @@ package "persona" #FFF5E6 {
     + findAllByActivoTrue(pageable) : Page<Persona>
   }
 
+  Persona "1" -- "*" PersonaEmpresa
   PersonaController --> PersonaService
   PersonaService --> PersonaRepository
 }
@@ -149,7 +202,7 @@ package "empresa" #E6FFE6 {
     - nit : String
     - direccion : String
     - telefono : String
-    - rolEmpresa : String
+    - rolEntidad : RolEntidad
     - activo : boolean
     - createdBy : UUID
   }
@@ -175,6 +228,7 @@ package "empresa" #E6FFE6 {
     + findAllByActivoTrue(pageable) : Page<Empresa>
   }
 
+  Empresa "1" -- "*" PersonaEmpresa
   EmpresaController --> EmpresaService
   EmpresaService --> EmpresaRepository
 }
@@ -183,7 +237,7 @@ package "lead" #FFFFE6 {
   class Lead <<@Entity>> {
     - id : UUID
     - descripcion : String
-    - estado : String
+    - estado : Estado
     - persona : Persona
     - empresa : Empresa
     - activo : boolean
@@ -232,7 +286,7 @@ package "proveedor" #E6F0FF {
     - proveedor : Proveedor
     - servicio : Servicio
     - evento : Evento
-    - estado : String
+    - estado : Estado
     - activo : boolean
   }
 
@@ -265,7 +319,7 @@ package "servicio" #E6FFE6 {
     - id : UUID
     - nombre : String
     - descripcion : String
-    - categoria : String
+    - categoria : CategoriaServicio
     - esPropio : boolean
     - requiereOc : boolean
     - servicioPadre : Servicio
@@ -329,7 +383,7 @@ package "cotizacion" #FFF0E6 {
   class Cotizacion <<@Entity>> {
     - id : UUID
     - codigo : String
-    - estado : String
+    - estado : Estado
     - fechaCreacion : LocalDateTime
     - fechaVencimiento : LocalDate
     - total : BigDecimal
@@ -385,7 +439,7 @@ package "evento" #FFE6E6 {
     - fechaInicio : LocalDateTime
     - fechaFin : LocalDateTime
     - lugar : String
-    - estado : String
+    - estado : Estado
     - activo : boolean
     - createdBy : UUID
   }
@@ -394,8 +448,15 @@ package "evento" #FFE6E6 {
     - id : UUID
     - evento : Evento
     - persona : Persona
-    - rolEvento : String
+    - rolEvento : RolEvento
     - observaciones : String
+  }
+
+  class EventoProveedor <<@Entity>> {
+    - id : UUID
+    - evento : Evento
+    - proveedor : Proveedor
+    - servicio : Servicio
   }
 
   class EventoPersonal <<@Entity>> {
@@ -410,6 +471,31 @@ package "evento" #FFE6E6 {
     - observaciones : String
   }
 
+  class EventoObservacion <<@Entity>> {
+    - id : UUID
+    - evento : Evento
+    - texto : String
+    - fecha : LocalDateTime
+    - createdBy : UUID
+  }
+
+  class EventoInsumo <<@Entity>> {
+    - id : UUID
+    - evento : Evento
+    - insumo : Insumo
+    - cantidad : BigDecimal
+  }
+
+  class EventoAlimentacion <<@Entity>> {
+    - id : UUID
+    - evento : Evento
+    - descripcion : String
+    - cantidad : BigDecimal
+    - tipoMovimiento : String
+    - fecha : LocalDateTime
+    - createdBy : UUID
+  }
+
   class EventoController <<@RestController>> {
     + listar(filtros) : ApiResponse
     + crearDesdeCotizacion(cotizacionId) : ApiResponse
@@ -418,6 +504,10 @@ package "evento" #FFE6E6 {
     + gestionarPersonal(id, request) : ApiResponse
     + calcularTurno(id, personalId) : ApiResponse
     + gestionarObservaciones(id) : ApiResponse
+    + gestionarInsumos(id, request) : ApiResponse
+    + registrarIngresoAlimentacion(id, request) : ApiResponse
+    + registrarRetiroAlimentacion(id, request) : ApiResponse
+    + consultarDisponibilidadAlimentacion(id) : ApiResponse
   }
 
   class EventoService <<@Service>> {
@@ -425,13 +515,22 @@ package "evento" #FFE6E6 {
     - procedureExecutor : ProcedureExecutor
     + listar(filtros) : Page<Evento>
     + crearDesdeCotizacion(cotizacionId) : Evento
+    + asociarProveedor(eventoId, dto) : EventoProveedor
     + asociarContacto(eventoId, dto) : EventoContacto
     + gestionarPersonal(eventoId, dto) : EventoPersonal
     + calcularTurno(eventoId, personalId) : BigDecimal
+    + registrarObservacion(eventoId, dto) : EventoObservacion
+    + registrarInsumo(eventoId, dto) : EventoInsumo
+    + registrarMovimientoAlimentacion(eventoId, dto) : EventoAlimentacion
+    + consultarDisponibilidadAlimentacion(eventoId) : BigDecimal
   }
 
   Evento "1" *-- "*" EventoContacto
+  Evento "1" *-- "*" EventoProveedor
   Evento "1" *-- "*" EventoPersonal
+  Evento "1" *-- "*" EventoObservacion
+  Evento "1" *-- "*" EventoInsumo
+  Evento "1" *-- "*" EventoAlimentacion
   EventoController --> EventoService
   EventoService --> ProcedureExecutor
 }
@@ -441,7 +540,7 @@ package "inventario" #E6FFF0 {
     - id : UUID
     - nombre : String
     - descripcion : String
-    - unidadMedida : String
+    - unidadMedida : UnidadMedida
     - stockActual : BigDecimal
     - activo : boolean
   }
@@ -476,10 +575,135 @@ package "inventario" #E6FFF0 {
   InventarioController --> InventarioService
 }
 
-' === RELACIONES ENTRE PACKAGES (con colores) ===
+' =========================================================
+' NUEVO: Órdenes de compra (tabla orden_compra en el ERD,
+' módulo "Órdenes de compra" del caso de uso; no existía
+' ninguna clase para esto)
+' =========================================================
+package "ordencompra" #F5E6FF {
+  class OrdenCompra <<@Entity>> {
+    - id : UUID
+    - solicitudServicio : SolicitudServicio
+    - numero : String
+    - fecha : LocalDate
+    - estado : Estado
+    - total : BigDecimal
+    - activo : boolean
+    - createdBy : UUID
+  }
+
+  class OrdenCompraController <<@RestController>> {
+    + listar(filtros) : ApiResponse
+    + crear(request) : ApiResponse
+    + actualizar(id, request) : ApiResponse
+    + cambiarEstado(id, estado) : ApiResponse
+    + generarExcel(id) : byte[]
+  }
+
+  class OrdenCompraService <<@Service>> {
+    - repository : OrdenCompraRepository
+    + listar(filtros) : Page<OrdenCompra>
+    + crear(dto) : OrdenCompra
+    + cambiarEstado(id, estado) : void
+    + generarExcel(id) : byte[]
+  }
+
+  OrdenCompraController --> OrdenCompraService
+}
+
+' =========================================================
+' NUEVO: Mensajes y plantillas (tabla mensaje en el ERD)
+' =========================================================
+package "mensaje" #E0F7FA {
+  class Mensaje <<@Entity>> {
+    - id : UUID
+    - nombre : String
+    - contenido : String
+    - activo : boolean
+    - createdBy : UUID
+  }
+
+  class MensajeController <<@RestController>> {
+    + listar() : ApiResponse
+    + crear(request) : ApiResponse
+    + actualizar(id, request) : ApiResponse
+    + eliminar(id) : ApiResponse
+    + generarPdf(id) : byte[]
+  }
+
+  class MensajeService <<@Service>> {
+    - repository : MensajeRepository
+    + listar() : List<Mensaje>
+    + crear(dto) : Mensaje
+    + generarPdf(id) : byte[]
+  }
+
+  MensajeController --> MensajeService
+}
+
+' =========================================================
+' NUEVO: Presentaciones (tabla presentacion en el ERD)
+' =========================================================
+package "presentacion" #FCE4EC {
+  class Presentacion <<@Entity>> {
+    - id : UUID
+    - nombre : String
+    - descripcion : String
+    - servicio : Servicio
+    - activo : boolean
+    - createdBy : UUID
+  }
+
+  class PresentacionController <<@RestController>> {
+    + listar(filtros) : ApiResponse
+    + crear(request) : ApiResponse
+    + actualizar(id, request) : ApiResponse
+    + eliminar(id) : ApiResponse
+    + generarPdf(id) : byte[]
+  }
+
+  class PresentacionService <<@Service>> {
+    - repository : PresentacionRepository
+    + listar(filtros) : Page<Presentacion>
+    + crear(dto) : Presentacion
+    + generarPdf(id) : byte[]
+  }
+
+  PresentacionController --> PresentacionService
+}
+
+' =========================================================
+' RELACIONES ENTRE PACKAGES
+' =========================================================
+
 AuthService -[#6B3FA0]-> UsuarioRepository
+
+' Proveedor puede originarse de una persona o de una empresa
 Persona "0..1" -[#28B463]- "*" Proveedor
 Empresa "0..1" -[#28B463]- "*" Proveedor
-Cotizacion "1" -[#C0392B]- "0..1" Evento
+
+' Corregido: una cotización puede generar VARIOS eventos
+' (el ERD no restringe unicidad en evento.cotizacion_id),
+' antes decía por error "0..1"
+Cotizacion "1" -[#C0392B]- "*" Evento
+
+' Insumos consumidos por evento (antes no existía ningún vínculo)
+Insumo "1" -[#C0392B]- "*" EventoInsumo
+
+' Una solicitud de servicio puede derivar en una orden de compra
+SolicitudServicio "1" -[#7D3C98]- "*" OrdenCompra
+
+' Una presentación documenta un servicio
+Servicio "0..1" -[#AD1457]- "*" Presentacion
+
+' Descuentos/recargos aplicables a Servicio, Persona y Empresa.
+' A diferencia de PersonaEmpresa, estas tablas puente
+' (servicio_descuento_recargo, persona_descuento_recargo,
+' empresa_descuento_recargo) NO tienen atributos propios en el
+' ERD, por eso se representan como asociación N:M directa y no
+' como clases de asociación.
+Servicio "*" -[#F39C12]- "*" DescuentoRecargo
+Persona  "*" -[#F39C12]- "*" DescuentoRecargo
+Empresa  "*" -[#F39C12]- "*" DescuentoRecargo
 
 @enduml

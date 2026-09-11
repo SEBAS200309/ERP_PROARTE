@@ -57,7 +57,8 @@ public class DescuentoRecargoController {
 
         DescuentoRecargo descuentoRecargo = descuentoRecargoService.createDescuentoRecargo(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(DescuentoRecargoResponse.from(descuentoRecargo), "Descuento/recargo creado exitosamente"));
+                .body(ApiResponse.success(DescuentoRecargoResponse.from(descuentoRecargo),
+                        "Descuento/recargo creado exitosamente"));
     }
 
     @PutMapping("/{id}")
@@ -67,7 +68,8 @@ public class DescuentoRecargoController {
         validatePermission("editar");
 
         DescuentoRecargo descuentoRecargo = descuentoRecargoService.updateDescuentoRecargo(id, request);
-        return ResponseEntity.ok(ApiResponse.success(DescuentoRecargoResponse.from(descuentoRecargo), "Descuento/recargo actualizado exitosamente"));
+        return ResponseEntity.ok(ApiResponse.success(DescuentoRecargoResponse.from(descuentoRecargo),
+                "Descuento/recargo actualizado exitosamente"));
     }
 
     @DeleteMapping("/{id}")
@@ -89,7 +91,8 @@ public class DescuentoRecargoController {
 
     private void validatePermission(String accion) {
         if (!permissionEvaluator.hasPermission(MODULO, accion)) {
-            throw new UnauthorizedException("No tiene permisos para " + accion + " en el módulo de descuentos/recargos");
+            throw new UnauthorizedException(
+                    "No tiene permisos para " + accion + " en el módulo de descuentos/recargos");
         }
     }
 }

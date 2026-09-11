@@ -1,9 +1,10 @@
-import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 
 import { buttonAnimations } from '../../shared/animations/button.animations';
 import { PermissionService } from '../../core/services/permission.service';
+import { AuthService } from '../../core/services/auth.service';
 import { DashboardService, DashboardResumen } from './dashboard.service';
 
 interface SummaryCard {
@@ -32,34 +33,43 @@ interface QuickLink {
 export class DashboardComponent implements OnInit {
   private readonly dashboardService = inject(DashboardService);
   private readonly permissionService = inject(PermissionService);
+  protected readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   protected readonly loading = signal(true);
   protected readonly error = signal(false);
-
   protected readonly cards = signal<SummaryCard[]>([]);
 
+  // Estado para controlar la visibilidad del menú desplegable
+  protected readonly dropdownOpen = signal(false);
+
   protected readonly allLinks: QuickLink[] = [
-    { icon: '🎯', label: 'Leads', route: '/leads', tabla: 'lead' },
-    { icon: '👤', label: 'Personas', route: '/personas', tabla: 'persona' },
-    { icon: '🏢', label: 'Empresas', route: '/empresas', tabla: 'empresa' },
-    { icon: '🚚', label: 'Proveedores', route: '/proveedores', tabla: 'proveedor' },
-    { icon: '🎭', label: 'Servicios', route: '/servicios', tabla: 'servicio' },
-    { icon: '📋', label: 'Cotizaciones', route: '/cotizaciones', tabla: 'cotizacion' },
-    { icon: '📅', label: 'Eventos', route: '/eventos', tabla: 'evento' },
-    { icon: '📦', label: 'Inventario', route: '/inventario', tabla: 'insumo' },
+    { icon: 'cast-outline', label: 'Leads', route: '/leads', tabla: 'leads' },
+    { icon: 'person-outline', label: 'Personas', route: '/personas', tabla: 'personas' },
+    { icon: 'briefcase-outline', label: 'Empresas', route: '/empresas', tabla: 'empresas' },
+    { icon: 'car-outline', label: 'Proveedores Empresas', route: '/proveedores', tabla: 'proveedores' },
+    { icon: 'car-outline', label: 'Proveedores Personas', route: '/proveedores-personas', tabla: 'proveedores-personas' },
+    { icon: 'layers-outline', label: 'Servicios', route: '/servicios', tabla: 'servicios' },
+    { icon: 'file-text-outline', label: 'Cotizaciones', route: '/cotizaciones', tabla: 'cotizaciones' },
+    { icon: 'calendar-outline', label: 'Eventos', route: '/eventos', tabla: 'eventos' },
+    { icon: 'cube-outline', label: 'Inventario', route: '/inventario', tabla: 'insumos' },
   ];
 
   protected get visibleLinks(): QuickLink[] {
     return this.allLinks.filter((link) =>
-      this.permissionService.hasPermission(link.tabla, 'ver_listado')
+      this.permissionService.hasPermission(link.tabla, 'leer')
     );
   }
 
-  // Animation state tracking
   protected hoverStates: Record<string, 'out' | 'over'> = {};
 
   ngOnInit(): void {
     this.loadResumen();
+
+    this.permissionService.loadPermisos().subscribe(() => {
+      this.cdr.markForCheck();
+    });
   }
 
   protected onHover(id: string, over: boolean): void {
@@ -70,6 +80,14 @@ export class DashboardComponent implements OnInit {
     return this.hoverStates[id] ?? 'out';
   }
 
+  protected toggleDropdown(): void {
+    this.dropdownOpen.update((val) => !val);
+  }
+
+  protected cerrarSesion(): void {
+    this.authService.logout();
+  }
+
   private loadResumen(): void {
     this.loading.set(true);
     this.error.set(false);
@@ -78,19 +96,19 @@ export class DashboardComponent implements OnInit {
       next: (resumen: DashboardResumen) => {
         this.cards.set([
           {
-            icon: '🎯',
+            icon: 'pie-chart-outline',
             title: 'Total Leads',
             value: resumen.totalLeads,
             route: '/leads',
           },
           {
-            icon: '📋',
+            icon: 'file-text-outline',
             title: 'Cotizaciones Pendientes',
             value: resumen.cotizacionesPendientes,
             route: '/cotizaciones',
           },
           {
-            icon: '📅',
+            icon: 'calendar-outline',
             title: 'Eventos Próximos',
             value: resumen.eventosProximos,
             route: '/eventos',

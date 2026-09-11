@@ -26,15 +26,15 @@ export class PermissionService {
     }
 
     return this.http
-      .get<ApiResponse<PermisosConfig>>(`${PERMISOS_API}/roles/${user.rolId}/permisos`)
+      .get<ApiResponse<Record<string, TablaPermisos>>>(`${PERMISOS_API}/roles/${user.rolId}/permisos`)
       .pipe(
         tap((response) => {
           if (response.success) {
-            this.permisos.set(response.data);
+            this.permisos.set({ tablas: response.data });
             this.loaded = true;
           }
         }),
-        map((response) => (response.success ? response.data : null))
+        map((response) => (response.success ? { tablas: response.data } : null))
       );
   }
 
@@ -46,13 +46,6 @@ export class PermissionService {
     if (!tablaPermisos) return false;
 
     return tablaPermisos[accion] === true;
-  }
-
-  getContexto(tabla: string): string[] {
-    const config = this.permisos();
-    if (!config) return [];
-
-    return config.contexto[tabla] ?? [];
   }
 
   getPermisos(): PermisosConfig | null {

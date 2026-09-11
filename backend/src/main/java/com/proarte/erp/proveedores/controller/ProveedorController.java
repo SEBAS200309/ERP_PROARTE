@@ -38,10 +38,11 @@ public class ProveedorController {
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<ProveedorResponse>>> getAllProveedores(
             @RequestParam(required = false) String search,
+            @RequestParam(required = false) String tipo,
             @PageableDefault(size = 20) Pageable pageable) {
         validatePermission("leer");
 
-        Page<ProveedorResponse> page = proveedorService.getAllProveedores(search, pageable)
+        Page<ProveedorResponse> page = proveedorService.getAllProveedores(search, tipo, pageable)
                 .map(ProveedorResponse::from);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(page)));

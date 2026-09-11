@@ -41,6 +41,7 @@ public abstract class BaseControllerTest {
             .registerModule(new JavaTimeModule());
 
     protected static final UUID TEST_USER_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    protected static final UUID TEST_ROL_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
     protected static final String TEST_USERNAME = "admin";
     protected static final String TEST_PASSWORD = "password123";
 
@@ -52,7 +53,7 @@ public abstract class BaseControllerTest {
                 modulo, Map.of("leer", true, "crear", true, "editar", true, "eliminar", true)
         );
         return new CustomUserDetails(
-                TEST_USER_ID, TEST_USERNAME, TEST_PASSWORD,
+                TEST_USER_ID, TEST_ROL_ID, TEST_USERNAME, TEST_PASSWORD,
                 "Admin User", "Administrador", permisos, true
         );
     }
@@ -62,7 +63,7 @@ public abstract class BaseControllerTest {
      */
     protected CustomUserDetails createUserWithoutPermission() {
         return new CustomUserDetails(
-                TEST_USER_ID, TEST_USERNAME, TEST_PASSWORD,
+                TEST_USER_ID, TEST_ROL_ID, TEST_USERNAME, TEST_PASSWORD,
                 "Admin User", "Administrador", Map.of(), true
         );
     }

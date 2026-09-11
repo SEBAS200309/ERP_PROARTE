@@ -27,6 +27,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,7 +61,8 @@ class ProveedorServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         when(proveedorRepository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(createTestProveedor())));
 
-        Page<Proveedor> result = proveedorService.getAllProveedores(null, pageable);
+        // Se envía 'null' como segundo parámetro para el argumento 'tipo'
+        Page<Proveedor> result = proveedorService.getAllProveedores(null, null, pageable);
 
         assertThat(result.getTotalElements()).isEqualTo(1);
     }
@@ -71,7 +73,8 @@ class ProveedorServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         when(proveedorRepository.searchByEspecialidad("Sonido", pageable)).thenReturn(new PageImpl<>(List.of()));
 
-        proveedorService.getAllProveedores("Sonido", pageable);
+        // Se envía 'null' como segundo parámetro para el argumento 'tipo'
+        proveedorService.getAllProveedores("Sonido", null, pageable);
 
         verify(proveedorRepository).searchByEspecialidad("Sonido", pageable);
     }
@@ -159,7 +162,8 @@ class ProveedorServiceTest {
         UUID proveedorId = UUID.randomUUID();
         when(proveedorRepository.existsActiveById(proveedorId)).thenReturn(false);
 
-        assertThatThrownBy(() -> proveedorService.createPortafolio(proveedorId, new CreatePortafolioRequest(UUID.randomUUID(), BigDecimal.TEN)))
+        assertThatThrownBy(() -> proveedorService.createPortafolio(proveedorId,
+                new CreatePortafolioRequest(UUID.randomUUID(), BigDecimal.TEN)))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -168,8 +172,7 @@ class ProveedorServiceTest {
     void shouldCreateSolicitud() {
         UUID proveedorId = UUID.randomUUID();
         CreateSolicitudRequest request = new CreateSolicitudRequest(
-                proveedorId, UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), "Descripcion"
-        );
+                proveedorId, UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), "Descripcion");
 
         when(proveedorRepository.existsActiveById(proveedorId)).thenReturn(true);
         when(solicitudServicioRepository.save(any(SolicitudServicio.class))).thenAnswer(inv -> {

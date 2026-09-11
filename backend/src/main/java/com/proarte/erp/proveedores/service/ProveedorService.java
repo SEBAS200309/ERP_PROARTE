@@ -30,9 +30,19 @@ public class ProveedorService {
     // ===================== PROVEEDORES =====================
 
     @Transactional(readOnly = true)
-    public Page<Proveedor> getAllProveedores(String search, Pageable pageable) {
+    public Page<Proveedor> getAllProveedores(String search, String tipo, Pageable pageable) {
         if (search != null && !search.isBlank()) {
+            if ("persona".equalsIgnoreCase(tipo)) {
+                return proveedorRepository.searchByEspecialidadAndPersonaNotNull(search, pageable);
+            } else if ("empresa".equalsIgnoreCase(tipo)) {
+                return proveedorRepository.searchByEspecialidadAndEmpresaNotNull(search, pageable);
+            }
             return proveedorRepository.searchByEspecialidad(search, pageable);
+        }
+        if ("persona".equalsIgnoreCase(tipo)) {
+            return proveedorRepository.findByPersonaIdIsNotNull(pageable);
+        } else if ("empresa".equalsIgnoreCase(tipo)) {
+            return proveedorRepository.findByEmpresaIdIsNotNull(pageable);
         }
         return proveedorRepository.findAll(pageable);
     }
@@ -45,6 +55,10 @@ public class ProveedorService {
 
     @Transactional
     public Proveedor createProveedor(CreateProveedorRequest request) {
+        if (request.personaId() == null && request.empresaId() == null) {
+            throw new com.proarte.erp.exception.BusinessException(
+                "El proveedor debe estar vinculado a una persona o a una empresa");
+        }
         Proveedor proveedor = Proveedor.builder()
                 .personaId(request.personaId())
                 .empresaId(request.empresaId())

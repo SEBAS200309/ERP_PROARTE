@@ -97,7 +97,7 @@ export class LeadFormComponent implements OnInit {
   private buildForm(): void {
     this.form = this.fb.group({
       descripcion: ['', [Validators.required]],
-      estadoId: [''],
+      estadoId: ['', [Validators.required]],
       personaId: [''],
       empresaId: [''],
     });
@@ -105,7 +105,12 @@ export class LeadFormComponent implements OnInit {
 
   private loadEstados(): void {
     this.leadService.getEstados().subscribe({
-      next: (estados) => this.estados.set(estados),
+      next: (estados) => {
+        this.estados.set(estados);
+        if (!this.isEditMode() && estados.length > 0 && !this.form.get('estadoId')?.value) {
+          this.form.patchValue({ estadoId: estados[0].id });
+        }
+      },
     });
   }
 

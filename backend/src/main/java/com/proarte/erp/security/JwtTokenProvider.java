@@ -26,7 +26,7 @@ public class JwtTokenProvider {
         this.secretKey = Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(UUID userId, String username, String rol) {
+    public String generateAccessToken(UUID userId, UUID rolId, String username, String rol) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + jwtProperties.accessTokenExpiration());
 
@@ -34,6 +34,7 @@ public class JwtTokenProvider {
                 .subject(username)
                 .claims(Map.of(
                         "userId", userId.toString(),
+                        "rolId", rolId.toString(),
                         "rol", rol,
                         "type", "access"
                 ))
@@ -78,6 +79,10 @@ public class JwtTokenProvider {
 
     public UUID getUserId(String token) {
         return UUID.fromString(getClaims(token).get("userId", String.class));
+    }
+
+    public UUID getRolId(String token) {
+        return UUID.fromString(getClaims(token).get("rolId", String.class));
     }
 
     public String getRol(String token) {

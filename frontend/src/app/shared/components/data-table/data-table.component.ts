@@ -18,7 +18,8 @@ export interface DataTableColumn {
 
 /** Permissions for action buttons */
 export interface DataTablePermissions {
-  ver_detalle?: boolean;
+  leer?: boolean;
+  crear?: boolean;
   editar?: boolean;
   eliminar?: boolean;
 }
@@ -70,7 +71,7 @@ export class DataTableComponent {
 
   protected readonly hasActions = computed(() => {
     const perms = this.permissions();
-    return perms.ver_detalle || perms.editar || perms.eliminar;
+    return perms.leer || perms.editar || perms.eliminar;
   });
 
   protected readonly skeletonRows = computed(() =>

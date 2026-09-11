@@ -22,9 +22,6 @@ public class EventoPersonal {
     @Column(name = "evento_id", nullable = false)
     private UUID eventoId;
 
-    @Column(name = "persona_id", nullable = false)
-    private UUID personaId;
-
     @Column(name = "proveedor_id", nullable = false)
     private UUID proveedorId;
 

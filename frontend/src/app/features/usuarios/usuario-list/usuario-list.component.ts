@@ -41,12 +41,12 @@ export class UsuarioListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('usuario', 'ver_detalle'),
-    editar: this.permissionService.hasPermission('usuario', 'editar'),
-    eliminar: this.permissionService.hasPermission('usuario', 'eliminar'),
+    leer: this.permissionService.hasPermission('usuarios', 'leer'),
+    editar: this.permissionService.hasPermission('usuarios', 'editar'),
+    eliminar: this.permissionService.hasPermission('usuarios', 'eliminar'),
   };
 
-  protected readonly canCreate = this.permissionService.hasPermission('usuario', 'crear');
+  protected readonly canCreate = this.permissionService.hasPermission('usuarios', 'crear');
 
   private currentParams: PageParams = { page: 0, size: 10 };
 

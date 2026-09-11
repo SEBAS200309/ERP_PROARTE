@@ -44,6 +44,13 @@ public class LeadController {
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(page)));
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<ApiResponse<Long>> getCount() {
+        validatePermission("leer");
+        long total = leadService.getTotalLeads();
+        return ResponseEntity.ok(ApiResponse.success(total));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<LeadResponse>> getById(@PathVariable UUID id) {
         validatePermission("leer");

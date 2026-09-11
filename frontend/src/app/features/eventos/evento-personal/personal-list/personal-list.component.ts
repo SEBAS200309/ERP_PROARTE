@@ -10,7 +10,7 @@ import {
   CreateEventoPersonalRequest,
   UpdateEventoPersonalRequest,
 } from '../personal-evento.models';
-import { PersonaOption, ProveedorOption, ServicioOption } from '../../evento.models';
+import { ProveedorOption, ServicioOption } from '../../evento.models';
 
 @Component({
   selector: 'app-personal-list',
@@ -30,12 +30,10 @@ export class PersonalListComponent implements OnInit {
   protected readonly personal = signal<EventoPersonal[]>([]);
   protected readonly editingPersonal = signal<EventoPersonal | null>(null);
 
-  // Catálogos
-  protected readonly personasOptions = signal<PersonaOption[]>([]);
+  // Catálogos: solo Proveedores Persona y Servicios
   protected readonly proveedoresOptions = signal<ProveedorOption[]>([]);
   protected readonly serviciosOptions = signal<ServicioOption[]>([]);
 
-  private personasMap = new Map<string, string>();
   private proveedoresMap = new Map<string, string>();
   private serviciosMap = new Map<string, string>();
 
@@ -49,10 +47,6 @@ export class PersonalListComponent implements OnInit {
     }
     this.loadPersonal();
     this.loadCatalogos();
-  }
-
-  protected getPersonaNombre(personaId: string): string {
-    return this.personasMap.get(personaId) || personaId;
   }
 
   protected getProveedorNombre(proveedorId: string): string {
@@ -122,14 +116,7 @@ export class PersonalListComponent implements OnInit {
   }
 
   private loadCatalogos(): void {
-    this.eventoService.getPersonas().subscribe({
-      next: (options) => {
-        this.personasOptions.set(options);
-        this.personasMap.clear();
-        options.forEach((p) => this.personasMap.set(p.id, p.nombre));
-      },
-    });
-
+    // Carga solo Proveedores Persona (tipo=persona) para asignación de personal
     this.eventoService.getProveedoresOptions().subscribe({
       next: (options) => {
         this.proveedoresOptions.set(options);

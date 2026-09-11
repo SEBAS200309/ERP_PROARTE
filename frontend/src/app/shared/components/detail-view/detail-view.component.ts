@@ -79,7 +79,7 @@ export class DetailViewComponent {
   protected readonly visibleSections = computed(() => {
     const sections = this.contextSections();
     return sections.filter((section) =>
-      this.permissionService.hasPermission(section.tabla, 'ver_listado')
+      this.permissionService.hasPermission(section.tabla, 'leer')
     );
   });
 

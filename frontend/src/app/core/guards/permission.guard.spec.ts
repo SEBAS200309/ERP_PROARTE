@@ -12,9 +12,8 @@ describe('permissionGuard', () => {
 
   const mockPermisos: PermisosConfig = {
     tablas: {
-      lead: { ver_listado: true, ver_detalle: true, crear: true, editar: true, eliminar: false },
-    },
-    contexto: {},
+      lead: { leer: true, crear: true, editar: true, eliminar: false },
+    }
   };
 
   const mockState = { url: '/leads' } as RouterStateSnapshot;

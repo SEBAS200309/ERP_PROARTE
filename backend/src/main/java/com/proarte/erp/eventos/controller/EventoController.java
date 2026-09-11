@@ -46,6 +46,13 @@ public class EventoController {
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(page)));
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<ApiResponse<Long>> getCount() {
+        validatePermission("leer");
+        long total = eventoService.eventosProximos();
+        return ResponseEntity.ok(ApiResponse.success(total));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<EventoResponse>> getById(@PathVariable UUID id) {
         validatePermission("leer");
@@ -113,7 +120,8 @@ public class EventoController {
 
         EventoContacto contacto = eventoService.addContacto(id, request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(EventoContactoResponse.from(contacto), "Contacto asociado al evento exitosamente"));
+                .body(ApiResponse.success(EventoContactoResponse.from(contacto),
+                        "Contacto asociado al evento exitosamente"));
     }
 
     @DeleteMapping("/{id}/personas/{contactoId}")
@@ -147,7 +155,8 @@ public class EventoController {
 
         EventoProveedor proveedor = eventoService.addProveedor(id, request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(EventoProveedorResponse.from(proveedor), "Proveedor asociado al evento exitosamente"));
+                .body(ApiResponse.success(EventoProveedorResponse.from(proveedor),
+                        "Proveedor asociado al evento exitosamente"));
     }
 
     @DeleteMapping("/{id}/proveedores/{proveedorId}")
@@ -192,7 +201,8 @@ public class EventoController {
         validatePermission("editar");
 
         EventoObservacion observacion = eventoService.updateObservacion(observacionId, request);
-        return ResponseEntity.ok(ApiResponse.success(ObservacionResponse.from(observacion), "Observación actualizada exitosamente"));
+        return ResponseEntity
+                .ok(ApiResponse.success(ObservacionResponse.from(observacion), "Observación actualizada exitosamente"));
     }
 
     // ===================== INSUMOS =====================

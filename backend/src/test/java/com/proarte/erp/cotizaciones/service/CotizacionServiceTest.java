@@ -62,7 +62,8 @@ class CotizacionServiceTest {
         Page<Cotizacion> expectedPage = new PageImpl<>(List.of(createTestCotizacion()));
         when(cotizacionRepository.findAll(pageable)).thenReturn(expectedPage);
 
-        Page<Cotizacion> result = cotizacionService.getAll(null, null, null, null, pageable);
+        // CORREGIDO: El tipo de retorno ahora es Page<CotizacionResponse>
+        Page<CotizacionResponse> result = cotizacionService.getAll(null, null, null, null, pageable);
 
         assertThat(result.getTotalElements()).isEqualTo(1);
     }
@@ -74,7 +75,8 @@ class CotizacionServiceTest {
         Page<Cotizacion> expectedPage = new PageImpl<>(List.of(createTestCotizacion()));
         when(cotizacionRepository.searchByCodigo("COT-2024", pageable)).thenReturn(expectedPage);
 
-        Page<Cotizacion> result = cotizacionService.getAll("COT-2024", null, null, null, pageable);
+        // CORREGIDO: El tipo de retorno ahora es Page<CotizacionResponse>
+        Page<CotizacionResponse> result = cotizacionService.getAll("COT-2024", null, null, null, pageable);
 
         assertThat(result.getTotalElements()).isEqualTo(1);
         verify(cotizacionRepository).searchByCodigo("COT-2024", pageable);
@@ -88,7 +90,7 @@ class CotizacionServiceTest {
         Page<Cotizacion> expectedPage = new PageImpl<>(List.of());
         when(cotizacionRepository.findByEstadoId(estadoId, pageable)).thenReturn(expectedPage);
 
-        Page<Cotizacion> result = cotizacionService.getAll(null, estadoId, null, null, pageable);
+        Page<CotizacionResponse> result = cotizacionService.getAll(null, estadoId, null, null, pageable);
 
         verify(cotizacionRepository).findByEstadoId(estadoId, pageable);
     }
@@ -120,8 +122,7 @@ class CotizacionServiceTest {
     void shouldGenerateCodigo_whenNotProvided() {
         UUID estadoId = UUID.randomUUID();
         CreateCotizacionRequest request = new CreateCotizacionRequest(
-                null, estadoId, LocalDate.now().plusDays(30), null, null, null
-        );
+                null, estadoId, LocalDate.now().plusDays(30), null, null, null);
 
         when(cotizacionRepository.findMaxCodigoSequence(anyString())).thenReturn(5);
         when(cotizacionRepository.save(any(Cotizacion.class))).thenAnswer(inv -> {
@@ -140,8 +141,7 @@ class CotizacionServiceTest {
     void shouldUseCodigo_whenProvided() {
         UUID estadoId = UUID.randomUUID();
         CreateCotizacionRequest request = new CreateCotizacionRequest(
-                "COT-CUSTOM-001", estadoId, null, null, null, null
-        );
+                "COT-CUSTOM-001", estadoId, null, null, null, null);
 
         when(cotizacionRepository.save(any(Cotizacion.class))).thenAnswer(inv -> {
             Cotizacion c = inv.getArgument(0);
@@ -161,8 +161,7 @@ class CotizacionServiceTest {
         UUID servicioId = UUID.randomUUID();
         CotizacionItemRequest item = new CotizacionItemRequest(servicioId, 2, BigDecimal.valueOf(100), null);
         CreateCotizacionRequest request = new CreateCotizacionRequest(
-                "COT-2024-010", estadoId, null, null, null, List.of(item)
-        );
+                "COT-2024-010", estadoId, null, null, null, List.of(item));
 
         UUID cotizacionId = UUID.randomUUID();
         when(cotizacionRepository.save(any(Cotizacion.class))).thenAnswer(inv -> {
@@ -180,7 +179,8 @@ class CotizacionServiceTest {
         Cotizacion result = cotizacionService.create(request);
 
         verify(cotizacionItemRepository).saveAll(anyList());
-        verify(jdbcTemplate).queryForObject(eq("SELECT fn_recalcular_total_cotizacion(?)"), eq(BigDecimal.class), eq(cotizacionId));
+        verify(jdbcTemplate).queryForObject(eq("SELECT fn_recalcular_total_cotizacion(?)"), eq(BigDecimal.class),
+                eq(cotizacionId));
         assertThat(result.getTotal()).isEqualByComparingTo(BigDecimal.valueOf(200));
     }
 
@@ -277,8 +277,7 @@ class CotizacionServiceTest {
         when(jdbcTemplate.queryForObject(
                 eq("SELECT fn_recalcular_total_cotizacion(?)"),
                 eq(BigDecimal.class),
-                eq(cotizacionId)
-        )).thenReturn(BigDecimal.valueOf(5000));
+                eq(cotizacionId))).thenReturn(BigDecimal.valueOf(5000));
 
         BigDecimal result = cotizacionService.recalcularTotal(cotizacionId);
 

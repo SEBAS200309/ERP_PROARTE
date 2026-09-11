@@ -56,12 +56,12 @@ export class EmpresaListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('empresa', 'ver_detalle'),
-    editar: this.permissionService.hasPermission('empresa', 'editar'),
-    eliminar: this.permissionService.hasPermission('empresa', 'eliminar'),
+    leer: this.permissionService.hasPermission('empresas', 'leer'),
+    editar: this.permissionService.hasPermission('empresas', 'editar'),
+    eliminar: this.permissionService.hasPermission('empresas', 'eliminar'),
   };
 
-  protected readonly canCreate = this.permissionService.hasPermission('empresa', 'crear');
+  protected readonly canCreate = this.permissionService.hasPermission('empresas', 'crear');
 
   private currentParams: PageParams = { page: 0, size: 10 };
   private rolesMap = new Map<string, string>();

@@ -30,6 +30,9 @@
             <option [value]="estado.id">{{ estado.nombre }}</option>
           }
         </select>
+        @if (hasError('estadoId', 'required')) {
+          <span class="error-message">El estado es obligatorio</span>
+        }
       </div>
 
       <div class="form-field">

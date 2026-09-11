@@ -6,13 +6,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-@Repository
 public interface CotizacionRepository extends SoftDeleteRepository<Cotizacion> {
+
+    @Override
+    @EntityGraph(attributePaths = { "items" })
+    Optional<Cotizacion> findById(UUID id);
 
     Page<Cotizacion> findByEstadoId(UUID estadoId, Pageable pageable);
 
@@ -34,4 +38,7 @@ public interface CotizacionRepository extends SoftDeleteRepository<Cotizacion> {
 
     @Query(value = "SELECT COALESCE(MAX(CAST(SUBSTRING(c.codigo FROM 'COT-\\d{4}-(\\d+)') AS INTEGER)), 0) FROM cotizacion c WHERE c.codigo LIKE :prefix", nativeQuery = true)
     Integer findMaxCodigoSequence(@Param("prefix") String prefix);
+
+    @Query(value = "SELECT COUNT(c.id) AS cotizaciones_sin_evento FROM cotizacion c WHERE NOT EXISTS ( SELECT 1 FROM evento e WHERE e.cotizacion_id = c.id ) AND c.activo = TRUE;", nativeQuery = true)
+    Integer countCotizacionesPendientes();
 }

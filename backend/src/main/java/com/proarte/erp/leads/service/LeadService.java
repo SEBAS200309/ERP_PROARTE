@@ -111,4 +111,9 @@ public class LeadService {
 
         return estadisticas;
     }
+
+    @Transactional(readOnly = true)
+    public long getTotalLeads() {
+        return leadRepository.countActiveLeads();
+    }
 }

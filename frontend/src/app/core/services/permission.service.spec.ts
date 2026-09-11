@@ -14,13 +14,9 @@ describe('PermissionService', () => {
 
   const mockPermisos: PermisosConfig = {
     tablas: {
-      lead: { ver_listado: true, ver_detalle: true, crear: true, editar: true, eliminar: false },
-      persona: { ver_listado: true, ver_detalle: true, crear: false, editar: false, eliminar: false },
-    },
-    contexto: {
-      lead: ['persona', 'empresa'],
-      cotizacion: ['persona', 'empresa', 'cotizacion_item', 'servicio'],
-    },
+      leads: { leer: true, crear: true, editar: true, eliminar: false },
+      personas: { leer: true, crear: false, editar: false, eliminar: false },
+    }
   };
 
   beforeEach(() => {
@@ -47,39 +43,23 @@ describe('PermissionService', () => {
   describe('hasPermission', () => {
     it('should return true when user has the permission', () => {
       service.setPermisos(mockPermisos);
-      expect(service.hasPermission('lead', 'ver_listado')).toBe(true);
-      expect(service.hasPermission('lead', 'crear')).toBe(true);
+      expect(service.hasPermission('leads', 'leer')).toBe(true);
+      expect(service.hasPermission('leads', 'crear')).toBe(true);
     });
 
     it('should return false when user does not have the permission', () => {
       service.setPermisos(mockPermisos);
-      expect(service.hasPermission('lead', 'eliminar')).toBe(false);
-      expect(service.hasPermission('persona', 'crear')).toBe(false);
+      expect(service.hasPermission('leads', 'eliminar')).toBe(false);
+      expect(service.hasPermission('personas', 'crear')).toBe(false);
     });
 
     it('should return false for unknown tables', () => {
       service.setPermisos(mockPermisos);
-      expect(service.hasPermission('evento', 'ver_listado')).toBe(false);
+      expect(service.hasPermission('eventos', 'leer')).toBe(false);
     });
 
     it('should return false when no permissions loaded', () => {
-      expect(service.hasPermission('lead', 'ver_listado')).toBe(false);
-    });
-  });
-
-  describe('getContexto', () => {
-    it('should return related tables for a given table', () => {
-      service.setPermisos(mockPermisos);
-      expect(service.getContexto('lead')).toEqual(['persona', 'empresa']);
-    });
-
-    it('should return empty array for unknown table', () => {
-      service.setPermisos(mockPermisos);
-      expect(service.getContexto('unknown')).toEqual([]);
-    });
-
-    it('should return empty array when no permissions loaded', () => {
-      expect(service.getContexto('lead')).toEqual([]);
+      expect(service.hasPermission('leads', 'leer')).toBe(false);
     });
   });
 

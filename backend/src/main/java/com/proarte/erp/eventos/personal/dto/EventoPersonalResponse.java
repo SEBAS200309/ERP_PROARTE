@@ -8,7 +8,6 @@ import java.util.UUID;
 public record EventoPersonalResponse(
         UUID id,
         UUID eventoId,
-        UUID personaId,
         UUID proveedorId,
         UUID servicioId,
         BigDecimal valorTurno,
@@ -22,16 +21,15 @@ public record EventoPersonalResponse(
     public static EventoPersonalResponse from(EventoPersonal personal) {
         String alertaArl = Boolean.TRUE.equals(personal.getTieneArl())
                 ? null
-                : "Este empleado no cuenta con ARL vigente";
+                : "Este personal no cuenta con ARL vigente";
 
         String alertaOp = Boolean.TRUE.equals(personal.getTieneOp())
                 ? null
-                : "Este empleado no cuenta con Orden de Prestación vigente";
+                : "Este personal no cuenta con Orden de Prestación vigente";
 
         return new EventoPersonalResponse(
                 personal.getId(),
                 personal.getEventoId(),
-                personal.getPersonaId(),
                 personal.getProveedorId(),
                 personal.getServicioId(),
                 personal.getValorTurno(),

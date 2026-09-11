@@ -44,12 +44,12 @@ export class ServicioListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('servicio', 'ver_detalle'),
-    editar: this.permissionService.hasPermission('servicio', 'editar'),
-    eliminar: this.permissionService.hasPermission('servicio', 'eliminar'),
+    leer: this.permissionService.hasPermission('servicios', 'leer'),
+    editar: this.permissionService.hasPermission('servicios', 'editar'),
+    eliminar: this.permissionService.hasPermission('servicios', 'eliminar'),
   };
 
-  protected readonly canCreate = this.permissionService.hasPermission('servicio', 'crear');
+  protected readonly canCreate = this.permissionService.hasPermission('servicios', 'crear');
 
   private currentParams: PageParams = { page: 0, size: 10 };
 

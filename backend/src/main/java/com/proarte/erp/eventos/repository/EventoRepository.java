@@ -6,11 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
-@Repository
 public interface EventoRepository extends SoftDeleteRepository<Evento> {
 
     Page<Evento> findByEstadoId(UUID estadoId, Pageable pageable);
@@ -19,5 +17,9 @@ public interface EventoRepository extends SoftDeleteRepository<Evento> {
     Page<Evento> searchByNombre(@Param("search") String search, Pageable pageable);
 
     @Query("SELECT e FROM Evento e WHERE e.estadoId = :estadoId AND LOWER(e.nombre) LIKE LOWER(CONCAT('%', :search, '%'))")
-    Page<Evento> searchByNombreAndEstadoId(@Param("search") String search, @Param("estadoId") UUID estadoId, Pageable pageable);
+    Page<Evento> searchByNombreAndEstadoId(@Param("search") String search, @Param("estadoId") UUID estadoId,
+            Pageable pageable);
+
+    @Query(value = "SELECT public.cuenta_eventos();", nativeQuery = true)
+    Integer eventosProximos();
 }

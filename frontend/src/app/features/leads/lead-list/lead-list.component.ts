@@ -41,12 +41,13 @@ export class LeadListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
-    ver_detalle: this.permissionService.hasPermission('lead', 'ver_detalle'),
-    editar: this.permissionService.hasPermission('lead', 'editar'),
-    eliminar: this.permissionService.hasPermission('lead', 'eliminar'),
+    leer: this.permissionService.hasPermission('leads', 'leer'),
+    editar: this.permissionService.hasPermission('leads', 'editar'),
+    eliminar: this.permissionService.hasPermission('leads', 'eliminar'),
   };
 
-  protected readonly canCreate = this.permissionService.hasPermission('lead', 'crear');
+  protected readonly canCreate = this.permissionService.hasPermission('leads', 'crear');
+
 
   private currentParams: PageParams = { page: 0, size: 10 };
   private estadosMap = new Map<string, string>();
