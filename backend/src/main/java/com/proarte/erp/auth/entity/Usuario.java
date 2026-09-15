@@ -1,6 +1,7 @@
 package com.proarte.erp.auth.entity;
 
 import com.proarte.erp.common.entity.BaseEntity;
+import com.proarte.erp.roles.entity.Rol;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

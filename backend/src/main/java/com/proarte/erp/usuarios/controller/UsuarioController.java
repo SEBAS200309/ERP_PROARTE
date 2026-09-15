@@ -1,7 +1,8 @@
 package com.proarte.erp.usuarios.controller;
 
-import com.proarte.erp.auth.entity.Permiso;
 import com.proarte.erp.auth.entity.Usuario;
+import com.proarte.erp.roles.entity.Permiso;
+import com.proarte.erp.usuarios.dto.UsuarioResponse;
 import com.proarte.erp.common.dto.PageResponse;
 import com.proarte.erp.exception.ApiResponse;
 import com.proarte.erp.exception.UnauthorizedException;
@@ -38,8 +39,8 @@ public class UsuarioController {
             @PageableDefault(size = 20) Pageable pageable) {
         validatePermission("leer");
 
-        Page<UsuarioResponse> page = usuarioService.getAll(pageable)
-                .map(UsuarioResponse::from);
+        // El servicio ya hace la conversión a UsuarioResponse utilizando JOIN FETCH
+        Page<UsuarioResponse> page = usuarioService.getAll(pageable);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(page)));
     }
@@ -69,7 +70,8 @@ public class UsuarioController {
         validatePermission("editar");
 
         Usuario usuario = usuarioService.update(id, request);
-        return ResponseEntity.ok(ApiResponse.success(UsuarioResponse.from(usuario), "Usuario actualizado exitosamente"));
+        return ResponseEntity
+                .ok(ApiResponse.success(UsuarioResponse.from(usuario), "Usuario actualizado exitosamente"));
     }
 
     @DeleteMapping("/{id}")
@@ -93,8 +95,7 @@ public class UsuarioController {
                 .collect(java.util.stream.Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
-                        (v1, v2) -> v2
-                ));
+                        (v1, v2) -> v2));
 
         return ResponseEntity.ok(ApiResponse.success(configuracion));
     }

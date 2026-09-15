@@ -1,14 +1,16 @@
 package com.proarte.erp.usuarios.service;
 
-import com.proarte.erp.auth.entity.Permiso;
 import com.proarte.erp.auth.entity.Usuario;
-import com.proarte.erp.auth.repository.PermisoRepository;
-import com.proarte.erp.auth.repository.RolRepository;
 import com.proarte.erp.auth.repository.UsuarioRepository;
+import com.proarte.erp.common.entity.BaseEntity;
 import com.proarte.erp.exception.BusinessException;
 import com.proarte.erp.exception.ResourceNotFoundException;
+import com.proarte.erp.roles.entity.Permiso;
+import com.proarte.erp.roles.repository.PermisoRepository;
+import com.proarte.erp.roles.repository.RolRepository;
 import com.proarte.erp.usuarios.dto.CreateUsuarioRequest;
 import com.proarte.erp.usuarios.dto.UpdateUsuarioRequest;
+import com.proarte.erp.usuarios.dto.UsuarioResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -32,8 +35,9 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public Page<Usuario> getAll(Pageable pageable) {
-        return usuarioRepository.findAll(pageable);
+    public Page<UsuarioResponse> getAll(Pageable pageable) {
+        return usuarioRepository.findAllWithRol(pageable)
+                .map(UsuarioResponse::from);
     }
 
     @Transactional(readOnly = true)
@@ -106,7 +110,9 @@ public class UsuarioService {
         if (!rolRepository.existsActiveById(rolId)) {
             throw new ResourceNotFoundException("Rol", "id", rolId);
         }
-        return permisoRepository.findByRolId(rolId);
+        return permisoRepository.findByRolId(rolId)
+                .map(List::of)
+                .orElse(Collections.emptyList());
     }
 
     @Transactional
@@ -115,20 +121,16 @@ public class UsuarioService {
             throw new ResourceNotFoundException("Rol", "id", rolId);
         }
 
-        List<Permiso> existingPermisos = permisoRepository.findByRolId(rolId);
+        Permiso permiso = permisoRepository.findByRolId(rolId)
+                .orElseGet(() -> {
+                    Permiso p = Permiso.builder()
+                            .rolId(rolId)
+                            .build();
+                    p.setActivo(true);
+                    return p;
+                });
 
-        Permiso permiso;
-        if (existingPermisos.isEmpty()) {
-            permiso = Permiso.builder()
-                    .rolId(rolId)
-                    .configuracion(configuracion)
-                    .build();
-            permiso.setActivo(true);
-        } else {
-            permiso = existingPermisos.get(0);
-            permiso.setConfiguracion(configuracion);
-        }
-
+        permiso.setConfiguracion(configuracion);
         Permiso saved = permisoRepository.save(permiso);
         log.info("Permisos actualizados para rol: rolId={}", rolId);
         return saved;

@@ -1,14 +1,15 @@
 package com.proarte.erp.usuarios.service;
 
-import com.proarte.erp.auth.entity.Permiso;
 import com.proarte.erp.auth.entity.Usuario;
-import com.proarte.erp.auth.repository.PermisoRepository;
-import com.proarte.erp.auth.repository.RolRepository;
 import com.proarte.erp.auth.repository.UsuarioRepository;
 import com.proarte.erp.exception.BusinessException;
 import com.proarte.erp.exception.ResourceNotFoundException;
+import com.proarte.erp.roles.entity.Permiso;
+import com.proarte.erp.roles.repository.PermisoRepository;
+import com.proarte.erp.roles.repository.RolRepository;
 import com.proarte.erp.usuarios.dto.CreateUsuarioRequest;
 import com.proarte.erp.usuarios.dto.UpdateUsuarioRequest;
+import com.proarte.erp.usuarios.dto.UsuarioResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,9 +69,9 @@ class UsuarioServiceTest {
     void shouldReturnPageOfUsers() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Usuario> expectedPage = new PageImpl<>(List.of(createTestUsuario()));
-        when(usuarioRepository.findAll(pageable)).thenReturn(expectedPage);
+        when(usuarioRepository.findAllWithRol(pageable)).thenReturn(expectedPage);
 
-        Page<Usuario> result = usuarioService.getAll(pageable);
+        Page<UsuarioResponse> result = usuarioService.getAll(pageable);
 
         assertThat(result.getTotalElements()).isEqualTo(1);
     }
@@ -101,7 +102,8 @@ class UsuarioServiceTest {
     @DisplayName("create crea usuario con password encriptado")
     void shouldCreateUsuario_whenRequestIsValid() {
         UUID rolId = UUID.randomUUID();
-        CreateUsuarioRequest request = new CreateUsuarioRequest("newuser", "password123", "New User", "new@example.com", rolId);
+        CreateUsuarioRequest request = new CreateUsuarioRequest("newuser", "password123", "New User", "new@example.com",
+                rolId);
 
         when(usuarioRepository.findByUsername("newuser")).thenReturn(Optional.empty());
         when(rolRepository.existsActiveById(rolId)).thenReturn(true);
@@ -218,7 +220,7 @@ class UsuarioServiceTest {
                 .build();
 
         when(rolRepository.existsActiveById(rolId)).thenReturn(true);
-        when(permisoRepository.findByRolId(rolId)).thenReturn(List.of(permiso));
+        when(permisoRepository.findByRolId(rolId)).thenReturn(Optional.of(permiso));
 
         List<Permiso> result = usuarioService.getPermisosByRolId(rolId);
 
@@ -244,7 +246,7 @@ class UsuarioServiceTest {
         Map<String, Map<String, Boolean>> config = Map.of("eventos", Map.of("leer", true));
 
         when(rolRepository.existsActiveById(rolId)).thenReturn(true);
-        when(permisoRepository.findByRolId(rolId)).thenReturn(List.of());
+        when(permisoRepository.findByRolId(rolId)).thenReturn(Optional.empty());
         when(permisoRepository.save(any(Permiso.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Permiso result = usuarioService.updatePermisosForRol(rolId, config);
@@ -266,7 +268,7 @@ class UsuarioServiceTest {
         Map<String, Map<String, Boolean>> newConfig = Map.of("new", Map.of("crear", true));
 
         when(rolRepository.existsActiveById(rolId)).thenReturn(true);
-        when(permisoRepository.findByRolId(rolId)).thenReturn(List.of(existing));
+        when(permisoRepository.findByRolId(rolId)).thenReturn(Optional.of(existing));
         when(permisoRepository.save(any(Permiso.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Permiso result = usuarioService.updatePermisosForRol(rolId, newConfig);
