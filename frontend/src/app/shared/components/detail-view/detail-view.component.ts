@@ -1,159 +1,73 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  input,
-  output,
-  computed,
-  inject,
-  HostListener,
-} from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  trigger,
-  transition,
-  style,
-  animate,
-} from '@angular/animations';
+import { trigger, transition, style, animate } from '@angular/animations';
+import { AnimatedButtonComponent } from '../animated-button/animated-button.component';
 
-import { DataTableColumn } from '../data-table/data-table.component';
-import { PermissionService } from '../../../core/services/permission.service';
-
-/** Configuration for a detail field */
 export interface DetailField {
   key: string;
   label: string;
-  type?: 'text' | 'date' | 'number' | 'boolean' | 'currency';
+  type?: 'text' | 'date' | 'boolean';
 }
 
-/** Configuration for a context section (related table) */
 export interface DetailContextSection {
   tabla: string;
   title: string;
-  columns: DataTableColumn[];
+  columns: any[];
   data: any[];
 }
 
 @Component({
   selector: 'app-detail-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AnimatedButtonComponent],
   templateUrl: './detail-view.component.html',
   styleUrl: './detail-view.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('overlay', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('200ms ease-out', style({ opacity: 1 })),
-      ]),
-      transition(':leave', [
-        animate('150ms ease-in', style({ opacity: 0 })),
-      ]),
+      transition(':enter', [style({ opacity: 0 }), animate('200ms', style({ opacity: 1 }))]),
+      transition(':leave', [animate('200ms', style({ opacity: 0 }))])
     ]),
     trigger('panel', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateX(100%)' }),
-        animate('250ms ease-out', style({ opacity: 1, transform: 'translateX(0)' })),
-      ]),
-      transition(':leave', [
-        animate('200ms ease-in', style({ opacity: 0, transform: 'translateX(100%)' })),
-      ]),
-    ]),
-  ],
+      transition(':enter', [style({ transform: 'translateX(100%)' }), animate('250ms cubic-bezier(0.4, 0, 0.2, 1)', style({ transform: 'translateX(0)' }))]),
+      transition(':leave', [animate('250ms cubic-bezier(0.4, 0, 0.2, 1)', style({ transform: 'translateX(100%)' }))])
+    ])
+  ]
 })
 export class DetailViewComponent {
-  // Inputs
-  readonly visible = input<boolean>(false);
-  readonly title = input<string>('Detalle');
-  readonly record = input<Record<string, any> | null>(null);
-  readonly fields = input<DetailField[]>([]);
-  readonly contextSections = input<DetailContextSection[]>([]);
+  visible = input<boolean>(false);
+  title = input<string>('Detalle de Registro');
+  record = input<Record<string, any> | null>(null);
+  fields = input<DetailField[]>([]);
+  contextSections = input<DetailContextSection[]>([]);
+  loading = input<boolean>(false);
 
-  // Outputs
-  readonly closed = output<void>();
+  // Permisos para inyectar botones de acción
+  permissions = input<{ editar?: boolean; eliminar?: boolean }>({});
 
-  // DI
-  private readonly permissionService = inject(PermissionService);
+  // Emisores de eventos
+  closed = output<void>();
+  edit = output<void>();
+  delete = output<void>();
 
-  // Computed: filter context sections by user permissions
-  protected readonly visibleSections = computed(() => {
-    const sections = this.contextSections();
-    return sections.filter((section) =>
-      this.permissionService.hasPermission(section.tabla, 'leer')
-    );
-  });
-
-  @HostListener('document:keydown.escape')
-  protected onEscapeKey(): void {
-    if (this.visible()) {
-      this.close();
-    }
-  }
-
-  protected close(): void {
+  close(): void {
     this.closed.emit();
   }
 
-  protected onOverlayClick(event: MouseEvent): void {
+  onOverlayClick(event: MouseEvent): void {
     if ((event.target as HTMLElement).classList.contains('detail-view-overlay')) {
       this.close();
     }
   }
 
-  protected getFieldValue(field: DetailField): string {
-    const rec = this.record();
-    if (!rec) return '—';
-
-    const value = rec[field.key];
-    if (value == null) return '—';
-
-    switch (field.type) {
-      case 'date':
-        return this.formatDate(value);
-      case 'number':
-        return this.formatNumber(value);
-      case 'currency':
-        return this.formatCurrency(value);
-      case 'boolean':
-        return value ? 'Sí' : 'No';
-      default:
-        return String(value);
-    }
+  getCellValue(row: any, col: any): string {
+    return row[col.key] ?? '—';
   }
 
-  protected getCellValue(row: any, column: DataTableColumn): string {
-    const value = row[column.key];
-    if (value == null) return '—';
-
-    switch (column.type) {
-      case 'date':
-        return this.formatDate(value);
-      case 'number':
-        return this.formatNumber(value);
-      case 'boolean':
-        return value ? 'Sí' : 'No';
-      default:
-        return String(value);
-    }
-  }
-
-  private formatDate(value: any): string {
-    try {
-      const date = new Date(value);
-      return date.toLocaleDateString('es-CL');
-    } catch {
-      return String(value);
-    }
-  }
-
-  private formatNumber(value: any): string {
-    const num = Number(value);
-    return isNaN(num) ? String(value) : num.toLocaleString('es-CL');
-  }
-
-  private formatCurrency(value: any): string {
-    const num = Number(value);
-    if (isNaN(num)) return String(value);
-    return `$${num.toLocaleString('es-CL')}`;
+  getFieldValue(field: DetailField): string {
+    const val = this.record()?.[field.key];
+    if (val === null || val === undefined || val === '') return '—';
+    if (field.type === 'date') return new Date(val).toLocaleDateString();
+    if (field.type === 'boolean') return val ? 'Sí' : 'No';
+    return String(val);
   }
 }

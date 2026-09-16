@@ -32,8 +32,9 @@ export class PersonaListComponent implements OnInit {
   protected readonly showDeleteDialog = signal(false);
   private personaToDelete: Persona | null = null;
 
-  // Detail view
+  // --- SEÑALES PARA EL DETAIL VIEW (MODAL) ---
   protected readonly showDetail = signal(false);
+  protected readonly loadingDetail = signal(false); // Nueva señal de carga para el modal
   protected readonly selectedPersona = signal<Record<string, any> | null>(null);
   protected readonly detailContextSections = signal<DetailContextSection[]>([]);
 
@@ -97,15 +98,18 @@ export class PersonaListComponent implements OnInit {
     this.loadPersonas();
   }
 
+  // --- MÉTODOS DEL LISTADO Y LA TABLA ---
+
   protected onView(persona: Persona): void {
+    this.loadingDetail.set(true); // Iniciamos la carga
     const enriched: Record<string, any> = {
       ...persona,
       tipoDocumentoNombre: this.tiposDocMap.get(persona.tipoDocumentoId || '') || '—',
       rolEntidadNombre: this.rolesMap.get(persona.rolEntidadId || '') || '—',
     };
     this.selectedPersona.set(enriched);
-    this.loadDetailContext(persona.id);
     this.showDetail.set(true);
+    this.loadDetailContext(persona.id);
   }
 
   protected onEdit(persona: Persona): void {
@@ -142,11 +146,31 @@ export class PersonaListComponent implements OnInit {
     this.router.navigate(['/personas', 'nuevo']);
   }
 
+  // --- MÉTODOS EXCLUSIVOS DEL MODAL (DETAIL VIEW) ---
+
   protected closeDetail(): void {
     this.showDetail.set(false);
     this.selectedPersona.set(null);
     this.detailContextSections.set([]);
   }
+
+  protected onEditFromDetail(): void {
+    const persona = this.selectedPersona();
+    if (persona) {
+      this.closeDetail(); // Oculta el modal
+      this.onEdit(persona as Persona); // Reutiliza el método de navegación
+    }
+  }
+
+  protected onDeleteFromDetail(): void {
+    const persona = this.selectedPersona();
+    if (persona) {
+      this.closeDetail(); // Oculta el modal
+      this.onDelete(persona as Persona); // Dispara el diálogo de confirmación
+    }
+  }
+
+  // --- LLAMADAS HTTP ---
 
   private loadCatalogos(): void {
     this.personaService.getRolesEntidad().subscribe({
@@ -183,6 +207,13 @@ export class PersonaListComponent implements OnInit {
 
   private loadDetailContext(personaId: string): void {
     const sections: DetailContextSection[] = [];
+    let pending = 2; // Controlamos cuántas peticiones faltan
+
+    const checkDone = () => {
+      if (--pending === 0) {
+        this.loadingDetail.set(false); // Ocultamos el loading cuando ambas terminen
+      }
+    };
 
     this.personaService.getLeads(personaId).subscribe({
       next: (leads) => {
@@ -196,7 +227,9 @@ export class PersonaListComponent implements OnInit {
           data: leads,
         });
         this.detailContextSections.set([...sections]);
+        checkDone();
       },
+      error: () => checkDone()
     });
 
     this.personaService.getCotizaciones(personaId).subscribe({
@@ -211,7 +244,9 @@ export class PersonaListComponent implements OnInit {
           data: cotizaciones,
         });
         this.detailContextSections.set([...sections]);
+        checkDone();
       },
+      error: () => checkDone()
     });
   }
 }

@@ -1,75 +1,87 @@
 @if (visible()) {
-  <div
-    class="detail-view-overlay"
-    role="dialog"
-    aria-modal="true"
-    [attr.aria-label]="title()"
-    (click)="onOverlayClick($event)"
-    @overlay
-  >
-    <aside class="detail-view-panel" @panel>
-      <!-- Header -->
-      <header class="detail-view-header">
-        <h2 class="detail-view-title">{{ title() }}</h2>
-        <button
-          type="button"
-          class="btn-close"
-          (click)="close()"
-          aria-label="Cerrar panel de detalle"
-        >
-          ✕
-        </button>
-      </header>
+<div class="detail-view-overlay" role="dialog" aria-modal="true" [attr.aria-label]="title()"
+  (click)="onOverlayClick($event)" @overlay>
+  <aside class="detail-view-panel" @panel>
 
-      <!-- Fields section -->
-      @if (record()) {
-        <section class="detail-view-fields" aria-label="Campos del registro">
-          <dl class="fields-grid">
-            @for (field of fields(); track field.key) {
-              <div class="field-item">
-                <dt class="field-label">{{ field.label }}</dt>
-                <dd class="field-value">{{ getFieldValue(field) }}</dd>
-              </div>
-            }
-          </dl>
-        </section>
-      }
+    <!-- HEADER CON BOTONES DE ACCIÓN -->
+    <header class="detail-header">
+      <div class="header-title-row">
+        <app-animated-button variant="secondary" type="button" ariaLabel="Cerrar panel" (buttonClick)="close()">
+          ← Volver
+        </app-animated-button>
+        <h1>{{ title() }}</h1>
+      </div>
 
-      <!-- Context sections (related tables) -->
-      @if (visibleSections().length > 0) {
-        <section class="detail-view-context" aria-label="Tablas relacionadas">
-          @for (section of visibleSections(); track section.tabla) {
-            <div class="context-section">
-              <h3 class="context-title">{{ section.title }}</h3>
+      <div class="header-actions">
+        @if (permissions().editar && record()) {
+        <app-animated-button variant="primary" (buttonClick)="edit.emit()">
+          Editar
+        </app-animated-button>
+        }
+        @if (permissions().eliminar && record()) {
+        <!-- Asegúrate de tener una variante "danger" en tu animated-button o usa "secondary" si no -->
+        <app-animated-button variant="secondary" (buttonClick)="delete.emit()">
+          Eliminar
+        </app-animated-button>
+        }
+      </div>
+    </header>
 
-              @if (section.data.length === 0) {
-                <p class="context-empty">Sin registros asociados</p>
-              } @else {
-                <div class="context-table-wrapper">
-                  <table class="context-table" role="grid">
-                    <thead>
-                      <tr>
-                        @for (col of section.columns; track col.key) {
-                          <th>{{ col.label }}</th>
-                        }
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @for (row of section.data; track $index) {
-                        <tr>
-                          @for (col of section.columns; track col.key) {
-                            <td>{{ getCellValue(row, col) }}</td>
-                          }
-                        </tr>
-                      }
-                    </tbody>
-                  </table>
-                </div>
-              }
-            </div>
+    <!-- CONTENIDO -->
+    <div class="panel-body">
+      @if (loading()) {
+      <div class="loading-state">
+        <p>Cargando detalles...</p>
+      </div>
+      } @else if (record()) {
+
+      <!-- SECCIÓN DE CAMPOS (Estilo persona-detail) -->
+      <div class="detail-content">
+        @for (field of fields(); track field.key) {
+        <div class="detail-field">
+          <span class="detail-label">{{ field.label }}</span>
+          <span class="detail-value">{{ getFieldValue(field) }}</span>
+        </div>
+        }
+      </div>
+
+      <!-- SECCIÓN DE TABLAS RELACIONADAS (Contexto) -->
+      @if (contextSections().length > 0) {
+      <section class="detail-view-context">
+        @for (section of contextSections(); track section.tabla) {
+        <div class="context-section">
+          <h3 class="context-title">{{ section.title }}</h3>
+
+          @if (section.data.length === 0) {
+          <p class="context-empty">Sin registros asociados</p>
+          } @else {
+          <div class="context-table-wrapper">
+            <table class="context-table">
+              <thead>
+                <tr>
+                  @for (col of section.columns; track col.key) {
+                  <th>{{ col.label }}</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of section.data; track $index) {
+                <tr>
+                  @for (col of section.columns; track col.key) {
+                  <td>{{ getCellValue(row, col) }}</td>
+                  }
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
           }
-        </section>
+        </div>
+        }
+      </section>
       }
-    </aside>
-  </div>
+      }
+    </div>
+  </aside>
+</div>
 }
