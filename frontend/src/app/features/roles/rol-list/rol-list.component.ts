@@ -39,7 +39,7 @@ export class RolListComponent implements OnInit {
         ver_detalle: this.permissionService.hasPermission('roles', 'ver_detalle'),
         leer: this.permissionService.hasPermission('roles', 'leer'),
         editar: this.permissionService.hasPermission('roles', 'editar'),
-        eliminar: this.permissionService.hasPermission('roles', 'eliminar'),
+        eliminar: this.permissionService.hasPermission('roles', 'eliminar')
     };
 
     protected readonly canCreate = this.permissionService.hasPermission('roles', 'crear');

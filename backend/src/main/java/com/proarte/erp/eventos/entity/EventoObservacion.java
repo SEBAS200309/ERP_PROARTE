@@ -3,7 +3,6 @@ package com.proarte.erp.eventos.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.OffsetDateTime;
@@ -20,10 +19,12 @@ import java.util.UUID;
 public class EventoObservacion {
 
     @Id
+    @NonNull 
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "evento_id", nullable = false)
+    @NonNull 
     private UUID eventoId;
 
     @Column(name = "texto", nullable = false, columnDefinition = "TEXT")

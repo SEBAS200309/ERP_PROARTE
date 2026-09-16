@@ -20,9 +20,11 @@ import java.util.UUID;
 public class Proveedor extends BaseEntity {
 
     @Column(name = "persona_id")
+    @NonNull 
     private UUID personaId;
 
     @Column(name = "empresa_id")
+    @NonNull 
     private UUID empresaId;
 
     @Column(name = "especialidad", length = 100)

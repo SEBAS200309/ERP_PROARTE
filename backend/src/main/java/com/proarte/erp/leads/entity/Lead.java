@@ -23,11 +23,14 @@ public class Lead extends BaseEntity {
     private String descripcion;
 
     @Column(name = "estado_id", nullable = false)
+    @NonNull 
     private UUID estadoId;
 
     @Column(name = "persona_id")
+    @NonNull 
     private UUID personaId;
 
     @Column(name = "empresa_id")
+    @NonNull 
     private UUID empresaId;
 }

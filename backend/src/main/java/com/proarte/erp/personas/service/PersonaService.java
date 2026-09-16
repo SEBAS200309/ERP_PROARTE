@@ -8,6 +8,8 @@ import com.proarte.erp.personas.entity.Persona;
 import com.proarte.erp.personas.entity.PersonaEmpresa;
 import com.proarte.erp.personas.repository.PersonaEmpresaRepository;
 import com.proarte.erp.personas.repository.PersonaRepository;
+
+import io.micrometer.common.lang.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

@@ -40,6 +40,7 @@ export class ProveedorListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
+    ver_detalle: this.permissionService.hasPermission('proveedores', 'ver_detalle'),
     leer: this.permissionService.hasPermission('proveedores', 'leer'),
     editar: this.permissionService.hasPermission('proveedores', 'editar'),
     eliminar: this.permissionService.hasPermission('proveedores', 'eliminar'),

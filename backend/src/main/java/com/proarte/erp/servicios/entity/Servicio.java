@@ -22,6 +22,7 @@ import java.util.UUID;
 public class Servicio {
 
     @Id
+    @NonNull 
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
@@ -40,9 +41,11 @@ public class Servicio {
     private Boolean requiereOc = false;
 
     @Column(name = "servicio_padre_id")
+    @NonNull 
     private UUID servicioPadreId;
 
     @Column(name = "categoria_id")
+    @NonNull 
     private UUID categoriaId;
 
     @Builder.Default

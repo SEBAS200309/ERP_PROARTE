@@ -22,9 +22,11 @@ public class Portafolio {
     private UUID id;
 
     @Column(name = "proveedor_id", nullable = false)
+    @NonNull 
     private UUID proveedorId;
 
     @Column(name = "servicio_id", nullable = false)
+    @NonNull 
     private UUID servicioId;
 
     @Column(name = "precio_unitario", precision = 12, scale = 2)

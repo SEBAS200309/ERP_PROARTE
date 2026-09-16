@@ -44,6 +44,7 @@ export class ServicioListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
+    ver_detalle: this.permissionService.hasPermission('servicios', 'ver_detalle'),
     leer: this.permissionService.hasPermission('servicios', 'leer'),
     editar: this.permissionService.hasPermission('servicios', 'editar'),
     eliminar: this.permissionService.hasPermission('servicios', 'eliminar'),

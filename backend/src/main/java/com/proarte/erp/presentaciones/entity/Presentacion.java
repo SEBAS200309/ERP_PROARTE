@@ -26,5 +26,6 @@ public class Presentacion extends BaseEntity {
     private String descripcion;
 
     @Column(name = "servicio_id")
+    @NonNull 
     private UUID servicioId;
 }

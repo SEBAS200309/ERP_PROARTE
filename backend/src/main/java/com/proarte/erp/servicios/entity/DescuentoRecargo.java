@@ -33,6 +33,7 @@ public class DescuentoRecargo {
     private BigDecimal valor;
 
     @Column(name = "tipo_id", nullable = false)
+    @NonNull 
     private UUID tipoId;
 
     @Builder.Default

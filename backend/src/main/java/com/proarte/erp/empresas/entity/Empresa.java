@@ -35,5 +35,6 @@ public class Empresa extends BaseEntity {
     private String email;
 
     @Column(name = "rol_entidad_id")
+    @NonNull
     private UUID rolEntidadId;
 }

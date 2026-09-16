@@ -39,9 +39,10 @@ export class AlimentacionListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
+    ver_detalle: this.permissionService.hasPermission('alimentacion', 'ver_detalle'),
     leer: this.permissionService.hasPermission('alimentacion', 'leer'),
     editar: this.permissionService.hasPermission('alimentacion', 'editar'),
-    eliminar: this.permissionService.hasPermission('alimentacion', 'eliminar'),
+    eliminar: this.permissionService.hasPermission('alimentacion', 'eliminar')
   };
 
   protected readonly canCreate = this.permissionService.hasPermission('alimentacion', 'crear');

@@ -56,7 +56,8 @@ export class DashboardComponent implements OnInit {
     { icon: 'calendar-outline', label: 'Eventos', route: '/eventos', tabla: 'eventos' },
     { icon: 'cube-outline', label: 'Inventario', route: '/inventario', tabla: 'insumos' },
     { icon: 'person-add-outline', label: 'Usuarios', route: '/usuarios', tabla: 'usuarios' },
-    { icon: 'alert-circle-outline', label: 'Roles', route: '/roles', tabla: 'roles' }
+    { icon: 'alert-circle-outline', label: 'Roles', route: '/roles', tabla: 'roles' },
+    { icon: 'book-outline', label: 'Inventario', route: '/inventario', tabla: 'inventario' }
   ];
 
   protected get visibleLinks(): QuickLink[] {

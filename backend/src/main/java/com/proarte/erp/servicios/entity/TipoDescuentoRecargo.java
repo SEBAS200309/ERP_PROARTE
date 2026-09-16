@@ -14,6 +14,7 @@ import java.util.UUID;
 public class TipoDescuentoRecargo {
 
     @Id
+    @NonNull 
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 

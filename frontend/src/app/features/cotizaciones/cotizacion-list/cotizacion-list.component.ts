@@ -56,7 +56,7 @@ export class CotizacionListComponent implements OnInit {
     ver_detalle: this.permissionService.hasPermission('cotizaciones', 'ver_detalle'),
     leer: this.permissionService.hasPermission('cotizaciones', 'leer'),
     editar: this.permissionService.hasPermission('cotizaciones', 'editar'),
-    eliminar: this.permissionService.hasPermission('cotizaciones', 'eliminar'),
+    eliminar: this.permissionService.hasPermission('cotizaciones', 'eliminar')
   };
 
   protected readonly canCreate = this.permissionService.hasPermission('cotizaciones', 'crear');

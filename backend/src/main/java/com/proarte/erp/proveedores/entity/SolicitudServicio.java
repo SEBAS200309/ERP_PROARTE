@@ -20,15 +20,19 @@ import java.util.UUID;
 public class SolicitudServicio extends BaseEntity {
 
     @Column(name = "proveedor_id", nullable = false)
+    @NonNull 
     private UUID proveedorId;
 
     @Column(name = "servicio_id", nullable = false)
+    @NonNull 
     private UUID servicioId;
 
     @Column(name = "evento_id")
+    @NonNull 
     private UUID eventoId;
 
     @Column(name = "estado_id")
+    @NonNull 
     private UUID estadoId;
 
     @Column(name = "descripcion", columnDefinition = "TEXT")

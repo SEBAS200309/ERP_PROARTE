@@ -27,6 +27,7 @@ public class Insumo extends BaseEntity {
     private String descripcion;
 
     @Column(name = "unidad_medida_id")
+    @NonNull 
     private UUID unidadMedidaId;
 
     @Column(name = "stock_actual", precision = 10, scale = 2)

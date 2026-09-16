@@ -17,6 +17,7 @@ import java.util.UUID;
 public class Estado {
 
     @Id
+    @NonNull
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 

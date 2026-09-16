@@ -24,6 +24,7 @@ public class OrdenCompra extends BaseEntity {
     private String codigo;
 
     @Column(name = "solicitud_id")
+    @NonNull 
     private UUID solicitudId;
 
     @Column(name = "descripcion", columnDefinition = "TEXT")
@@ -33,5 +34,6 @@ public class OrdenCompra extends BaseEntity {
     private BigDecimal monto;
 
     @Column(name = "estado_id")
+    @NonNull 
     private UUID estadoId;
 }

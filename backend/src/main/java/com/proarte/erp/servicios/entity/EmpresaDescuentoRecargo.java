@@ -15,12 +15,15 @@ import java.util.UUID;
 public class EmpresaDescuentoRecargo {
 
     @Id
+    @NonNull 
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "empresa_id", nullable = false)
+    @NonNull
     private UUID empresaId;
 
     @Column(name = "descuento_recargo_id", nullable = false)
+    @NonNull 
     private UUID descuentoRecargoId;
 }

@@ -1,6 +1,8 @@
 package com.proarte.erp.roles.entity;
 
 import com.proarte.erp.common.entity.BaseEntity;
+
+import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -27,6 +29,7 @@ import java.util.UUID;
 public class Permiso extends BaseEntity {
 
     @Column(name = "rol_id", nullable = false)
+    @NonNull 
     private UUID rolId;
 
     @JdbcTypeCode(SqlTypes.JSON)

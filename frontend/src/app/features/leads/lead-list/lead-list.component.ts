@@ -41,9 +41,10 @@ export class LeadListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
+    ver_detalle: this.permissionService.hasPermission('leads', 'ver_detalle'),
     leer: this.permissionService.hasPermission('leads', 'leer'),
     editar: this.permissionService.hasPermission('leads', 'editar'),
-    eliminar: this.permissionService.hasPermission('leads', 'eliminar'),
+    eliminar: this.permissionService.hasPermission('leads', 'eliminar')
   };
 
   protected readonly canCreate = this.permissionService.hasPermission('leads', 'crear');

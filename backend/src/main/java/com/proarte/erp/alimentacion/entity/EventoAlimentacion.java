@@ -20,6 +20,7 @@ import java.util.UUID;
 public class EventoAlimentacion {
 
     @Id
+    @NonNull
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 

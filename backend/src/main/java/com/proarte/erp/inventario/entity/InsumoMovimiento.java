@@ -21,9 +21,11 @@ public class InsumoMovimiento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @NonNull 
     private UUID id;
 
     @Column(name = "insumo_id", nullable = false)
+    @NonNull 
     private UUID insumoId;
 
     @Column(name = "tipo_movimiento", nullable = false, length = 10)
@@ -40,5 +42,6 @@ public class InsumoMovimiento {
 
     @CreatedBy
     @Column(name = "created_by", updatable = false)
+    @NonNull 
     private UUID createdBy;
 }

@@ -16,6 +16,7 @@ import java.util.UUID;
 public class EventoInsumo {
 
     @Id
+    @NonNull 
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 

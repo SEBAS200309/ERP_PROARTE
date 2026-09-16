@@ -61,7 +61,7 @@ export class PersonaListComponent implements OnInit {
     ver_detalle: this.permissionService.hasPermission('personas', 'ver_detalle'),
     leer: this.permissionService.hasPermission('personas', 'leer'),
     editar: this.permissionService.hasPermission('personas', 'editar'),
-    eliminar: this.permissionService.hasPermission('personas', 'eliminar'),
+    eliminar: this.permissionService.hasPermission('personas', 'eliminar')
   };
 
   protected readonly canCreate = this.permissionService.hasPermission('personas', 'crear');

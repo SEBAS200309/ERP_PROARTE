@@ -50,9 +50,10 @@ export class OrdenCompraListComponent implements OnInit {
   ];
 
   protected readonly permissions: DataTablePermissions = {
+    ver_detalle: this.permissionService.hasPermission('ordenes_compra', 'ver_detalle'),
     leer: this.permissionService.hasPermission('ordenes_compra', 'leer'),
     editar: this.permissionService.hasPermission('ordenes_compra', 'editar'),
-    eliminar: this.permissionService.hasPermission('ordenes_compra', 'eliminar'),
+    eliminar: this.permissionService.hasPermission('ordenes_compra', 'eliminar')
   };
 
   protected readonly canCreate = this.permissionService.hasPermission('ordenes_compra', 'crear');
