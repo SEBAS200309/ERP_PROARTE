@@ -5,7 +5,7 @@ import { Observable, tap, map, of } from 'rxjs';
 import { ApiResponse, PermisosConfig, TablaPermisos } from '../models/auth.models';
 import { AuthService } from './auth.service';
 
-const PERMISOS_API = '/api/v1/usuarios';
+const ROLES_API = '/api/v1/roles';
 
 @Injectable({ providedIn: 'root' })
 export class PermissionService {
@@ -19,28 +19,51 @@ export class PermissionService {
 
   loadPermisos(): Observable<PermisosConfig | null> {
     const user = this.authService.currentUser();
-    if (!user) return of(null);
+    if (!user || !user.rolId) return of(null);
 
     if (this.loaded && this.permisos()) {
       return of(this.permisos());
     }
 
     return this.http
-      .get<ApiResponse<Record<string, TablaPermisos>>>(`${PERMISOS_API}/roles/${user.rolId}/permisos`)
+      .get<ApiResponse<any>>(`${ROLES_API}/${user.rolId}`)
       .pipe(
         tap((response) => {
-          if (response.success) {
-            this.permisos.set({ tablas: response.data });
+          if (response.success && response.data) {
+            // Extraemos de forma segura la configuración sin romper tipados estrictos
+            const data = response.data;
+            let tablasPermisos: Record<string, TablaPermisos> = {};
+
+            if (data.configuracion) {
+              tablasPermisos = data.configuracion;
+            } else if (typeof data === 'object' && !Array.isArray(data)) {
+              tablasPermisos = data as Record<string, TablaPermisos>;
+            }
+
+            this.permisos.set({ tablas: tablasPermisos });
             this.loaded = true;
           }
         }),
-        map((response) => (response.success ? { tablas: response.data } : null))
+        map((response) => {
+          if (!response.success || !response.data) return null;
+
+          const data = response.data;
+          let tablasPermisos: Record<string, TablaPermisos> = {};
+
+          if (data.configuracion) {
+            tablasPermisos = data.configuracion;
+          } else if (typeof data === 'object' && !Array.isArray(data)) {
+            tablasPermisos = data as Record<string, TablaPermisos>;
+          }
+
+          return { tablas: tablasPermisos };
+        })
       );
   }
 
   hasPermission(tabla: string, accion: keyof TablaPermisos): boolean {
     const config = this.permisos();
-    if (!config) return false;
+    if (!config || !config.tablas) return false;
 
     const tablaPermisos = config.tablas[tabla];
     if (!tablaPermisos) return false;

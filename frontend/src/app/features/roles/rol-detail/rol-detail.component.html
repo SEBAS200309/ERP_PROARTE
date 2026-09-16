@@ -1,0 +1,25 @@
+<div class="rol-detail-container">
+    <header class="detail-header">
+        <app-animated-button variant="secondary" type="button" ariaLabel="Volver a la lista" (buttonClick)="goBack()">
+            Volver
+        </app-animated-button>
+        <h1>Detalle de Rol</h1>
+    </header>
+
+    @if (loading()) {
+    <div class="loading-state">
+        <p>Cargando datos del rol...</p>
+    </div>
+    } @else if (rol()) {
+    <div class="detail-content">
+        <div class="detail-field">
+            <span class="detail-label">Nombre</span>
+            <span class="detail-value">{{ rol()!.nombre }}</span>
+        </div>
+        <div class="detail-field">
+            <span class="detail-label">Descripción</span>
+            <span class="detail-value">{{ rol()!.descripcion }}</span>
+        </div>
+    </div>
+    }
+</div>

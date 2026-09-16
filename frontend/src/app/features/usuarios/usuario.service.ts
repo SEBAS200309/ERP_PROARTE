@@ -18,22 +18,4 @@ export class UsuarioService extends BaseCrudService<Usuario> {
       .get<ApiResponse<Rol[]>>(this.rolesUrl)
       .pipe(map((response) => (response.success ? response.data : [])));
   }
-
-  /**
-   * Obtiene la configuración de permisos para un rol.
-   */
-  getPermisosByRol(rolId: string): Observable<Record<string, Record<string, boolean>>> {
-    return this.http
-      .get<ApiResponse<Record<string, Record<string, boolean>>>>(`${this.baseUrl}/roles/${rolId}/permisos`)
-      .pipe(map((response) => response.success ? response.data : {}));
-  }
-
-  /**
-   * Actualiza la configuración de permisos para un rol.
-   */
-  updatePermisosByRol(rolId: string, configuracion: Record<string, Record<string, boolean>>): Observable<any> {
-    return this.http
-      .put<ApiResponse<any>>(`${this.baseUrl}/roles/${rolId}/permisos`, { configuracion })
-      .pipe(map((response) => response.data));
-  }
 }
