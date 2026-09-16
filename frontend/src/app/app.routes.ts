@@ -74,8 +74,9 @@ export const routes: Routes = [
       },
       {
         path: 'roles',
+        canActivate: [permissionGuard],
+        data: { tabla: 'roles', accion: 'leer' },
         loadChildren: () => import('./features/roles/roles.routes'),
-        // canActivate: [authGuard, permissionGuard] // Opcional según tu seguridad
       },
       {
         path: 'servicios',

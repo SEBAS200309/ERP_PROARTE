@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AnimatedButtonComponent } from '../../../shared/components/animated-button/animated-button.component';
 import { RolService } from '../rol.service';
 
-const ACCIONES = ['ver_listado', 'ver_detalle', 'crear', 'editar', 'eliminar'] as const;
+const ACCIONES = ['ver_detalle', 'leer', 'crear', 'editar', 'eliminar'] as const;
 
 interface ContextoEntry {
     tabla: string;
@@ -39,8 +39,8 @@ export class RolFormComponent implements OnInit {
     protected readonly tablas = signal<string[]>([]);
     protected readonly acciones = ACCIONES;
     protected readonly accionLabels: Record<string, string> = {
-        ver_listado: 'Ver Listado',
-        ver_detalle: 'Ver Detalle',
+        ver_detalle: 'Ver detalle',
+        leer: 'Leer',
         crear: 'Crear',
         editar: 'Editar',
         eliminar: 'Eliminar',
@@ -113,7 +113,7 @@ export class RolFormComponent implements OnInit {
         const newTabla = `tabla_${this.tablas().length + 1}`;
         this.tablas.update((t) => [...t, newTabla]);
         this.permisos[newTabla] = {
-            ver_listado: false, ver_detalle: false, crear: false, editar: false, eliminar: false,
+            ver_detalle: false, leer: false, crear: false, editar: false, eliminar: false,
         };
     }
 

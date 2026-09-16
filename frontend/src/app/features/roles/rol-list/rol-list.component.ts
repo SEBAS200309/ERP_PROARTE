@@ -36,6 +36,7 @@ export class RolListComponent implements OnInit {
     ];
 
     protected readonly permissions: DataTablePermissions = {
+        ver_detalle: this.permissionService.hasPermission('roles', 'ver_detalle'),
         leer: this.permissionService.hasPermission('roles', 'leer'),
         editar: this.permissionService.hasPermission('roles', 'editar'),
         eliminar: this.permissionService.hasPermission('roles', 'eliminar'),

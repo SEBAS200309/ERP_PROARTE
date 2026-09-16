@@ -99,9 +99,6 @@ export class ProveedorFormComponent implements OnInit {
   }
 
   private loadCatalogos(): void {
-    this.proveedorService.getPersonas().subscribe({
-      next: (personas) => this.personas.set(personas),
-    });
     this.proveedorService.getEmpresas().subscribe({
       next: (empresas) => this.empresas.set(empresas),
     });

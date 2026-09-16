@@ -30,8 +30,6 @@ public class CatalogoController {
     public ResponseEntity<ApiResponse<List<?>>> getAll(
             @PathVariable String tipo,
             @RequestParam(required = false) String contexto) {
-        validatePermission("leer");
-
         List<?> result = catalogoService.getAll(tipo, contexto);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
@@ -40,8 +38,6 @@ public class CatalogoController {
     public ResponseEntity<ApiResponse<Object>> getById(
             @PathVariable String tipo,
             @PathVariable UUID id) {
-        validatePermission("leer");
-
         Object result = catalogoService.getById(tipo, id);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
