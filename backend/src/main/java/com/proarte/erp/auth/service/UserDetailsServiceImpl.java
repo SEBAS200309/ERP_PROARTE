@@ -1,10 +1,10 @@
 package com.proarte.erp.auth.service;
 
-import com.proarte.erp.auth.entity.Permiso;
-import com.proarte.erp.auth.entity.Rol;
 import com.proarte.erp.auth.entity.Usuario;
-import com.proarte.erp.auth.repository.PermisoRepository;
 import com.proarte.erp.auth.repository.UsuarioRepository;
+import com.proarte.erp.roles.entity.Permiso;
+import com.proarte.erp.roles.entity.Rol;
+import com.proarte.erp.roles.repository.PermisoRepository;
 import com.proarte.erp.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -34,14 +34,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         "Usuario no encontrado o inactivo: " + username));
 
         Rol rol = usuario.getRol();
-        List<Permiso> permisos = permisoRepository.findByRolId(usuario.getRolId());
+        Optional<Permiso> permisoOpt = permisoRepository.findByRolId(usuario.getRolId());
 
         Map<String, Map<String, Boolean>> permisosMap = new HashMap<>();
-        for (Permiso permiso : permisos) {
+        permisoOpt.ifPresent(permiso -> {
             if (permiso.getConfiguracion() != null) {
                 permisosMap.putAll(permiso.getConfiguracion());
             }
-        }
+        });
 
         return new CustomUserDetails(
                 usuario.getId(),

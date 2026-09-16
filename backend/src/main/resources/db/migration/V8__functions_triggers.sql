@@ -254,3 +254,37 @@ CREATE TRIGGER trg_recalcular_total
     EXECUTE FUNCTION trg_fn_recalcular_total_cotizacion();
 
 COMMENT ON FUNCTION trg_fn_recalcular_total_cotizacion() IS 'Trigger que recalcula el total de la cotización al modificar ítems';
+
+CREATE OR REPLACE FUNCTION fn_cuenta_eventos()
+RETURNS INTEGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    c_eventos INTEGER;
+BEGIN
+    SELECT COUNT(e.id) 
+    INTO c_eventos
+    FROM evento e 
+    WHERE e.fecha_inicio >= DATE_TRUNC('week', CURRENT_DATE) 
+    AND e.fecha_inicio < DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '7 days';
+
+    RETURN c_eventos;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION fn_cuenta_cotizaciones()
+RETURNS INTEGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    c_cotizaciones INTEGER;
+BEGIN
+    SELECT COUNT(c.id) 
+    INTO c_cotizaciones
+    FROM cotizacion c 
+    WHERE NOT EXISTS ( SELECT 1 FROM evento e WHERE e.cotizacion_id = c.id ) 
+    AND c.activo = TRUE;
+    
+    RETURN c_cotizaciones;
+END;
+$$;

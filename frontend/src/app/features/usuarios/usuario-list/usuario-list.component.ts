@@ -31,6 +31,7 @@ export class UsuarioListComponent implements OnInit {
   protected readonly showDeleteDialog = signal(false);
   private usuarioToDelete: Usuario | null = null;
 
+  // Las columnas consumen 'rolNombre' directamente desde el UsuarioResponse DTO devuelto por JOIN FETCH
   protected readonly columns: DataTableColumn[] = [
     { key: 'username', label: 'Usuario', sortable: true },
     { key: 'nombreCompleto', label: 'Nombre Completo', sortable: true },

@@ -73,6 +73,12 @@ export const routes: Routes = [
           import('./features/proovedores-personas/proovedores-personas.route').then((m) => m.default),
       },
       {
+        path: 'roles',
+        canActivate: [permissionGuard],
+        data: { tabla: 'roles', accion: 'leer' },
+        loadChildren: () => import('./features/roles/roles.routes'),
+      },
+      {
         path: 'servicios',
         canActivate: [permissionGuard],
         data: { tabla: 'servicios', accion: 'leer' },

@@ -32,6 +32,6 @@ export interface UpdateUsuarioRequest {
 export interface Rol {
   id: string;
   nombre: string;
-  descripcion: string;
+  descripcion?: string;
   activo: boolean;
 }

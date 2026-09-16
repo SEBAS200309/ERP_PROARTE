@@ -50,10 +50,13 @@ export class DashboardComponent implements OnInit {
     { icon: 'briefcase-outline', label: 'Empresas', route: '/empresas', tabla: 'empresas' },
     { icon: 'car-outline', label: 'Proveedores Empresas', route: '/proveedores', tabla: 'proveedores' },
     { icon: 'car-outline', label: 'Proveedores Personas', route: '/proveedores-personas', tabla: 'proveedores-personas' },
+    { icon: 'archive-outline', label: 'Catalagos', route: '/catalogos', tabla: 'catalogos' },
     { icon: 'layers-outline', label: 'Servicios', route: '/servicios', tabla: 'servicios' },
     { icon: 'file-text-outline', label: 'Cotizaciones', route: '/cotizaciones', tabla: 'cotizaciones' },
     { icon: 'calendar-outline', label: 'Eventos', route: '/eventos', tabla: 'eventos' },
     { icon: 'cube-outline', label: 'Inventario', route: '/inventario', tabla: 'insumos' },
+    { icon: 'person-add-outline', label: 'Usuarios', route: '/usuarios', tabla: 'usuarios' },
+    { icon: 'alert-circle-outline', label: 'Roles', route: '/roles', tabla: 'roles' }
   ];
 
   protected get visibleLinks(): QuickLink[] {

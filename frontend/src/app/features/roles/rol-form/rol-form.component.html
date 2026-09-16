@@ -1,0 +1,104 @@
+<div class="permiso-editor-container">
+    <header class="editor-header">
+        <h1>{{ pageTitle() }}</h1>
+    </header>
+
+    @if (loading()) {
+    <div class="loading-state">
+        <p>Cargando información del rol...</p>
+    </div>
+    } @else {
+    <!-- Formulario de Datos Básicos -->
+    <form [formGroup]="form" class="basic-data-form">
+        <div class="form-field">
+            <label for="nombre">Nombre del Rol</label>
+            <input id="nombre" type="text" formControlName="nombre" placeholder="Ej. Administrador" />
+            @if (hasError('nombre', 'required')) {
+            <span class="error-message">El nombre es obligatorio</span>
+            }
+        </div>
+        <div class="form-field">
+            <label for="descripcion">Descripción</label>
+            <input id="descripcion" type="text" formControlName="descripcion" placeholder="Breve descripción del rol" />
+            @if (hasError('descripcion', 'required')) {
+            <span class="error-message">La descripción es obligatoria</span>
+            }
+        </div>
+    </form>
+
+    <!-- Sección de Permisos por Tabla -->
+    <section class="permisos-section">
+        <h2>Permisos por Tabla</h2>
+        <p class="section-description">
+            Seleccione los permisos que desea asignar a cada tabla para este rol.
+        </p>
+
+        @if (tablas().length === 0) {
+        <p class="empty-message">No hay tablas configuradas para este rol.</p>
+        } @else {
+        <div class="permisos-table-wrapper">
+            <table class="permisos-table" aria-label="Matriz de permisos">
+                <thead>
+                    <tr>
+                        <th scope="col">Tabla</th>
+                        @for (accion of acciones; track accion) {
+                        <th scope="col" class="action-header">{{ accionLabels[accion] }}</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (tabla of tablas(); track tabla) {
+                    <tr>
+                        <td class="tabla-name">{{ tabla }}</td>
+                        @for (accion of acciones; track accion) {
+                        <td class="checkbox-cell">
+                            <input type="checkbox" [checked]="getPermiso(tabla, accion)"
+                                (change)="togglePermiso(tabla, accion)"
+                                [attr.aria-label]="accionLabels[accion] + ' - ' + tabla" />
+                        </td>
+                        }
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        }
+        <button type="button" class="btn-add-contexto" (click)="addTabla()" style="margin-top: 1rem;">
+            + Agregar nueva tabla
+        </button>
+    </section>
+
+    <!-- Sección de Contexto -->
+    <section class="contexto-section">
+        <h2>Contexto</h2>
+        <p class="section-description">
+            Defina qué tablas relacionadas son visibles en el contexto de cada tabla.
+        </p>
+
+        @for (entry of contexto(); track $index) {
+        <div class="contexto-entry">
+            <input type="text" [value]="entry.tabla" (input)="updateContextoTabla($index, $any($event.target).value)"
+                placeholder="Nombre de tabla" class="contexto-tabla-input" />
+            <input type="text" [value]="entry.values" (input)="updateContextoValues($index, $any($event.target).value)"
+                placeholder="Tablas visibles (separadas por coma)" class="contexto-values-input" />
+            <button type="button" class="btn-remove" (click)="removeContextoEntry($index)"
+                aria-label="Eliminar entrada de contexto">X</button>
+        </div>
+        }
+        <button type="button" class="btn-add-contexto" (click)="addContextoEntry()">
+            + Agregar entrada de contexto
+        </button>
+    </section>
+
+    <!-- Acciones Finales -->
+    <div class="editor-actions">
+        <app-animated-button variant="secondary" type="button" ariaLabel="Cancelar" (buttonClick)="cancel()">
+            Cancelar
+        </app-animated-button>
+        <app-animated-button variant="primary" type="button" [disabled]="form.invalid || saving()" [loading]="saving()"
+            ariaLabel="Guardar rol" (buttonClick)="save()">
+            {{ saving() ? 'Guardando...' : 'Guardar Rol' }}
+        </app-animated-button>
+    </div>
+    }
+</div>

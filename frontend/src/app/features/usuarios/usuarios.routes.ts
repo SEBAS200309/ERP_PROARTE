@@ -22,13 +22,6 @@ const routes: Routes = [
         (m) => m.UsuarioFormComponent
       ),
   },
-  {
-    path: 'roles/:id/permisos',
-    loadComponent: () =>
-      import('./permiso-editor/permiso-editor.component').then(
-        (m) => m.PermisoEditorComponent
-      ),
-  },
 ];
 
 export default routes;

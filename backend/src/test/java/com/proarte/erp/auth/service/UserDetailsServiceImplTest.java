@@ -1,10 +1,10 @@
 package com.proarte.erp.auth.service;
 
-import com.proarte.erp.auth.entity.Permiso;
-import com.proarte.erp.auth.entity.Rol;
 import com.proarte.erp.auth.entity.Usuario;
-import com.proarte.erp.auth.repository.PermisoRepository;
 import com.proarte.erp.auth.repository.UsuarioRepository;
+import com.proarte.erp.roles.entity.Permiso;
+import com.proarte.erp.roles.entity.Rol;
+import com.proarte.erp.roles.repository.PermisoRepository;
 import com.proarte.erp.security.CustomUserDetails;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -53,7 +52,6 @@ class UserDetailsServiceImplTest {
                 .build();
         usuario.setId(userId);
         usuario.setActivo(true);
-        // Set the rol via reflection or directly since it's a @ManyToOne
         usuario.setRol(rol);
 
         Map<String, Map<String, Boolean>> config = Map.of(
@@ -62,7 +60,7 @@ class UserDetailsServiceImplTest {
         Permiso permiso = Permiso.builder().rolId(rolId).configuracion(config).build();
 
         when(usuarioRepository.findByUsername("admin")).thenReturn(Optional.of(usuario));
-        when(permisoRepository.findByRolId(rolId)).thenReturn(List.of(permiso));
+        when(permisoRepository.findByRolId(rolId)).thenReturn(Optional.of(permiso));
 
         UserDetails result = userDetailsService.loadUserByUsername("admin");
 
@@ -107,7 +105,7 @@ class UserDetailsServiceImplTest {
         usuario.setRol(rol);
 
         when(usuarioRepository.findByUsername("viewer")).thenReturn(Optional.of(usuario));
-        when(permisoRepository.findByRolId(rolId)).thenReturn(List.of());
+        when(permisoRepository.findByRolId(rolId)).thenReturn(Optional.empty());
 
         UserDetails result = userDetailsService.loadUserByUsername("viewer");
         CustomUserDetails details = (CustomUserDetails) result;

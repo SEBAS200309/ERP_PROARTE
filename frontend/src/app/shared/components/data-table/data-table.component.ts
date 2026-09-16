@@ -18,6 +18,7 @@ export interface DataTableColumn {
 
 /** Permissions for action buttons */
 export interface DataTablePermissions {
+  ver_detalle?: boolean;
   leer?: boolean;
   crear?: boolean;
   editar?: boolean;
